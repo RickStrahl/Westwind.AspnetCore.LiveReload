@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 
 namespace Westwind.AspNetCore.LiveReload
@@ -124,7 +122,7 @@ function tryConnect(){{
             setTimeout( function() {{ location.reload(); }},{config.ServerRefreshTimeout});
                 }}
         if (message.data == 'Refresh') 
-          location.reload(); 
+          location.reload(true); 
     }}    
     connection.onerror = function(event)  {{
         console.log('Live Reload Socket error.');
@@ -142,7 +140,7 @@ function retryConnection() {{
    retry = setInterval(function() {{ 
                 console.log('Live Reload retrying connection.'); 
                 connection = tryConnect();  
-                if(connection) location.reload();                    
+                if(connection) location.reload(true);                    
             }},{config.ServerRefreshTimeout});
 }}
 

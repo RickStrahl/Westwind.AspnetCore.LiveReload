@@ -10,11 +10,11 @@ a.navbar-brand {
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  font-size: 14px;
+  font-size: 15px;
 }
 @media (min-width: 768px) {
   html {
-    font-size: 1.1em;
+    font-size: 1.05em;
   }
 }
 
