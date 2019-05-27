@@ -21,10 +21,11 @@ namespace Westwind.AspNetCore.LiveReload
             Action<LiveReloadConfiguration> configAction = null)
         {
             var provider = services.BuildServiceProvider();
-            var serviceConfiguration = provider.GetService<IConfiguration>();
+            var configuration = provider.GetService<IConfiguration>();
             
             var config = new LiveReloadConfiguration();
-            serviceConfiguration.Bind("LiveReload",config);
+            configuration.Bind("LiveReload",config);
+
             LiveReloadConfiguration.Current = config;
 
             if (config.LiveReloadEnabled)

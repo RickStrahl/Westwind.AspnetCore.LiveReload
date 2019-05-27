@@ -9,6 +9,11 @@ using Microsoft.AspNetCore.Http;
 
 namespace Westwind.AspNetCore.LiveReload
 {
+    /// <summary>
+    /// Live Reload middleware routes WebSocket Server requests
+    /// for the Live Reload push to connected browsers and handles
+    /// injecting WebSocket client JavaScript into any HTML content.
+    /// </summary>
     public class LiveReloadMiddleware
     {
         private readonly RequestDelegate _next;
@@ -20,6 +25,14 @@ namespace Westwind.AspNetCore.LiveReload
             _next = next;
         }
 
+
+        /// <summary>
+        /// Routes to WebSocket handler and injects javascript into
+        /// HTML content
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+
         public async Task InvokeAsync(HttpContext context)
         {
             var config = LiveReloadConfiguration.Current;
@@ -29,8 +42,26 @@ namespace Westwind.AspNetCore.LiveReload
                 return;
             }
 
+            // see if we have a WebSocket request. True means we handled
+            if (await HandleWebSocketRequest(context))
+                return;
+
+            // Check other content for HTML
+            await HandleHtmlInjection(context);
+        }
+
+        /// <summary>
+        /// Checks for WebService Requests and if it is routes it to the
+        /// WebSocket handler event loop.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        private async Task<bool> HandleWebSocketRequest(HttpContext context)
+        {
+            var config = LiveReloadConfiguration.Current;
+
             // Handle WebSocket Connection
-            if (context.Request.Path ==  config.WebSocketUrl)
+            if (context.Request.Path == config.WebSocketUrl)
             {
                 if (context.WebSockets.IsWebSocketRequest)
                 {
@@ -45,9 +76,22 @@ namespace Westwind.AspNetCore.LiveReload
                     context.Response.StatusCode = 400;
                 }
 
-                return;
+                return true;
             }
 
+            return false;
+        }
+
+
+        /// <summary>
+        /// Inspects all non WebSocket content for HTML documents
+        /// and if it finds HTML injects the JavaScript needed to
+        /// refresh the browser via Web Sockets
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        private async Task HandleHtmlInjection(HttpContext context)
+        {
             // Inject Refresh JavaScript Into HTML content
             var existingBody = context.Response.Body;
 
@@ -81,11 +125,18 @@ namespace Westwind.AspNetCore.LiveReload
 
 
 
-        public string InjectLiveReloadScript(string html, HttpContext context)
+        /// <summary>
+        /// Injects WebSocket Refresh code into JavaScript document
+        /// just above the `</body>` tag.
+        /// </summary>
+        /// <param name="html"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static string InjectLiveReloadScript(string html, HttpContext context)
         {
             var config = LiveReloadConfiguration.Current;
 
-            var Request = context.Request;
+            var host = context.Request.Host;
             
             if (html.Contains("<!-- West Wind Live Reload -->")) return html;
 
@@ -93,7 +144,7 @@ namespace Westwind.AspNetCore.LiveReload
             if (context.Request.IsHttps)
                 prefix = "wss";
 
-            var host = $"{prefix}://{context.Request.Host.Host}:{context.Request.Host.Port}" + config.WebSocketUrl;
+            var hostString = $"{prefix}://{host.Host}:{host.Port}" + config.WebSocketUrl;
 
             string script = $@"
 <!-- West Wind Live Reload -->
@@ -105,7 +156,7 @@ var connection = tryConnect();
 
 function tryConnect(){{
     try{{
-        var host = '{host}';
+        var host = '{hostString}';
         var connection = new WebSocket(host); 
     }}
     catch(ex) {{ retry(); }}
