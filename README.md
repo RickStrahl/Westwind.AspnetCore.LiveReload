@@ -15,7 +15,7 @@ Minimum Requirements:
 * ASP.NET Core 2.1
 
 ## Install from NuGet
-You can install this middleware from:
+You can install this middleware [from NuGet](https://www.nuget.org/packages/Westwind.AspNetCore.LiveReload):
 
 ```ps
 PS> Install-Package WestWind.AspnetCore.LiveReload
