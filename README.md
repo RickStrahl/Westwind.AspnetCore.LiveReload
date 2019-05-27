@@ -1,4 +1,3 @@
-
 # Live Reload Middleware for ASP.NET Core
 
 This is a Live Reload Middleware component that monitors file changes in your project and automatically reloads the browser's active page when a change is detected.
