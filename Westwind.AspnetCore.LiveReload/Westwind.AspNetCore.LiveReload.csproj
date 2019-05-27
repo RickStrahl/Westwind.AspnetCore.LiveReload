@@ -22,7 +22,7 @@
     <PackageCopyright>Rick Strahl, West Wind Technologies 2019</PackageCopyright>
     <PackageTags>Live-Reload AspNetCore Middleware Westwind</PackageTags>
     <PackageReleaseNotes></PackageReleaseNotes>
-    <PackageIconUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/icon.png</PackageIconUrl>
+    <PackageIconUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/raw/master/icon.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/LICSENSE.md</PackageLicenseUrl>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
