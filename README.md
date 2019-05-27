@@ -93,4 +93,50 @@ Set this value to get a close approximation how long it takes your server to res
 * **WebSocketUrl**  
 The site relative URL to the Web socket handler.
 
+## Try it out
+So to check out this functionality you can run the simple stock ASP.NET Core sample project. Let's demonstrate the three common live reload scenarios:
+
+* Updating Static Files
+* Updating Razor Views/Pages
+* Updating on server code changes
+
+
+### Update Static Files
+
+* Start the application (recommend `dotnet watch run` but not required)
+* Open the Index Page
+* Open `wwwroot/css/site.css'
+* Make a change in the CSS  (change the Font-size in the first `html` entries)
+* Save the file
+
+You should see the change reflected immediately. Sometime you may have to refresh once to get the cache to reset for CSS changes to show, but subsequent refreshes should show immediately.
+
+
+### Update Razor Views
+
+* Start the application (recommend `dotnet watch run` but not required)
+* Open the Index Page
+* Open `Views/Home/Index.cshtml`
+* Make a change in the Header text - `Welcome Live Reload`
+* Save the file
+
+You should see the change reflected immediately.
+
+
+### Server Changes
+
+* Start the application with `dotnet watch run` (required or you need to manually restart)
+* Open the Index Page
+* Open `Controllers/HomeController.cs`
+* Make a change in `ViewBag.Message`
+* Save the file
+
+The page will refresh but it will take a while as the server has to restart. Typically 3-5 seconds or so for a simple project, longer for more complex projects obviously.
+
+You may have to tweak the `ServerRefreshTimeout` value to account for the time your server takes to restart to get a reliable refresh.
+
+
+
+
+
 

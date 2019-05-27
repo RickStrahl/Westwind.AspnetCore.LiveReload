@@ -2,6 +2,37 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <Version>0.1</Version>
+
+    <Authors>Rick Strahl, West Wind Technologies</Authors>
+    <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
+    <Language>en-US</Language>
+    <AssemblyName>Westwind.AspnetCore.LiveReload</AssemblyName>
+    <AssemblyTitle>Westwind.AspnetCore.LiveReload</AssemblyTitle>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <PackageId>Westwind.AspnetCore.LiveReload</PackageId>
+    <RootNamespace>Westwind.AspnetCore.LiveReload</RootNamespace>
+    <Title>West Wind ASP.NET Core Live Reload Middleware</Title>
+    <Description>
+      ASP.NET Core Live Reload Middleware that monitors file changes in your project and automatically reloads the browser's active page
+      .</Description>
+    <Summary>
+      ASP.NET Core Live Reload Middleware that monitors file changes in your project and automatically reloads the browser's active page
+      .</Summary>
+    <PackageCopyright>Rick Strahl, West Wind Technologies 2019</PackageCopyright>
+    <PackageTags>Live-Reload AspNetCore Middleware Westwind</PackageTags>
+    <PackageReleaseNotes></PackageReleaseNotes>
+    <PackageIconUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/icon.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/LICSENSE.md</PackageLicenseUrl>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Copyright>Rick Strahl, West Wind Technologies, 2019</Copyright>
+    <RepositoryType>Github</RepositoryType>
+    <Company>West Wind Technologies</Company>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+
+    <RepositoryUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload</RepositoryUrl>
+
   </PropertyGroup>
 
   <ItemGroup>
