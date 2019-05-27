@@ -12,6 +12,8 @@ namespace Westwind.AspnetCore.LiveReload.Web.Controllers
     {
         public IActionResult Index()
         {
+
+            ViewBag.Message = "Surfin' and Turfin'";
             return View();
         }
 

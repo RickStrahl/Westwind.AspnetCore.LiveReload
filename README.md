@@ -1,5 +1,5 @@
 
-# West Wind Live Reload Middleware for ASP.NET Core
+# Live Reload Middleware for ASP.NET Core
 
 This is a Live Reload Middleware component that monitors file changes in your project and automatically reloads the browser's active page.
 
@@ -13,6 +13,10 @@ It works with:
 The Middleware is self-contained and has no external dependencies except some of the base ASP.NET Core libraries. 
 
 > Current releases are an early prototype.
+
+Minimum Requirements:
+
+* ASP.NET Core 2.1
 
 ## Install from NuGet
 You can install this middleware from:
@@ -35,7 +39,7 @@ The full configuration and run process looks like this:
 
 *Note: `dotnet watch run` is optional but if you don't run it you have to manually restart your server for each server code change. Without static file and Razor View/Page changes still auto-refresh*
 
-Add the namespace:
+Add the namespace in `Startup.cs`:
 
 ```cs
 using Westwind.AspNetCore.LiveReload;
