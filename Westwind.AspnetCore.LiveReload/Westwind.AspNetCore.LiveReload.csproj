@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <Version>0.1</Version>
+    <Version>0.1.1</Version>
 
     <Authors>Rick Strahl, West Wind Technologies</Authors>
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
@@ -14,7 +14,7 @@
     <RootNamespace>Westwind.AspnetCore.LiveReload</RootNamespace>
     <Title>West Wind ASP.NET Core Live Reload Middleware</Title>
     <Description>
-      ASP.NET Core Live Reload Middleware that monitors file changes in your project and automatically reloads the browser's active page
+      ASP.NET Core Live Reload Middleware that monitors for file changes in your project at development time and automatically reloads the browser's active page. It can monitor for client side static files, Razor Views and Pages and server changes when combined with `dotnet watch run`. This middleware is light-weight and self-contained without external dependencies, and can be completely turned off via configuration.
       .</Description>
     <Summary>
       ASP.NET Core Live Reload Middleware that monitors file changes in your project and automatically reloads the browser's active page

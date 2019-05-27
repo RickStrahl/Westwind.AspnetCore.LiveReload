@@ -61,7 +61,11 @@ The parameter is optional and it's actually recommended you set any values via c
 In `Startup.Configure()` add: 
  
 ```cs
+// Before other output generating middleware handlers
 app.UseLiveReload();
+
+app.UseStaticFiles();
+app.UseMvcWithDefaultRoute();
 ```
 
 anywhere before the MVC route. I recommend you add this early in the middleware pipeline before any other output generating middleware runs as it needs to intercept any HTML content and inject the Live Reload script into it.
@@ -82,7 +86,11 @@ And you can use these configuration settings:
 All of these settings are optional.
 
 * **LiveReloadEnabled**  
-If this flag is false live reload has no impact as it simply passes through requests. `true` by default.
+If this flag is false live reload has no impact as it simply passes through requests.  
+*The default is:* `true`.
+
+   > I recommend you put: `"LiveReloadEnabled": false` into `appsettings.json` and `"LiveReloadEnabled": true` into `appsettings.Development.json` so this feature isn't accidentally enabled in Production.
+
 
 * **ClientFileExtensions**  
 File extensions that the file watcher watches for in the Web project. These are files that can refresh without a server recompile, so don't include source code files here. Source code changes are handled via restarts with `dotnet watch run`.
