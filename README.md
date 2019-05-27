@@ -5,12 +5,11 @@ This is a Live Reload Middleware component that monitors file changes in your pr
 
 It works with:
 
-* Client side static code files 
+* Client side static files  (HTML, CSS, JavaScript etc.)
 * ASP.NET Core Views/Pages (.cshtml)
-* Server Side Code Updates (combined w/ `dotnet watch`)
+* Server Side compiled code updates (combined w/ `dotnet watch`)
 
-
-The Middleware is self-contained and has no external dependencies - nothing else to run. 
+The Middleware is self-contained and has no external dependencies - there's nothing else to install or run. You can configure which extensions are monitored for.
 
 > Current releases are an early prototype.
 
@@ -26,9 +25,9 @@ PS> Install-Package WestWind.AspnetCore.LiveReload
 ```
 
 ## What does it do?
-This middleware monitors for file changes in your project and tries to automatically refresh your browser when a change is detected. It uses a File Watcher to monitor for file changes, and a WebSocket connection in the browser to refresh the page. The middleware intercepts all HTML page requests and injects a block of code that hooks up the WebSocket interface to support the 'remote' refresh operation. 
+This middleware monitors for file changes in your project and tries to automatically refresh your browser when a change is detected. It uses a `FileWatcher` to monitor for file changes, and a `WebSocket` 'server' that client pages connect to refresh the page. The middleware intercepts all HTML page requests and injects a block of JavaScript code that hooks up the client WebSocket interface to support the 'remote' refresh operation. When file changes are detected the server pushes the refresh requests to the pages that are listening on the WebSocket. 
 
-This tool uses raw Web Sockets so it's very light weight with no additional library dependencies. You can also turn off Live Reload with a configuration setting in which case the middle ware is not hooked up at all.
+This tool uses raw WebSockets, so it's very light weight with no additional library dependencies. You can also turn off Live Reload with a configuration setting in which case the middleware is not hooked up at all.
 
 In order to restart the server for server code changes you need to run your application with `dotnet watch run`. This built-in tool automatically restarts your .NET Core application anytime a code change is made. `dotnet watch run` is optional, but without it server side code changes require you to manually restart the server. Razor Views/Pages don't require `dotnet watch run` to refresh since they are dynamically compiled in development.
 
