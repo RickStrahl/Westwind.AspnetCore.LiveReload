@@ -8,9 +8,7 @@ It works with:
 * ASP.NET Core Views/Pages (.cshtml)
 * Server Side compiled code updates (combined w/ `dotnet watch`)
 
-The Middleware is self-contained and has no external dependencies - there's nothing else to install or run. You can configure which extensions are monitored for.
-
-> Current releases are an early prototype.
+The Middleware is self-contained and has no external dependencies - there's nothing else to install or run. You should run `dotnet watch run` to automatically reload server side code to reload the server.  The middleware can then automatically refresh the browser. The extensions monitored for are configurable.
 
 Minimum Requirements:
 
