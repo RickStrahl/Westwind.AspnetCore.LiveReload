@@ -1,10 +1,10 @@
-﻿{
+{
   "iisSettings": {
-    "windowsAuthentication": false, 
-    "anonymousAuthentication": true, 
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:54407",
-      "sslPort": 44339
+      "applicationUrl": "http://localhost:61535",
+      "sslPort": 44365
     }
   },
   "profiles": {
@@ -15,22 +15,24 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Westwind.AspnetCore.LiveReload.Web": {
+    "Westwind.AspnetCore.LiveReload.Web30": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "applicationUrl": "http://localhost:5000"
     },
     "Dotnet Watch": {
+      "commandName": "Executable",
       "executablePath": "C:\\Program Files\\dotnet\\dotnet.exe",
       "commandLineArgs": "watch run",
+      "workingDirectory": "$(ProjectDir)",
       "launchBrowser": true,
       "launchUrl": "http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
-
     }
   }
+}

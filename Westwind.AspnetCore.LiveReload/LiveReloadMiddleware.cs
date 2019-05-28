@@ -112,8 +112,13 @@ namespace Westwind.AspNetCore.LiveReload
 
                     context.Response.Body = existingBody;
 
+                    // have to send bytes so we can reset the content length properly
+                    // after we inject the script tag
+                    var bytes = Encoding.UTF8.GetBytes(html);
+                    context.Response.ContentLength = bytes.Length;
+
                     // Send our modified content to the response body.
-                    await context.Response.WriteAsync(html);
+                    await context.Response.Body.WriteAsync(bytes, 0, bytes.Length);
                 }
                 else
                 {
