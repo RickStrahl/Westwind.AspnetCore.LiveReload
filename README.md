@@ -52,12 +52,16 @@ services.AddLiveReload(config =>
     //config.LiveReloadEnabled = true;
     //config.FolderToMonitor = Path.GetFullname(Path.Combine(Env.ContentRootPath,"..")) ;
 });
+
+// for ASP.NET Core 3.0 add Runtime Razor Compilation
+// services.AddRazorPages().AddRazorRuntimeCompilation();
+// services.AddMvc().AddRazorRuntimeCompilation();
 ```
 
-The parameter is optional and it's actually recommended you set any values via configuration (see below).
+The `config` parameter is optional and it's actually recommended you set any values via configuration (see below). 
 
 > #### Enable ASP.NET Core 3.0 Runtime Razor View Compilation
-> ASP.NET Core 3.0 by default doesn't compile Razor views at runtime, so changes to razor pages will not reload in 3.0 unless you add the following in `ConfigureServices()`:
+> **ASP.NET Core 3.0 by default doesn't compile Razor views at runtime**, so any changes to Razor Views and Pages will not auto-reload in 3.0, unless you explicitly enable it in `ConfigureServices()`:
 > ```cs
 > services.AddRazorPages().AddRazorRuntimeCompilation();
 > services.AddMvc().AddRazorRuntimeCompilation();
@@ -67,7 +71,7 @@ The parameter is optional and it's actually recommended you set any values via c
 In `Startup.Configure()` add: 
  
 ```cs
-// Before other output generating middleware handlers
+// Before any other output generating middleware handlers
 app.UseLiveReload();
 
 app.UseStaticFiles();
@@ -148,9 +152,3 @@ You should see the change reflected immediately.
 The page will refresh but it will take a while as the server has to restart. Typically 3-5 seconds or so for a simple project, longer for more complex projects obviously.
 
 You may have to tweak the `ServerRefreshTimeout` value to account for the time your server takes to restart to get a reliable refresh.
-
-
-
-
-
-
