@@ -102,8 +102,9 @@ namespace Westwind.AspNetCore.LiveReload
                 await _next(context);
 
                 // Inject Script into HTML content
-                if (context.Response.ContentType != null &&
-                    context.Response.ContentType.Contains("text/html", StringComparison.InvariantCultureIgnoreCase))
+                if (context.Response.StatusCode == 200 &&
+                    context.Response.ContentType != null &&
+                    context.Response.ContentType.Contains("text/html", StringComparison.InvariantCultureIgnoreCase) )
 
                 {
                     string html = Encoding.UTF8.GetString(newContent.ToArray());
@@ -118,7 +119,7 @@ namespace Westwind.AspNetCore.LiveReload
                 {
                     // bypass - return raw output
                     context.Response.Body = existingBody;
-                    context.Response.Body.Write(newContent.ToArray());
+                    await context.Response.Body.WriteAsync(newContent.ToArray());
                 }
             }
         }
