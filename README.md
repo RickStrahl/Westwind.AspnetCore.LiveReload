@@ -2,6 +2,12 @@
 
 This is a Live Reload Middleware component that monitors file changes in your project and automatically reloads the browser's active page when a change is detected.
 
+You can install this middleware [from NuGet](https://www.nuget.org/packages/Westwind.AspNetCore.LiveReload):
+
+```ps
+PS> Install-Package WestWind.AspnetCore.LiveReload
+```
+
 It works with:
 
 * Client side static files  (HTML, CSS, JavaScript etc.)
@@ -14,13 +20,9 @@ Minimum Requirements:
 
 * ASP.NET Core 2.1
 
+Here's what it looks like:
 
-## Install from NuGet
-You can install this middleware [from NuGet](https://www.nuget.org/packages/Westwind.AspNetCore.LiveReload):
-
-```ps
-PS> Install-Package WestWind.AspnetCore.LiveReload
-```
+![](https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/blob/master/Westwind.AspNetCore.LiveReload.gif?raw=true)
 
 ## What does it do?
 This middleware monitors for file changes in your project and tries to automatically refresh your browser when a change is detected. It uses a `FileWatcher` to monitor for file changes, and a `WebSocket` 'server' that client pages connect to refresh the page. The middleware intercepts all HTML page requests and injects a block of JavaScript code that hooks up the client WebSocket interface to support the 'remote' refresh operation. When file changes are detected the server pushes the refresh requests to the pages that are listening on the WebSocket. 

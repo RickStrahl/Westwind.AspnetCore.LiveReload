@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <Version>0.1.1</Version>
+    <Version>0.1.2</Version>
 
     <Authors>Rick Strahl, West Wind Technologies</Authors>
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
@@ -24,7 +24,7 @@
     <PackageReleaseNotes></PackageReleaseNotes>
     <PackageIconUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/raw/master/icon.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/LICSENSE.md</PackageLicenseUrl>
+    <PackageLicense>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/LICSENSE.md</PackageLicense>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Copyright>Rick Strahl, West Wind Technologies, 2019</Copyright>
     <RepositoryType>Github</RepositoryType>

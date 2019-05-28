@@ -10,12 +10,7 @@ a.navbar-brand {
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  font-size: 15px;
-}
-@media (min-width: 768px) {
-  html {
-    font-size: 1.05em;
-  }
+    font-size: 15px; 
 }
 
 .border-top {
