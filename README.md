@@ -14,6 +14,7 @@ Minimum Requirements:
 
 * ASP.NET Core 2.1
 
+
 ## Install from NuGet
 You can install this middleware [from NuGet](https://www.nuget.org/packages/Westwind.AspNetCore.LiveReload):
 
@@ -40,7 +41,8 @@ Add the namespace in `Startup.cs`:
 ```cs
 using Westwind.AspNetCore.LiveReload;
 ```
-
+  
+#### Startup.ConfigureServices()
 Start with the following in `Startup.ConfigureServices()`:
 
 ```cs
@@ -54,6 +56,14 @@ services.AddLiveReload(config =>
 
 The parameter is optional and it's actually recommended you set any values via configuration (see below).
 
+> #### Enable ASP.NET Core 3.0 Runtime Razor View Compilation
+> ASP.NET Core 3.0 by default doesn't compile Razor views at runtime, so changes to razor pages will not reload in 3.0 unless you add the following in `ConfigureServices()`:
+> ```cs
+> services.AddRazorPages().AddRazorRuntimeCompilation();
+> services.AddMvc().AddRazorRuntimeCompilation();
+> ```
+
+#### Startup.Configure()
 In `Startup.Configure()` add: 
  
 ```cs
