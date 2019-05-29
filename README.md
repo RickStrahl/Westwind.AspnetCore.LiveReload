@@ -95,7 +95,8 @@ And you can use these configuration settings:
     "LiveReloadEnabled": true,
     "ClientFileExtensions": ".cshtml,.css,.js,.htm,.html,.ts,.custom",
     "ServerRefreshTimeout": 3000,
-    "WebSocketUrl": "/__livereload"
+    "WebSocketUrl": "/__livereload",
+    "FolderToMonitor": "~/"
   }
 }
 ```
@@ -117,6 +118,9 @@ Set this value to get a close approximation how long it takes your server to res
 
 * **WebSocketUrl**  
 The site relative URL to the Web socket handler.
+
+* **FolderToMonitor**  
+This is the folder that's monitored. By default it's `~/` which is the Web Project's content root (not the Web root). Other common options are: `~/wwwroot` for Web only, `~/../` for **the entire solution**, or `~/../OtherProject/` for **another project** (which works well for client side Razor).
 
 ## Try it out
 So to check out this functionality you can run the simple stock ASP.NET Core sample project. Let's demonstrate the three common live reload scenarios:
