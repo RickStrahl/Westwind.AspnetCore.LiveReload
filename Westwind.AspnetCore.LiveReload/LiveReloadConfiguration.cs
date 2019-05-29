@@ -34,7 +34,7 @@ namespace Westwind.AspNetCore.LiveReload
         /// Note the `.live` extension which is used for server restarts. Please
         /// make sure you always add that to your list or server reloads won't work.
         /// </summary>
-        public string ClientFileExtensions { get; set; } = ".cshtml,.css,.js,.htm,.html,.ts";
+        public string ClientFileExtensions { get; set; } = ".cshtml,.css,.js,.htm,.html,.ts,.razor";
 
         /// <summary>
         /// The timeout to wait before refreshing the page when shutting down

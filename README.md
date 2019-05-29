@@ -16,6 +16,7 @@ It works with:
 * Client side static files  (HTML, CSS, JavaScript etc.)
 * ASP.NET Core Views/Pages (.cshtml)
 * Server Side compiled code updates (combined w/ `dotnet watch`)
+* Also works for Blazor with Configuration
 
 The Middleware is self-contained and has no external dependencies - there's nothing else to install or run. You should run `dotnet watch run` to automatically reload server side code to reload the server.  The middleware can then automatically refresh the browser. The extensions monitored for are configurable.
 
@@ -164,4 +165,28 @@ The page will refresh but it will take a while as the server has to restart. Typ
 
 You may have to tweak the `ServerRefreshTimeout` value to account for the time your server takes to restart to get a reliable refresh.
 
-## License
+### Blazor
+You can also use this tooling for Razor as long as you host the Blazor applicaiton during development through ASP.NET Core. To do this you need to make a couple of configuration changes:
+
+* Set up the entire solution (or the Blazor Project only) for monitoring
+* Add the Blazor extension
+
+You can do this in configuration via:
+
+```json
+{
+  "LiveReload": {
+    "LiveReloadEnabled": true,
+    "ClientFileExtensions": ".cshtml,.css,.js,.htm,.html,.ts,.razor",
+    "FolderToMonitor": "~/.."
+  }
+}
+```
+
+This adds the `.razor` extension and it basically monitors the entire Solution (`~/..`) for changes. Alternately you can also point at the Blazor project instead:
+
+```json
+"FolderToMonitor": "~/../MyBlazorProject"
+```
+
+Since Blazor projects tend to not care about the .NET Core backend that just acts as static file service you probably only need to monitor the client side project in Blazor projects. Either the entire solution or Blazor project folders work.
