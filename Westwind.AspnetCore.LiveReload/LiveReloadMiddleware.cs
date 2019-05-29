@@ -124,7 +124,8 @@ namespace Westwind.AspNetCore.LiveReload
                 {
                     // bypass - return raw output
                     context.Response.Body = existingBody;
-                    await context.Response.Body.WriteAsync(newContent.ToArray());
+                    if(newContent.Length >0)
+                        await context.Response.Body.WriteAsync(newContent.ToArray());
                 }
             }
         }
