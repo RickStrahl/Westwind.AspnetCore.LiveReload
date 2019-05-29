@@ -94,7 +94,7 @@ And you can use these configuration settings:
 {
   "LiveReload": {
     "LiveReloadEnabled": true,
-    "ClientFileExtensions": ".cshtml,.css,.js,.htm,.html,.ts,.custom",
+    "ClientFileExtensions": ".cshtml,.css,.js,.htm,.html,.ts,.razor,.custom",
     "ServerRefreshTimeout": 3000,
     "WebSocketUrl": "/__livereload",
     "FolderToMonitor": "~/"
@@ -168,7 +168,8 @@ You may have to tweak the `ServerRefreshTimeout` value to account for the time y
 ### Blazor
 You can also use this tooling for Razor as long as you host the Blazor applicaiton during development through ASP.NET Core. To do this you need to make a couple of configuration changes:
 
-* Set up the entire solution (or the Blazor Project only) for monitoring
+* Add LiveReload to the **ASP.NET Core Server Project**
+* Set up monitoring for the entire solution (or the Blazor Project only)
 * Add the Blazor extension
 
 You can do this in configuration via:
@@ -177,16 +178,22 @@ You can do this in configuration via:
 {
   "LiveReload": {
     "LiveReloadEnabled": true,
-    "ClientFileExtensions": ".cshtml,.css,.js,.htm,.html,.ts,.razor",
+    "ClientFileExtensions": ".cshtml,.css,.js,.htm,.html,.ts,.razor,.cs",
     "FolderToMonitor": "~/.."
   }
 }
 ```
 
-This adds the `.razor` extension and it basically monitors the entire Solution (`~/..`) for changes. Alternately you can also point at the Blazor project instead:
+This adds the `.razor,.cs` extensions and it basically monitors the entire Solution (`~/..`) for changes. Alternately you can also point at the Blazor project instead:
 
 ```json
 "FolderToMonitor": "~/../MyBlazorProject"
 ```
 
 Since Blazor projects tend to not care about the .NET Core backend that just acts as static file service you probably only need to monitor the client side project in Blazor projects. Either the entire solution or Blazor project folders work.
+
+* Start the application with `dotnet watch run` (required or you need to manually restart)
+* Open the Index Page
+* Open `Pages/Index.razor`
+* Make a change in the page
+* Save the file
