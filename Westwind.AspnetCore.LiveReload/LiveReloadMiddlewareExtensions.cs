@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
@@ -34,6 +35,14 @@ namespace Westwind.AspNetCore.LiveReload
                 {
                     var env = provider.GetService<IHostingEnvironment>();
                     config.FolderToMonitor = env.ContentRootPath;
+                }
+                else if (config.FolderToMonitor.StartsWith("~"))
+                {
+                    var env = provider.GetService<IHostingEnvironment>();
+                    if (config.FolderToMonitor.Length > 1)
+                        config.FolderToMonitor = Path.Combine(env.ContentRootPath, config.FolderToMonitor.Substring(1));
+                    else
+                        config.FolderToMonitor = env.ContentRootPath;
                 }
 
                 if (configAction != null)
