@@ -40,7 +40,13 @@ namespace Westwind.AspNetCore.LiveReload
                 {
                     var env = provider.GetService<IHostingEnvironment>();
                     if (config.FolderToMonitor.Length > 1)
-                        config.FolderToMonitor = Path.Combine(env.ContentRootPath, config.FolderToMonitor.Substring(1));
+                    {
+                        var folder = config.FolderToMonitor.Substring(1);
+                        if (folder.StartsWith('/') || folder.StartsWith("\\")) 
+                            folder = folder.Substring(1); 
+                        config.FolderToMonitor = Path.Combine(env.ContentRootPath,folder);
+                        config.FolderToMonitor = Path.GetFullPath(config.FolderToMonitor);
+                    }
                     else
                         config.FolderToMonitor = env.ContentRootPath;
                 }
