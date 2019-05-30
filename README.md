@@ -30,6 +30,9 @@ Here's a short video that demonstrates some of the functionality:
 
 This demonstrates updating Razor Views/Pages, static CSS and HTML content, and making a source code change in a controller that affects the UI. The only thing 'running' is `dotnet.watch.run` and there are no manual updates.
 
+> #### Blazor Support?
+> Several people have asked about Blazor support and yes this tool can provide refresh to Blazor applications. However, as far as I know Blazor does not support in place updates to `.razor` views. This tool can detect the changes and refresh, but Blazor does not auto-recompile. You have to explicitly recompile the app. However, this Live Reload can detect that and then auto-refresh. If you're more familiar with Blazor and know of a good way to get Blazor to recompile on change, please file an issue and I'll see if this can be integrated.
+
 ## What does it do?
 This middleware monitors for file changes in your project and tries to automatically refresh your browser when a change is detected. It uses a `FileWatcher` to monitor for file changes, and a `WebSocket` 'server' that client pages connect to refresh the page. The middleware intercepts all HTML page requests and injects a block of JavaScript code that hooks up the client WebSocket interface to support the 'remote' refresh operation. When file changes are detected the server pushes the refresh requests to the pages that are listening on the WebSocket. 
 
