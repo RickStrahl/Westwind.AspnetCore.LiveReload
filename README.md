@@ -16,11 +16,15 @@ It works with:
 * Client side static files  (HTML, CSS, JavaScript etc.)
 * ASP.NET Core Views/Pages (.cshtml)
 * Server Side compiled code updates (combined w/ `dotnet watch`)
-<!--* Also works for Blazor with Configuration-->
+* Limited Blazor Support ([see below](#blazor-support))
 
 The Middleware is self-contained and has no external dependencies - there's nothing else to install or run. You should run `dotnet watch run` to automatically reload server side code to reload the server.  The middleware can then automatically refresh the browser. The extensions monitored for are configurable.
 
-Minimum Requirements:
+#### Limitations
+* **Doesn't work over HTTP2**
+Browsers currently do not support upgrading connections to WebSockets on HTTP2.
+
+#### Minimum Requirements:
 
 * ASP.NET Core 2.1
 
@@ -29,9 +33,6 @@ Here's a short video that demonstrates some of the functionality:
 ![](https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/blob/master/Westwind.AspNetCore.LiveReload.gif?raw=true)
 
 This demonstrates updating Razor Views/Pages, static CSS and HTML content, and making a source code change in a controller that affects the UI. The only thing 'running' is `dotnet.watch.run` and there are no manual updates.
-
-> #### Blazor Support?
-> Several people have asked about Blazor support and yes this tool can provide refresh to Blazor applications. However, as far as I know Blazor does not support in place updates to `.razor` views. This tool can detect the changes and refresh, but Blazor does not auto-recompile. You have to explicitly recompile the app. However, this Live Reload can detect that and then auto-refresh. If you're more familiar with Blazor and know of a good way to get Blazor to recompile on change, please file an issue and I'll see if this can be integrated.
 
 ## What does it do?
 This middleware monitors for file changes in your project and tries to automatically refresh your browser when a change is detected. It uses a `FileWatcher` to monitor for file changes, and a `WebSocket` 'server' that client pages connect to refresh the page. The middleware intercepts all HTML page requests and injects a block of JavaScript code that hooks up the client WebSocket interface to support the 'remote' refresh operation. When file changes are detected the server pushes the refresh requests to the pages that are listening on the WebSocket. 
@@ -168,35 +169,60 @@ The page will refresh but it will take a while as the server has to restart. Typ
 
 You may have to tweak the `ServerRefreshTimeout` value to account for the time your server takes to restart to get a reliable refresh.
 
-<!--### Blazor-->
-<!--You can also use this tooling for Razor as long as you host the Blazor applicaiton during development through ASP.NET Core. To do this you need to make a couple of configuration changes:-->
+## Blazor Support?
+Several people have asked about Blazor support and yes this tool can provide refresh to Blazor applications and yes it can - sort of. 
 
-<!--* Add LiveReload to the **ASP.NET Core Server Project**-->
-<!--* Set up monitoring for the entire solution (or the Blazor Project only)-->
-<!--* Add the Blazor extension-->
+### Server Side Blazor
+If you are using a server side Blazor project you can just use `dotnet watch run` which automatically provides browser refresh (unreliable but it sort of works). You'll need to add:
 
-<!--You can do this in configuration via:-->
+```xml
+<ItemGroup>
+    <Watch Include="**\*.razor" />
+</ItemGroup>
+```
 
-<!--```json-->
-<!--{-->
-<!--  "LiveReload": {-->
-<!--    "LiveReloadEnabled": true,-->
-<!--    "ClientFileExtensions": ".cshtml,.css,.js,.htm,.html,.ts,.razor,.cs",-->
-<!--    "FolderToMonitor": "~/.."-->
-<!--  }-->
-<!--}-->
-<!--```-->
+and that should work. In my experience this is really flakey though and you can double that up with this Live Reload addin which will also refresh the page when the project restarts.
 
-<!--This adds the `.razor,.cs` extensions and it basically monitors the entire Solution (`~/..`) for changes. Alternately you can also point at the Blazor project instead:-->
+### Client Side Blazor
+For client side Blazor the story is more complex and there's no real good solution for quick auto-reload, because client side blazor has no individual page recompile, but has to completely recompile the blazor project. 
 
-<!--```json-->
-<!--"FolderToMonitor": "~/../MyBlazorProject"-->
-<!--```-->
+Live Reload can work with this but it's slow as both the Blazor project has to be recompiled and the server project restarted (don't know if there's a way to just trigger a recompile of the client project on its own - if you think of a way please file an issue so we can add that!)
 
-<!--Since Blazor projects tend to not care about the .NET Core backend that just acts as static file service you probably only need to monitor the client side project in Blazor projects. Either the entire solution or Blazor project folders work.-->
+The following is based on the default project template that uses two projects for a client side blazor: The ASP.NET Core hosting project and the Blazor client project.
 
-<!--* Start the application with `dotnet watch run` (required or you need to manually restart)-->
-<!--* Open the Index Page-->
-<!--* Open `Pages/Index.razor`-->
-<!--* Make a change in the page-->
-<!--* Save the file-->
+
+* Add LiveReload to the **ASP.NET Core Server Project**
+* Set up monitoring for the entire solution (or the Blazor Project only)
+* Add the Blazor extension
+
+You can do this in configuration via:
+
+```json
+{
+  "LiveReload": {
+    "LiveReloadEnabled": true,
+    "ClientFileExtensions": ".css,.js,.htm,.html,.ts,.razor,.cs",
+    "FolderToMonitor": "~/.."
+  }
+}
+```
+
+This adds the `.razor,.cs` extensions and it basically monitors the entire Solution (`~/..`) for changes. Alternately you can also point at the Blazor project instead:
+
+```json
+"FolderToMonitor": "~/../MyBlazorProject"
+```
+
+Since Blazor projects tend to not care about the .NET Core backend that just acts as static file service you probably only need to monitor the client side project in Blazor projects. Either the entire solution or Blazor project folders work.
+
+* Start the application with `dotnet watch run` (required or you need to manually restart)
+* Open the Index Page
+* Open `Pages/Index.razor`
+* Make a change in the page
+* Save the file
+
+Reload will not be quick because the Blazor client project **and** the .NET Core project will recompile and restart. For a simple hello world it takes about 5 seconds on my local setup. For a full blown applications this may be even slower.
+
+Obviously this is not ideal, but it's better than nothing. Live Reload works as it should but the underlying problem is that the actual content is not refreshing quickly enough to make this really viable.
+
+We can only hope Microsoft come up with a built-in solution to trigger the recompilation of the client project or better yet recompilation of a single view as it's changed. 
