@@ -47,5 +47,11 @@ namespace Westwind.AspNetCore.LiveReload
         /// </summary>
         public string WebSocketUrl { get; set; } = "/__livereload";
 
+        /// <summary>
+        /// Optional WebSocket host. Use this if you are on an Https2 connection
+        /// to point at a http1 connection. "ws://localhost:5000"
+        /// </summary>
+        public string WebSocketHost { get; set; }
+
     }
 }

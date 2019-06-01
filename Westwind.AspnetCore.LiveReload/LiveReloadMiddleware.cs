@@ -65,7 +65,7 @@ namespace Westwind.AspNetCore.LiveReload
             {
                 if (context.WebSockets.IsWebSocketRequest)
                 {
-                    WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync();
+                    var webSocket = await context.WebSockets.AcceptWebSocketAsync();
                     if (!ActiveSockets.Contains(webSocket))
                         ActiveSockets.Add(webSocket);
 
@@ -147,11 +147,14 @@ namespace Westwind.AspNetCore.LiveReload
             
             if (html.Contains("<!-- West Wind Live Reload -->")) return html;
 
-            var prefix = "ws";
-            if (context.Request.IsHttps)
-                prefix = "wss";
-
-            var hostString = $"{prefix}://{host.Host}:{host.Port}" + config.WebSocketUrl;
+            string hostString; 
+            if (!string.IsNullOrEmpty(config.WebSocketHost))
+                hostString = config.WebSocketHost + config.WebSocketUrl;
+            else
+            {
+                var prefix = context.Request.IsHttps? "wss" : "ws";
+                hostString = $"{prefix}://{host.Host}:{host.Port}" + config.WebSocketUrl;
+            }
 
             string script = $@"
 <!-- West Wind Live Reload -->
@@ -164,9 +167,9 @@ var connection = tryConnect();
 function tryConnect(){{
     try{{
         var host = '{hostString}';
-        var connection = new WebSocket(host); 
+        connection = new WebSocket(host); 
     }}
-    catch(ex) {{ retry(); }}
+    catch(ex) {{ console.log(ex); retryConnection(); }}
 
     if (!connection)
        return null;
@@ -183,7 +186,7 @@ function tryConnect(){{
           location.reload(true); 
     }}    
     connection.onerror = function(event)  {{
-        console.log('Live Reload Socket error.');
+        console.log('Live Reload Socket error.', event);
         retryConnection();
     }}
     connection.onclose = function(event) {{
@@ -267,4 +270,3 @@ function retryConnection() {{
         }
     }
 }
- 

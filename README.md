@@ -20,9 +20,6 @@ It works with:
 
 The Middleware is self-contained and has no external dependencies - there's nothing else to install or run. You should run `dotnet watch run` to automatically reload server side code to reload the server.  The middleware can then automatically refresh the browser. The extensions monitored for are configurable.
 
-#### Limitations
-* **Doesn't work over HTTP2**
-Browsers currently do not support upgrading connections to WebSockets on HTTP2.
 
 #### Minimum Requirements:
 
@@ -101,6 +98,7 @@ And you can use these configuration settings:
     "ClientFileExtensions": ".cshtml,.css,.js,.htm,.html,.ts,.razor,.custom",
     "ServerRefreshTimeout": 3000,
     "WebSocketUrl": "/__livereload",
+    "WebSocketHost": "ws://localhost:5000"
     "FolderToMonitor": "~/"
   }
 }
@@ -123,6 +121,9 @@ Set this value to get a close approximation how long it takes your server to res
 
 * **WebSocketUrl**  
 The site relative URL to the Web socket handler.
+
+* **WebSocketHost**  
+An explicit WebSocket host URL. Useful if you are running on HTTP2 which doesn't support WebSockets (yet) and you can point at another exposed host URL in your server that serves HTTP1.1. Don't set this unless you have to - the default uses the current host of the request.
 
 * **FolderToMonitor**  
 This is the folder that's monitored. By default it's `~/` which is the Web Project's content root (not the Web root). Other common options are: `~/wwwroot` for Web only, `~/../` for **the entire solution**, or `~/../OtherProject/` for **another project** (which works well for client side Razor).
@@ -168,6 +169,23 @@ You should see the change reflected immediately.
 The page will refresh but it will take a while as the server has to restart. Typically 3-5 seconds or so for a simple project, longer for more complex projects obviously.
 
 You may have to tweak the `ServerRefreshTimeout` value to account for the time your server takes to restart to get a reliable refresh.
+
+## HTTP2 Support
+If you're using this extension with HTTP2 connections make sure you set your connections to support **both Http1 and Http2**. WebSockets don't work over HTTP2, so you need to also expose HTTP1 endpoints.
+
+To do this you you can use this in your startup Builder configuration:
+
+```cs
+public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+    WebHost.CreateDefaultBuilder(args)
+        .ConfigureKestrel(options =>
+        {
+            options.ConfigureEndpointDefaults(c => c.Protocols = HttpProtocols.Http1AndHttp2);
+        })
+        .UseStartup<Startup>();
+```
+
+The important bit is `c.Protocols = HttpProtocols.Http1AndHttp2`.
 
 ## Blazor Support?
 Several people have asked about Blazor support and yes this tool can provide refresh to Blazor applications and yes it can - sort of. 
