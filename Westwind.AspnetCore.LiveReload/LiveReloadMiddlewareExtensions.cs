@@ -82,6 +82,9 @@ namespace Westwind.AspNetCore.LiveReload
                 builder.UseMiddleware<LiveReloadMiddleware>();
 
                 LiveReloadFileWatcher.StartFileWatcher();
+
+                // this isn't necessary as the browser disconnects and on reconnect refreshes
+                //LiveReloadMiddleware.RefreshWebSocketRequest();
             }
 
             return builder;

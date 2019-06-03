@@ -180,7 +180,7 @@ function tryConnect(){{
     {{ 
         if (message.data == 'DelayRefresh') {{
                     alert('Live Reload Delayed Reload.');
-            setTimeout( function() {{ location.reload(); }},{config.ServerRefreshTimeout});
+            setTimeout( function() {{ location.reload(true); }},{config.ServerRefreshTimeout});
                 }}
         if (message.data == 'Refresh') 
           location.reload(true); 

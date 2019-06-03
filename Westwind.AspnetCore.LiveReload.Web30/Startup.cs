@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,10 +36,11 @@ namespace Westwind.AspnetCore.LiveReload.Web30
             {
 
             });
-            
-            
-           services.AddControllersWithViews()
-               .AddNewtonsoftJson();
+
+
+            services.AddControllersWithViews()
+                .AddMvcOptions(opt => { opt.SerializerOptions.PropertyNameCaseInsensitive = true; });
+                //.AddNewtonsoftJson();
 
            services.AddRazorPages().AddRazorRuntimeCompilation();
            services.AddMvc().AddRazorRuntimeCompilation();
@@ -50,6 +51,7 @@ namespace Westwind.AspnetCore.LiveReload.Web30
         {
             if (env.IsDevelopment())
             {
+                app.UseLiveReload();
                 app.UseDeveloperExceptionPage();
             }
             else
@@ -59,7 +61,7 @@ namespace Westwind.AspnetCore.LiveReload.Web30
                 app.UseHsts();
             }
             
-            app.UseLiveReload();
+            
 
             //app.UseHttpsRedirection();
             app.UseStaticFiles();

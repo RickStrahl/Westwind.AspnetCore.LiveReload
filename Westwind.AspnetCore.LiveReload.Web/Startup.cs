@@ -35,28 +35,26 @@ namespace Westwind.AspnetCore.LiveReload.Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            if (Env.IsDevelopment())
-            {
-               
-            }
-
+            
             services.AddLiveReload(config =>
             {
                 // optional - use config instead
                 //config.LiveReloadEnabled = true;
                 //config.FolderToMonitor = Env.ContentRootPath;
             });
+        
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime lifeTime)
+        public void Configure(IApplicationBuilder app, IApplicationLifetime lifeTime)
         {
-            
-
-            if (env.IsDevelopment())
+            if (Env.IsDevelopment())
             {
+                // Add live reload here
+                app.UseLiveReload();
+
                 app.UseDeveloperExceptionPage();
             }
             else
@@ -67,7 +65,6 @@ namespace Westwind.AspnetCore.LiveReload.Web
             }
 
 
-            app.UseLiveReload();
 
             //app.UseEndpointRouting();
 
@@ -81,10 +78,6 @@ namespace Westwind.AspnetCore.LiveReload.Web
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-
         }
-
-
-
     }
 }
