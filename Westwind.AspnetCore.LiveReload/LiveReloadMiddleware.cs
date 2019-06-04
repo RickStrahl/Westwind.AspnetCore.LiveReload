@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Westwind.AspnetCore.LiveReload;
 
 namespace Westwind.AspNetCore.LiveReload
 {
@@ -65,11 +66,13 @@ namespace Westwind.AspNetCore.LiveReload
             {
                 if (context.WebSockets.IsWebSocketRequest)
                 {
-                    var webSocket = await context.WebSockets.AcceptWebSocketAsync();
-                    if (!ActiveSockets.Contains(webSocket))
-                        ActiveSockets.Add(webSocket);
+                    using (var webSocket = await context.WebSockets.AcceptWebSocketAsync())
+                    {
+                        if (!ActiveSockets.Contains(webSocket))
+                            ActiveSockets.Add(webSocket);
 
-                    await WebSocketWaitLoop(webSocket); // this waits until done
+                        await WebSocketWaitLoop(webSocket); // this waits until done
+                    }
                 }
                 else
                 {
@@ -92,41 +95,10 @@ namespace Westwind.AspNetCore.LiveReload
         /// <returns></returns>
         private async Task HandleHtmlInjection(HttpContext context)
         {
-            // Inject Refresh JavaScript Into HTML content
-            var existingBody = context.Response.Body;
-
-            using (var newContent = new MemoryStream(2000))
+            using (var filteredResponse = new ResponseStreamWrapper(context.Response.Body, context))
             {
-                context.Response.Body = newContent;
-
+                context.Response.Body = filteredResponse;
                 await _next(context);
-
-                // Inject Script into HTML content
-                if (context.Response.StatusCode == 200 &&
-                    context.Response.ContentType != null &&
-                    context.Response.ContentType.Contains("text/html", StringComparison.InvariantCultureIgnoreCase) )
-
-                {
-                    string html = Encoding.UTF8.GetString(newContent.ToArray());
-                    html = InjectLiveReloadScript(html, context);
-
-                    context.Response.Body = existingBody;
-
-                    // have to send bytes so we can reset the content length properly
-                    // after we inject the script tag
-                    var bytes = Encoding.UTF8.GetBytes(html);
-                    context.Response.ContentLength = bytes.Length;
-
-                    // Send our modified content to the response body.
-                    await context.Response.Body.WriteAsync(bytes, 0, bytes.Length);
-                }
-                else
-                {
-                    // bypass - return raw output
-                    context.Response.Body = existingBody;
-                    if(newContent.Length >0)
-                        await context.Response.Body.WriteAsync(newContent.ToArray());
-                }
             }
         }
 
