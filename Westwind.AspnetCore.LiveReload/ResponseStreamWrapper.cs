@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Westwind.AspNetCore.LiveReload;
 
 namespace Westwind.AspnetCore.LiveReload
 {
@@ -27,6 +24,7 @@ namespace Westwind.AspnetCore.LiveReload
         }
 
         public override void Flush() => _baseStream.Flush();
+
         public override int Read(byte[] buffer, int offset, int count) => _baseStream.Read(buffer, offset, count);
 
         public override long Seek(long offset, SeekOrigin origin) => _baseStream.Seek(offset, origin);
@@ -46,24 +44,25 @@ namespace Westwind.AspnetCore.LiveReload
         {
             if (IsHtmlResponse())
             {
-                var newBuffer = WebsocketScriptInjectionHelper.InjectLiveReloadScript(buffer, offset, count, _context);
-                _baseStream.Write(newBuffer, offset, newBuffer.Length);
+                WebsocketScriptInjectionHelper.InjectLiveReloadScriptAsync(buffer, offset, count, _context, _baseStream);
             }
             else
                 _baseStream.Write(buffer, offset, count);
         }
 
-        public override async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        public override async Task WriteAsync(byte[] buffer, int offset, int count,
+                                              CancellationToken cancellationToken)
         {
             if (IsHtmlResponse())
             {
-                var newBuffer = WebsocketScriptInjectionHelper.InjectLiveReloadScript(buffer, offset, count, _context);
-                await _baseStream.WriteAsync(newBuffer, offset, newBuffer.Length, cancellationToken);
+                await WebsocketScriptInjectionHelper.InjectLiveReloadScriptAsync(
+                    buffer, offset, count,
+                    _context, _baseStream);
             }
             else
-                await _baseStream.WriteAsync(buffer, offset, count,cancellationToken);
+                await _baseStream.WriteAsync(buffer, offset, count, cancellationToken);
         }
-        
+
 
 
         private bool? _isHtmlResponse = null;

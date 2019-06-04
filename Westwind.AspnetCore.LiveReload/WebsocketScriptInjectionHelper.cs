@@ -19,8 +19,8 @@ namespace Westwind.AspnetCore.LiveReload
         private const string STR_WestWindMarker = "<!-- West Wind Live Reload -->";
         private const string STR_BodyMarker = "</body>";
 
-        private static readonly Memory<byte> _bodySpan = Encoding.UTF8.GetBytes(STR_BodyMarker);
-        private static Memory<byte> _markerSpan = Encoding.UTF8.GetBytes(STR_WestWindMarker);
+        private static readonly byte[] _bodyBytes = Encoding.UTF8.GetBytes(STR_BodyMarker);
+        private static readonly byte[] _markerBytes = Encoding.UTF8.GetBytes(STR_WestWindMarker);
 
 
         /// <summary>
@@ -47,34 +47,31 @@ namespace Westwind.AspnetCore.LiveReload
         /// </summary>
         /// <param name="buffer"></param>
         /// <param name="context"></param>
+        /// <param name="baseStream">The raw Response Stream</param>
         /// <returns></returns>
-        public static byte[] InjectLiveReloadScript(byte[] buffer, HttpContext context)
+        public static Task InjectLiveReloadScriptAsync(byte[] buffer, HttpContext context, Stream baseStream)
         {
             Span<byte> spanBuffer = buffer;
 
-            var index = spanBuffer.LastIndexOf(_markerSpan.ToArray());
+            var index = spanBuffer.LastIndexOf(_markerBytes);
             if (index > -1)
-                return buffer;
-
-            index = spanBuffer.LastIndexOf(_bodySpan.ToArray());
+                return baseStream.WriteAsync(buffer, 0, buffer.Length);
+            
+            index = spanBuffer.LastIndexOf(_bodyBytes.ToArray());
             if (index == -1)
-                return buffer;
+                return baseStream.WriteAsync(buffer, 0, buffer.Length);
 
-            var endIndex = index + _bodySpan.Length;
+            var endIndex = index + _bodyBytes.Length;
 
-            string script = GetWebSocketClientJavaScript(context);
-
-            Span<byte> scriptBytes = Encoding.UTF8.GetBytes(script);
-
-            using (var ms = new MemoryStream(buffer.Length + scriptBytes.Length))
-            {
-                ms.Write(buffer, 0, index - 1);
-                ms.Write(scriptBytes.ToArray(), 0, scriptBytes.Length);
-                ms.Write(buffer, endIndex, buffer.Length - endIndex);
-
-                return ms.ToArray();
-            }
+            return baseStream.WriteAsync(buffer, 0, index - 1)
+                .ContinueWith(tb =>
+                {
+                    byte[] scriptBytes = Encoding.UTF8.GetBytes(GetWebSocketClientJavaScript(context));
+                    return baseStream.WriteAsync(scriptBytes, 0, scriptBytes.Length);
+                })
+                .ContinueWith(tb => baseStream.WriteAsync(buffer, endIndex, buffer.Length - endIndex));
         }
+
 
         /// <summary>
         /// Adds Live Reload WebSocket script into the page before the body tag.
@@ -83,12 +80,13 @@ namespace Westwind.AspnetCore.LiveReload
         /// <param name="offset"></param>
         /// <param name="count"></param>
         /// <param name="context"></param>
+        /// <param name="baseStream">The raw Response Stream</param>
         /// <returns></returns>
-        public static byte[] InjectLiveReloadScript(byte[] buffer, int offset, int count, HttpContext context)
+        public static Task InjectLiveReloadScriptAsync(byte[] buffer, int offset, int count, HttpContext context, Stream baseStream)
         {
             Span<byte> currentBuffer = buffer;
             var curBuffer = currentBuffer.Slice(offset, count).ToArray();
-            return InjectLiveReloadScript(curBuffer, context);
+            return InjectLiveReloadScriptAsync(curBuffer, context, baseStream);
         }
 
 
