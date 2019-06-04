@@ -20,6 +20,7 @@ It works with:
 
 The Middleware is self-contained and has no external dependencies - there's nothing else to install or run. You should run `dotnet watch run` to automatically reload server side code to reload the server.  The middleware can then automatically refresh the browser. The extensions monitored for are configurable.
 
+For more detailed info than the base instructions here see this [detailed blog post with Implementation Details](https://weblog.west-wind.com/posts/2019/Jun/03/Building-Live-Reload-Middleware-for-ASPNET-Core).
 
 #### Minimum Requirements:
 
