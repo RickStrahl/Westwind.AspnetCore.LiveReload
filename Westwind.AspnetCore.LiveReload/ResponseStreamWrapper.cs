@@ -10,6 +10,10 @@ using Westwind.AspNetCore.LiveReload;
 
 namespace Westwind.AspnetCore.LiveReload
 {
+    /// <summary>
+    /// Wraps the Response Stream to inject the WebSocket HTML into 
+    /// an HTML Page.
+    /// </summary>
     public class ResponseStreamWrapper : Stream
     {
         private Stream _baseStream;
@@ -30,7 +34,6 @@ namespace Westwind.AspnetCore.LiveReload
         public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
             return _baseStream.ReadAsync(buffer, offset, count, cancellationToken);
-            //return base.ReadAsync(buffer, offset, count, cancellationToken);
         }
 
         public override void SetLength(long value)
@@ -43,11 +46,8 @@ namespace Westwind.AspnetCore.LiveReload
         {
             if (IsHtmlResponse())
             {
-                string html = Encoding.UTF8.GetString(buffer.ToArray());
-                html = LiveReloadMiddleware.InjectLiveReloadScript(html, _context);
-
-                var bytes = Encoding.UTF8.GetBytes(html);
-                _baseStream.Write(bytes, offset, bytes.Length);
+                var newBuffer = WebsocketScriptInjectionHelper.InjectLiveReloadScript(buffer, offset, count, _context);
+                _baseStream.Write(newBuffer, offset, newBuffer.Length);
             }
             else
                 _baseStream.Write(buffer, offset, count);
@@ -57,15 +57,14 @@ namespace Westwind.AspnetCore.LiveReload
         {
             if (IsHtmlResponse())
             {
-                string html = Encoding.UTF8.GetString(buffer.Skip(offset).Take(count).ToArray());
-                html = LiveReloadMiddleware.InjectLiveReloadScript(html, _context);
-
-                var bytes = Encoding.UTF8.GetBytes(html);
-                await _baseStream.WriteAsync(bytes, offset, bytes.Length, cancellationToken);
+                var newBuffer = WebsocketScriptInjectionHelper.InjectLiveReloadScript(buffer, offset, count, _context);
+                await _baseStream.WriteAsync(newBuffer, offset, newBuffer.Length, cancellationToken);
             }
             else
                 await _baseStream.WriteAsync(buffer, offset, count,cancellationToken);
         }
+        
+
 
         private bool? _isHtmlResponse = null;
         private bool IsHtmlResponse(bool forceReCheck = false)
@@ -97,6 +96,62 @@ namespace Westwind.AspnetCore.LiveReload
 
             base.Dispose(disposing);
         }
+
+
+        #region Byte Helpers
+        /// <summary>
+        /// Tries to find a
+        /// </summary>
+        /// <param name="buffer">byte array to be searched</param>
+        /// <param name="bufferToFind">byte to find</param>
+        /// <returns></returns>
+        public static int IndexOfByteArray(byte[] buffer, byte[] bufferToFind)
+        {
+            if (buffer.Length == 0 || bufferToFind.Length == 0)
+                return -1;
+
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                if (buffer[i] == bufferToFind[0])
+                {
+                    bool innerMatch = true;
+                    for (int j = 1; j < bufferToFind.Length; j++)
+                    {
+                        if (buffer[i + j] != bufferToFind[j])
+                        {
+                            innerMatch = false;
+                            break;
+                        }
+                    }
+                    if (innerMatch)
+                        return i;
+                }
+            }
+
+            return -1;
+        }
+
+        /// <summary>
+        /// Returns an index into a byte array to find a string in the byte array.
+        /// Exact match using the encoding provided or UTF-8 by default.
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="stringToFind"></param>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
+        public static int IndexOfByteArray(byte[] buffer, string stringToFind, Encoding encoding = null)
+        {
+            if (encoding == null)
+                encoding = Encoding.UTF8;
+
+            if (buffer.Length == 0 || string.IsNullOrEmpty(stringToFind))
+                return -1;
+
+            var bytes = encoding.GetBytes(stringToFind);
+
+            return IndexOfByteArray(buffer, bytes);
+        }
+        #endregion
 
         public override bool CanRead { get; }
         public override bool CanSeek { get; }

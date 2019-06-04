@@ -20,7 +20,7 @@ namespace Westwind.AspNetCore.LiveReload
         private readonly RequestDelegate _next;
         internal static HashSet<WebSocket> ActiveSockets = new HashSet<WebSocket>();
 
-       
+
         public LiveReloadMiddleware(RequestDelegate next)
         {
             _next = next;
@@ -86,108 +86,6 @@ namespace Westwind.AspNetCore.LiveReload
         }
 
 
-        /// <summary>
-        /// Inspects all non WebSocket content for HTML documents
-        /// and if it finds HTML injects the JavaScript needed to
-        /// refresh the browser via Web Sockets
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        private async Task HandleHtmlInjection(HttpContext context)
-        {
-            using (var filteredResponse = new ResponseStreamWrapper(context.Response.Body, context))
-            {
-                context.Response.Body = filteredResponse;
-                await _next(context);
-            }
-        }
-
-
-
-        /// <summary>
-        /// Injects WebSocket Refresh code into JavaScript document
-        /// just above the `</body>` tag.
-        /// </summary>
-        /// <param name="html"></param>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        public static string InjectLiveReloadScript(string html, HttpContext context)
-        {
-            var config = LiveReloadConfiguration.Current;
-
-            var host = context.Request.Host;
-            
-            if (html.Contains("<!-- West Wind Live Reload -->")) return html;
-
-            string hostString; 
-            if (!string.IsNullOrEmpty(config.WebSocketHost))
-                hostString = config.WebSocketHost + config.WebSocketUrl;
-            else
-            {
-                var prefix = context.Request.IsHttps? "wss" : "ws";
-                hostString = $"{prefix}://{host.Host}:{host.Port}" + config.WebSocketUrl;
-            }
-
-            string script = $@"
-<!-- West Wind Live Reload -->
-<script>
-(function() {{
-
-var retry = 0;
-var connection = tryConnect();
-
-function tryConnect(){{
-    try{{
-        var host = '{hostString}';
-        connection = new WebSocket(host); 
-    }}
-    catch(ex) {{ console.log(ex); retryConnection(); }}
-
-    if (!connection)
-       return null;
-
-    clearInterval(retry);
-
-    connection.onmessage = function(message) 
-    {{ 
-        if (message.data == 'DelayRefresh') {{
-                    alert('Live Reload Delayed Reload.');
-            setTimeout( function() {{ location.reload(true); }},{config.ServerRefreshTimeout});
-                }}
-        if (message.data == 'Refresh') 
-          location.reload(true); 
-    }}    
-    connection.onerror = function(event)  {{
-        console.log('Live Reload Socket error.', event);
-        retryConnection();
-    }}
-    connection.onclose = function(event) {{
-        console.log('Live Reload Socket closed.');
-        retryConnection();
-    }}
-
-    console.log('Live Reload socket connected.');
-    return connection;  
-}}
-function retryConnection() {{   
-   retry = setInterval(function() {{ 
-                console.log('Live Reload retrying connection.'); 
-                connection = tryConnect();  
-                if(connection) location.reload(true);                    
-            }},{config.ServerRefreshTimeout});
-}}
-
-}})();
-</script>
-<!-- End Live Reload -->
-
-</body>";
-
-            html = html.Replace("</body>", script);
-
-            return html;
-        }
-
 
         /// <summary>
         ///  Web Socket event loop. Just sits and waits
@@ -198,7 +96,6 @@ function retryConnection() {{
         private async Task WebSocketWaitLoop(WebSocket webSocket)
         {
             // File Watcher was started by Middleware extensions
-
             var buffer = new byte[1024];
             while (webSocket.State.HasFlag(WebSocketState.Open))
             {
@@ -238,6 +135,27 @@ function retryConnection() {{
                     WebSocketMessageType.Text,
                     true,
                     CancellationToken.None);
+            }
+        }
+
+
+        /// <summary>
+        /// Inspects all non WebSocket content for HTML documents
+        /// and if it finds HTML injects the JavaScript needed to
+        /// refresh the browser via Web Sockets.
+        ///
+        /// Uses a wrapper stream to wrap the response and examine
+        /// only text/html requests - other content is passed through
+        /// as is.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        private async Task HandleHtmlInjection(HttpContext context)
+        {
+            using (var filteredResponse = new ResponseStreamWrapper(context.Response.Body, context))
+            {
+                context.Response.Body = filteredResponse;
+                await _next(context);
             }
         }
     }

@@ -31,7 +31,6 @@ namespace Westwind.AspnetCore.LiveReload.Web30
                 options.CheckConsentNeeded = context => true;
             });
 
-
             services.AddLiveReload(config =>
             {
 
