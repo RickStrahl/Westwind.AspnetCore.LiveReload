@@ -57,7 +57,7 @@ namespace Westwind.AspnetCore.LiveReload
         {
             if (IsHtmlResponse())
             {
-                string html = Encoding.UTF8.GetString(buffer.Take(count).ToArray());
+                string html = Encoding.UTF8.GetString(buffer.Skip(offset).Take(count).ToArray());
                 html = LiveReloadMiddleware.InjectLiveReloadScript(html, _context);
 
                 var bytes = Encoding.UTF8.GetBytes(html);
