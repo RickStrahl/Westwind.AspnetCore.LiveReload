@@ -49,29 +49,33 @@ namespace Westwind.AspnetCore.LiveReload
         /// <param name="context"></param>
         /// <param name="baseStream">The raw Response Stream</param>
         /// <returns></returns>
-        public static Task InjectLiveReloadScriptAsync(byte[] buffer, HttpContext context, Stream baseStream)
+        public static async Task InjectLiveReloadScriptAsync(byte[] buffer, HttpContext context, Stream baseStream)
         {
-            Span<byte> spanBuffer = buffer;
+            var index = buffer.LastIndexOf(_markerBytes);
 
-            var index = spanBuffer.LastIndexOf(_markerBytes);
             if (index > -1)
-                return baseStream.WriteAsync(buffer, 0, buffer.Length);
-            
-            index = spanBuffer.LastIndexOf(_bodyBytes.ToArray());
+            {
+                await baseStream.WriteAsync(buffer, 0, buffer.Length);
+                return;
+            }
+
+            index = buffer.LastIndexOf(_bodyBytes);
             if (index == -1)
-                return baseStream.WriteAsync(buffer, 0, buffer.Length);
+            {
+                await baseStream.WriteAsync(buffer, 0, buffer.Length);
+                return;
+            }
 
             var endIndex = index + _bodyBytes.Length;
 
-            return baseStream.WriteAsync(buffer, 0, index - 1)
-                .ContinueWith(tb =>
-                {
-                    byte[] scriptBytes = Encoding.UTF8.GetBytes(GetWebSocketClientJavaScript(context));
-                    return baseStream.WriteAsync(scriptBytes, 0, scriptBytes.Length);
-                })
-                .ContinueWith(tb => baseStream.WriteAsync(buffer, endIndex, buffer.Length - endIndex));
+            await baseStream.WriteAsync(buffer, 0, index - 1);
+            var scriptBytes = Encoding.UTF8.GetBytes(GetWebSocketClientJavaScript(context));
+            await baseStream.WriteAsync(scriptBytes, 0, scriptBytes.Length);
+            await baseStream.WriteAsync(buffer, endIndex, buffer.Length - endIndex);
         }
 
+        static int LastIndexOf<T>(this T[] array, T[] sought) where T : IEquatable<T> =>
+            array.AsSpan().LastIndexOf(sought);
 
         /// <summary>
         /// Adds Live Reload WebSocket script into the page before the body tag.
