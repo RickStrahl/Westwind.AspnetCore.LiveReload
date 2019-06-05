@@ -11,6 +11,12 @@ You can install this middleware [from NuGet](https://www.nuget.org/packages/West
 PS> Install-Package WestWind.AspnetCore.LiveReload
 ```
 
+or via the .NET Core CLI:
+
+```bash
+dotnet add package Westwind.AspnetCore.LiveReload
+```
+
 It works with:
 
 * Client side static files  (HTML, CSS, JavaScript etc.)
