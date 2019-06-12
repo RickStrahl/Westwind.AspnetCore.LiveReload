@@ -51,6 +51,29 @@ namespace Westwind.AspNetCore.LiveReload
             await HandleHtmlInjection(context);
         }
 
+
+
+        /// <summary>
+        /// Inspects all non WebSocket content for HTML documents
+        /// and if it finds HTML injects the JavaScript needed to
+        /// refresh the browser via Web Sockets.
+        ///
+        /// Uses a wrapper stream to wrap the response and examine
+        /// only text/html requests - other content is passed through
+        /// as is.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        private async Task HandleHtmlInjection(HttpContext context)
+        {
+            using (var filteredResponse = new ResponseStreamWrapper(context.Response.Body, context))
+            {
+                context.Response.Body = filteredResponse;
+                await _next(context);
+            }
+        }
+
+
         /// <summary>
         /// Checks for WebService Requests and if it is routes it to the
         /// WebSocket handler event loop.
@@ -138,25 +161,5 @@ namespace Westwind.AspNetCore.LiveReload
             }
         }
 
-
-        /// <summary>
-        /// Inspects all non WebSocket content for HTML documents
-        /// and if it finds HTML injects the JavaScript needed to
-        /// refresh the browser via Web Sockets.
-        ///
-        /// Uses a wrapper stream to wrap the response and examine
-        /// only text/html requests - other content is passed through
-        /// as is.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        private async Task HandleHtmlInjection(HttpContext context)
-        {
-            using (var filteredResponse = new ResponseStreamWrapper(context.Response.Body, context))
-            {
-                context.Response.Body = filteredResponse;
-                await _next(context);
-            }
-        }
     }
 }
