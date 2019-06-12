@@ -106,7 +106,7 @@ And you can use these configuration settings:
     "ClientFileExtensions": ".cshtml,.css,.js,.htm,.html,.ts,.razor,.custom",
     "ServerRefreshTimeout": 3000,
     "WebSocketUrl": "/__livereload",
-    "WebSocketHost": "ws://localhost:5000"
+    "WebSocketHost": "ws://localhost:5000",
     "FolderToMonitor": "~/"
   }
 }
