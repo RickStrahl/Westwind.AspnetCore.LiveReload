@@ -50,11 +50,14 @@ namespace Westwind.AspnetCore.LiveReload.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IApplicationLifetime lifeTime)
         {
+            
+            app.UseLiveReload();   // for sample apply for everything - typically only for Development
+
             if (Env.IsDevelopment())
             {
-                // Add live reload here
-                app.UseLiveReload();
 
+                // add it here
+                //app.UseLiveReload();
                 app.UseDeveloperExceptionPage();
             }
             else

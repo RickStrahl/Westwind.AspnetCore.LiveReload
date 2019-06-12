@@ -68,6 +68,10 @@ namespace Westwind.AspnetCore.LiveReload
 
             var endIndex = index + _bodyBytes.Length;
 
+            // force contentlength to be calculated based on output
+            // necessary for static HTML which will set and have invalid value otherwise
+            context.Response.ContentLength = null;
+
             await baseStream.WriteAsync(buffer, 0, index - 1);
             var scriptBytes = Encoding.UTF8.GetBytes(GetWebSocketClientJavaScript(context));
             await baseStream.WriteAsync(scriptBytes, 0, scriptBytes.Length);
