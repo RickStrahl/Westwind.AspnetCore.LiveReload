@@ -44,7 +44,9 @@ namespace Westwind.AspnetCore.LiveReload
         {
             if (IsHtmlResponse())
             {
-                WebsocketScriptInjectionHelper.InjectLiveReloadScriptAsync(buffer, offset, count, _context, _baseStream);
+                WebsocketScriptInjectionHelper.InjectLiveReloadScriptAsync(buffer, offset, count, _context, _baseStream)
+                                              .GetAwaiter()
+                                              .GetResult();
             }
             else
                 _baseStream.Write(buffer, offset, count);
