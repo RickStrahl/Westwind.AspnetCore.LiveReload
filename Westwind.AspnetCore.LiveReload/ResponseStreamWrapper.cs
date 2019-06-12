@@ -80,6 +80,11 @@ namespace Westwind.AspnetCore.LiveReload
                 (_context.Response.ContentType.Contains("utf-8", StringComparison.InvariantCultureIgnoreCase) ||
                 !_context.Response.ContentType.Contains("charset=", StringComparison.InvariantCultureIgnoreCase));
 
+            // Make sure we force dynamic content type since we're
+            // rewriting the content - static content will set the header explicitly
+            // and fail when it doesn't match
+            if (_isHtmlResponse.Value)
+                _context.Response.ContentLength = null;
 
             return _isHtmlResponse.Value;
         }

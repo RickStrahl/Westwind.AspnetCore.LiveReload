@@ -252,3 +252,15 @@ Reload will not be quick because the Blazor client project **and** the .NET Core
 Obviously this is not ideal, but it's better than nothing. Live Reload works as it should but the underlying problem is that the actual content is not refreshing quickly enough to make this really viable.
 
 We can only hope Microsoft come up with a built-in solution to trigger the recompilation of the client project or better yet recompilation of a single view as it's changed. 
+
+
+## Change Log
+
+
+#### Version 0.1.5.2
+
+* **Fix bug with Static HTML Files Content Length**  
+Fix `Response.ContentLength` by setting to `null` to force contentlength be calculated. Static files set this value to a fixed length and when we re-write this breaks the length. Fixed.
+
+* **Update ASP.NET Core Packages to 2.1.1**  
+Updated all core dependencies to use patched 2.1.1. Stick with 
