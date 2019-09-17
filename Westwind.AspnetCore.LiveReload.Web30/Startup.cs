@@ -38,8 +38,8 @@ namespace Westwind.AspnetCore.LiveReload.Web30
 
 
             services.AddControllersWithViews()
-                .AddMvcOptions(opt => { opt.SerializerOptions.PropertyNameCaseInsensitive = true; });
-                //.AddNewtonsoftJson();
+                //.AddMvcOptions(opt => { opt.SerializerOptions.PropertyNameCaseInsensitive = true; });
+                .AddNewtonsoftJson();
 
            services.AddRazorPages().AddRazorRuntimeCompilation();
            services.AddMvc().AddRazorRuntimeCompilation();
@@ -59,7 +59,7 @@ namespace Westwind.AspnetCore.LiveReload.Web30
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            
+
             
 
             //app.UseHttpsRedirection();

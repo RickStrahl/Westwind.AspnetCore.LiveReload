@@ -78,7 +78,7 @@ services.AddLiveReload(config =>
 The `config` parameter is optional and it's actually recommended you set any values via configuration (see below). 
 
 > #### Enable ASP.NET Core 3.0 Runtime Razor View Compilation
-> **ASP.NET Core 3.0 by default doesn't compile Razor views at runtime**, so any changes to Razor Views and Pages will not auto-reload in 3.0, unless you explicitly enable it in `ConfigureServices()`:
+> **ASP.NET Core 3.0 by default doesn't compile Razor views at runtime**, so any changes to Razor Views and Pages will not auto-reload in 3.0. You need to add the `Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation` package, and explicitly enable runtime compilation in `ConfigureServices()`:
 > ```cs
 > services.AddRazorPages().AddRazorRuntimeCompilation();
 > services.AddMvc().AddRazorRuntimeCompilation();

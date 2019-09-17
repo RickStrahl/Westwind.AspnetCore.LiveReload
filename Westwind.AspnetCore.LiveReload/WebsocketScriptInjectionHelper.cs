@@ -70,6 +70,7 @@ namespace Westwind.AspnetCore.LiveReload
 
             await baseStream.WriteAsync(buffer, 0, index - 1);
             var scriptBytes = Encoding.UTF8.GetBytes(GetWebSocketClientJavaScript(context));
+
             await baseStream.WriteAsync(scriptBytes, 0, scriptBytes.Length);
             await baseStream.WriteAsync(buffer, endIndex, buffer.Length - endIndex);
         }
