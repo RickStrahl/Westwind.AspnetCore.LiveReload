@@ -77,7 +77,7 @@ LiveReloadServer  <options>
 Commandline options (optional):
 
 --WebRoot            <path>  (current Path if not provided)
---Port               5000*
+--Port               5200*
 --UseSsl             True*|False
 --LiveReloadEnabled  True*|False
 --RazorEnabled       True*|False

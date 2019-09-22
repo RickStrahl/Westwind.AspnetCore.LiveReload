@@ -3,12 +3,12 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
-    <Version>0.1.1</Version>
+    <Version>0.1</Version>
     <RazorCompileOnPublish>false</RazorCompileOnPublish>
 
     <Authors>Rick Strahl</Authors>
     <Company>West Wind Technolologies</Company>
-    <Product>Westiwnd.AspnetCore.LiveReload</Product>
+    <Product>Westwind.AspnetCore.LiveReload</Product>
     <Copyright>© Rick Strahl - West Wind Technologies, 2019</Copyright>
 
 
@@ -19,9 +19,6 @@
     <!-- standard but related -->
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-
-
-
     <Description>
       LiveReloadServer provides a generic Web Server for static files and loose Razor files in any local folder. Commandline options let you customize the path, port and a host of other options. Live Reload provides the ability to change static files and Razor files and automatically refresh the active page in the browser.
 
@@ -31,28 +28,17 @@
       * Loose Razor Pages (Page Code only)
       * Options to configure extensions to monitor, port, folder and more.
     </Description>
-    <PackageProjectUrl>https://github.com/RickStrahl/Westwind.HtmlPackager</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/RickStrahl/Westwind.HtmlPackager#License</PackageLicenseUrl>
-    <RepositoryUrl>https://github.com/RickStrahl/Westwind.HtmlPackager</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/tree/master/LiveReloadServer</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/blob/master/LICENSE.MD</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/tree/master/LiveReloadServer</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
-    <PackageTags>Westwind Html Package</PackageTags>
-    <PackageIconUrl>https://raw.githubusercontent.com/RickStrahl/Westwind.HtmlPackager/master/HtmlPackagerIcon.png</PackageIconUrl>
-
-    <PackAsTool>true</PackAsTool>
-    <ToolCommandName>htmlpackager</ToolCommandName>
-    <PackageOutputPath>./nupkg</PackageOutputPath>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-
-
+    <PackageTags>Westwind LiveReload Static WebServer DotnetTool</PackageTags>
+    <PackageIconUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/raw/master/icon.png</PackageIconUrl>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.0.0-rc1.19457.4" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Westwind.AspNetCore.LiveReload\Westwind.AspNetCore.LiveReload.csproj" />
+    <PackageReference Include="Westwind.AspNetCore.LiveReload" Version="0.1.5.4" />
   </ItemGroup>
 
   <ItemGroup>
@@ -60,6 +46,4 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
- 
 </Project>
