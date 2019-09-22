@@ -2,11 +2,20 @@
 
 This is a self-contained Web Server for serving static HTML and loose Razor files that automatically includes Live Reload functionality. 
 
-Change to a folder with Web files, and launch `LiveReloadServer` to serve files in that folder. You can make changes to static files and see the changes reflected.
+* Generic Static File Web Server you can launch in any folder
+* Also supports Razor Pages that don't have external dependencies
+* Automatic LiveReload functionality for change detection and browser refresh
+* Options to customize location, port, files checked etc.
 
-Live Reload Web Server for static and loose Razor files. Use it to host a local folder as a Web site and automatically refresh page content as content is changed. It's a quick and easy way to 'run' a local folder with Web content as a local Web site and make interactive changes to it.
+This Dotnet Tool is a generic local Web Server that you can start in **any folder** to provide simple and quick HTTP access. You can serve static resoures as well as loose Razor Pages as long as those Razor Pages don't require external dependencies.
 
-You can also use this 'generic' server behind a live Web Server by using installing the main project as a Web application.
+Live Reload is enabled by default and checks for changes to common static files as well as Razor pages. If a checked file is changed, the browser's current page is refreshed. 
+
+You can also use this 'generic' server behind a live Web Server by using installing the main project as a deployed Web application.
+
+### Requirements
+* .NET Core 3.0
+* Web Server that supports WebSockets (for LiveReload)
 
 ## Installation
 You can install this server as a .NET Tool using Dotnet SDK Tool installation:
