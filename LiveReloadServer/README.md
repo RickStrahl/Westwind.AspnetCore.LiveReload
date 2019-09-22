@@ -6,6 +6,7 @@ This is a self-contained Web Server for serving static HTML and loose Razor file
 * Also supports Razor Pages that don't have external dependencies
 * Automatic LiveReload functionality for change detection and browser refresh
 * Options to customize location, port, files checked etc.
+* Easily installed and updated with `dotnet tool -g install LiveReloadServer`
 
 This Dotnet Tool is a generic local Web Server that you can start in **any folder** to provide simple and quick HTTP access. You can serve static resoures as well as loose Razor Pages as long as those Razor Pages don't require external dependencies.
 
