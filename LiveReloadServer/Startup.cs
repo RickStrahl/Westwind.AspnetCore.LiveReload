@@ -133,9 +133,18 @@ namespace LiveReloadServer
 
             var url = $"http{(useSsl ? "s" : "")}://localhost:{Port}";
 
-            Console.WriteLine("Url: " + url);
-            Console.WriteLine($"Path: {WebRoot}");
-
+            Console.WriteLine("----------------------------------------------");
+            Console.WriteLine("Live Reload Server");
+            Console.WriteLine("----------------------------------------------");
+            Console.WriteLine($"(c) West Wind Technologies, 2018-{DateTime.Now.Year}\r\n");
+            Console.WriteLine($"Site Url   : {url}");
+            Console.WriteLine($"Site Path  : {WebRoot}");
+            Console.WriteLine($"Live Reload: {UseLiveReload}");
+            Console.WriteLine($"Use Razor  : {UseRazor}");
+            Console.WriteLine("\r\npress Ctrl-C or Ctrl-Break to exit...");
+            Console.WriteLine("'LiveReloadServer --help' for start options...");
+            Console.WriteLine("----------------------------------------------");
+            
             if (openBrowser)
                 OpenUrl(url);
         }

@@ -8,31 +8,44 @@ namespace LiveReloadServer
 {
     public class Program
     {
+        public static IHost WebHost;
 
-        /// <summary>
-        /// --webroot "c:\temp\htmlpages" - or default path
-        /// --port  6500
-        /// --useSsl yes
-        /// --defaultFiles "index.html"
-        /// --help
-        /// </summary>
-        /// <param name="args"></param>
         public static void Main(string[] args)
         {
-            var builder = CreateHostBuilder(args);
-            if (builder == null)
-                return;
+            try
+            {
+                var builder = CreateHostBuilder(args);
+                if (builder == null)
+                    return;
 
-            builder.Build().Run();
+                WebHost = builder.Build();
+                WebHost.Run();
+            }
+            catch (Exception ex)
+            {
+                Console.Clear();
+                Console.WriteLine("---------------------------------------------------------------------------");
+                Console.WriteLine("Live Reload Server");
+                Console.WriteLine("---------------------------------------------------------------------------");
+                Console.WriteLine("Unable to start the Web Server...");
+                Console.WriteLine("Most likely this means the port is already in use by another application.");
+                Console.WriteLine("Please try and choose another port with the `--port` switch. And try again.");
+                Console.WriteLine("\r\n\r\nException Info:");
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("---------------------------------------------------------------------------");
+            }
         }
+
 
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
+            // Custom Config
             var config = new ConfigurationBuilder()
                 .AddJsonFile("LiveReloadServer.json", optional: true)
                 .AddEnvironmentVariables("LiveReloadServer_")
                 .AddCommandLine(args)
                 .Build();
+
 
             if (args.Contains("--help", StringComparer.InvariantCultureIgnoreCase) ||
                 args.Contains("/h") || args.Contains("-h"))
@@ -104,5 +117,25 @@ LiveReload
 ");
         }
 
+
+        #region External Access
+
+        public static void Start(string[] args)
+        {
+            var builder = CreateHostBuilder(args);
+            if (builder == null)
+                return;
+
+            WebHost = builder.Build();
+            WebHost.Start();
+        }
+
+        public static void Stop()
+        {
+            WebHost.StopAsync().GetAwaiter().GetResult();
+        }
+        #endregion
     }
+
+
 }
