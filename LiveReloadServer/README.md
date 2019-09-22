@@ -94,5 +94,14 @@ LiveReload
 The Web Server automatically serves all static files and Live Reload is automatically enabled unless explicitly turned off. Making a change to any static file causes the current HTML page loaded in the browser to be reloaded.
 
 ## Razor Files
-You can also use 'loose Razor Files' in the designated folder, which means you can use `.cshtml` Razor Pages with this server. All of the base .NET Core and ASP.NET Core API are supported, but you currently **cannot load custom packages or assemblies**. This tooling is meant to allow you to create 'semi-dynamic' content that can do simple things displays dates, read cookies do simple calcs, but not meant to run a full business application.
+You can also use 'loose Razor Files' in the designated folder, which means you can use `.cshtml` Razor Pages with this server. 
+
+### Limitations
+However, Razor Pages served are limited to **self-contained single file Pages** as no code outside of a Page can be compiled, or even reference an exeternal package/assembly. Essentially you're limited to using just the built-in .NET Framework/Core ASP.NET features.
+
+The goal isn't to provide the full Razor Pages environment here, but just provide **slightly enhanced static page like behavior** for otherwise mostly static Web functionality.
+  
+Also keep in mind this is meant as a generic **local** server and although you can in theory be hosted on a Web site, the primary use case for this library is local hosting either for testing or for integration into local (desktop) applications that might require visual HTML content.
+
+More might be possible in this generic server, but currently that has not been explored. If that's of interest to you or you want to contribute, you can file an issue to discuss and explore the use cases and what might be possible. As it stands for now, Razor functionality is limiteed scenario.
 
