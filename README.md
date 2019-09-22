@@ -3,9 +3,17 @@
 [![NuGet](https://img.shields.io/nuget/v/Westwind.AspnetCore.LiveReload.svg)](https://www.nuget.org/packages/Westwind.AspnetCore.LiveReload/)
 ![](https://img.shields.io/nuget/dt/Westwind.AspnetCore.LiveReload.svg)
 
-This is a Live Reload Middleware component that monitors file changes in your project and automatically reloads the browser's active page when a change is detected.
+This project provides
 
-You can install this middleware [from NuGet](https://www.nuget.org/packages/Westwind.AspNetCore.LiveReload):
+* **Live Reload Middleware Component**  
+Add the middleware to an existing Web UI Project to provide Live Reload functionality that causes the active page to reload if a file is changed.
+
+* **Generic Static and Razor File  Web Server with Live Reload as a Dotnet Tool**  
+There's also a Dotnet Tool that provides a generic Static File and Razor Page Web Server with automatically enabled Live Reload functionality. Simply do `LiveReload` in folder with static HTML resources and you can serve the pages. Make changes and see the the changes reflected immediately. There's separate information in the [LiveReload Server](LiveReloadServer/README.md) project.
+
+## Middleware
+
+You can install the Live Reload middleware [from NuGet](https://www.nuget.org/packages/Westwind.AspNetCore.LiveReload):
 
 ```ps
 PS> Install-Package WestWind.AspnetCore.LiveReload

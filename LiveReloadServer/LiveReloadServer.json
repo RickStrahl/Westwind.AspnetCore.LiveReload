@@ -1,0 +1,23 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Warning",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Warning"
+    }
+  },
+  "xWebRoot": "C:\\projects2010\\Westwind.AspnetCore.LiveReload\\Westwind.AspnetCore.LiveReload.Web30\\wwwroot",
+  "WebRoot": null,
+  "Port": 5200,
+  "OpenBrowser": true,
+  "UseSsl": false,
+  "DefaultFiles": "index.html,default.htm,default.html",
+  "LiveReloadEnabled": true,
+  "RazorEnabled": true,
+  "LiveReload": {
+    "LiveReloadEnabled": true,
+    "ClientFileExtensions": ".cshtml,.css,.js,.htm,.html,.ts",
+    "ServerRefreshTimeout": 3000,
+    "WebSocketUrl": "/__livereload"
+  }
+}

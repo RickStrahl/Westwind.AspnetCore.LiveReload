@@ -17,6 +17,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Westwind.AspnetCore.LiveRel
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample Web Sites", "Sample Web Sites", "{2B5B0811-4169-4B72-891C-6D0563703332}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LiveReloadServer", "LiveReloadServer\LiveReloadServer.csproj", "{3409CB5D-77AE-4867-9135-A3DE2A134C4D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{50CAE1F5-AD9C-4A57-A729-4A4F9B8A8F97}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		LICENSE.MD = LICENSE.MD
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +44,10 @@ Global
 		{2D8F61A3-8CB3-4AA2-9AB1-578C85428ED0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D8F61A3-8CB3-4AA2-9AB1-578C85428ED0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D8F61A3-8CB3-4AA2-9AB1-578C85428ED0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3409CB5D-77AE-4867-9135-A3DE2A134C4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3409CB5D-77AE-4867-9135-A3DE2A134C4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3409CB5D-77AE-4867-9135-A3DE2A134C4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3409CB5D-77AE-4867-9135-A3DE2A134C4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
