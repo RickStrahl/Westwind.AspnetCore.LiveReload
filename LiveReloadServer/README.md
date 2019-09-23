@@ -3,6 +3,7 @@
 This is a self-contained Web Server for serving static HTML and loose Razor files that automatically includes Live Reload functionality. 
 
 * Generic Static File Web Server you can launch in any folder
+* Just start `LiveReloadServer` in a folder or specify `--webroot` folder
 * Also supports Razor Pages that don't have external dependencies
 * Automatic LiveReload functionality for change detection and browser refresh
 * Options to customize location, port, files checked etc.
