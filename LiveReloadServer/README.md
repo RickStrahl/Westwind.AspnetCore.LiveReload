@@ -15,8 +15,8 @@ Live Reload is enabled by default and checks for changes to common static files 
 You can also use this 'generic' server behind a live Web Server by using installing the main project as a deployed Web application.
 
 ### Requirements
-* .NET Core 3.0
-* Web Server that supports WebSockets (for LiveReload)
+* Dotnet Core SDK 3.0+
+* If optionally hosting requires a Web Server that supports WebSockets
 
 ## Installation
 You can install this server as a .NET Tool using Dotnet SDK Tool installation:
