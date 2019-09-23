@@ -29,8 +29,14 @@ dotnet install -g LiveReloadServer
 To use it, navigate to a folder that you want to serve HTTP files out of:
 
 ```ps
-# will serve files out of https://localhost:5200
+# will serve current folder files out of https://localhost:5200
 LiveReloadServer
+
+# specify a folder instead of current folder and a different port
+LiveReloadServer --webroot "c:/temp/My Local WebSite" --port 5350
+
+# Turn off Options - all options True by default
+LiveReloadServer --RazorEnabled False --LiveReloadEnabled False --OpenBrowser False
 ```
 
 ### Launching the Web Server
@@ -64,13 +70,13 @@ Commandline options (optional):
 --LiveReloadEnabled  True*|False
 --RazorEnabled       True*|False
 --OpenBrowser        True*|False
---DefaultFiles       ""index.html,default.htm,default.html""
+--DefaultFiles       "index.html,default.htm,default.html"
 
 Live Reload options:
 
---LiveReload.ClientFileExtensions   "".cshtml,.css,.js,.htm,.html,.ts""
+--LiveReload.ClientFileExtensions   ".cshtml,.css,.js,.htm,.html,.ts"
 --LiveReload ServerRefreshTimeout   3000,
---LiveReload.WebSocketUrl:          ""/__livereload""
+--LiveReload.WebSocketUrl:          "/__livereload"
 
 Configuration options can be specified in:
 
@@ -79,7 +85,7 @@ Configuration options can be specified in:
 
 Examples:
 ---------
-LiveReload --WebRoot ""c:\temp\My Site"" --port 5500 --useSsl false
+LiveReload --WebRoot "c:\temp\My Site" --port 5500 --useSsl false
 
 $env:LiveReload_Port 5500
 LiveReload
