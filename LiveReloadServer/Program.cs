@@ -96,7 +96,7 @@ Commandline options (optional):
 --Port               5200*
 --UseSsl             True|False*
 --LiveReloadEnabled  True*|False
---RazorEnabled       True*|False
+--ShowUrls           True|False*
 --OpenBrowser        True*|False
 --DefaultFiles       ""index.html,default.htm,default.html""
 

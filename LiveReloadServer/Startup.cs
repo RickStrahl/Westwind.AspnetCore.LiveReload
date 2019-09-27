@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
+
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -60,18 +60,18 @@ namespace LiveReloadServer
                 });
             }
 
-            if (UseRazor)
-            {
-                services.AddRazorPages(opt => { opt.RootDirectory = "/"; })
-                    .AddRazorRuntimeCompilation(
-                        opt =>
-                        {
-                            // This would be useful but it's READ-ONLY
-                            // opt.AdditionalReferencePaths = Path.Combine(WebRoot,"bin");
+            //if (UseRazor)
+            //{
+            //    services.AddRazorPages(opt => { opt.RootDirectory = "/"; })
+            //        .AddRazorRuntimeCompilation(
+            //            opt =>
+            //            {
+            //                // This would be useful but it's READ-ONLY
+            //                // opt.AdditionalReferencePaths = Path.Combine(WebRoot,"bin");
 
-                            opt.FileProviders.Add(new PhysicalFileProvider(WebRoot));
-                        });
-            }
+            //                opt.FileProviders.Add(new PhysicalFileProvider(WebRoot));
+            //            });
+            //}
         }
 
         
@@ -83,6 +83,12 @@ namespace LiveReloadServer
             var temp = Configuration["UseSsl"];
             if (temp.Equals("true",StringComparison.InvariantCultureIgnoreCase))
                 useSsl = true;
+
+            bool showUrls = false;
+            temp = Configuration["ShowUrls"];
+            if (temp.Equals("true", StringComparison.InvariantCultureIgnoreCase))
+                showUrls = true;
+
 
             bool openBrowser = true;
             temp = Configuration["OpenBrowser"];
@@ -96,7 +102,9 @@ namespace LiveReloadServer
             var strPort = Configuration["Port"];
             if (!int.TryParse(strPort, out Port))
                 Port = 5000;
+
             
+
             env.ContentRootPath = WebRoot;
             env.WebRootPath = WebRoot;
 
@@ -114,6 +122,16 @@ namespace LiveReloadServer
                 app.UseExceptionHandler("/Error");
             }
 
+            if (showUrls)
+            {
+                app.Use(async (context, next) =>
+                {
+                    var url = $"{context.Request.Scheme}://{context.Request.Host}  {context.Request.Path}{context.Request.QueryString}";
+                    Console.WriteLine(url);
+                    await next();
+                });
+            }
+
             app.UseDefaultFiles(new DefaultFilesOptions
             {
                 FileProvider = new PhysicalFileProvider(WebRoot),
@@ -126,11 +144,12 @@ namespace LiveReloadServer
                 RequestPath = new PathString("")
             });
 
-            if (UseRazor)
-            {
-                app.UseRouting();
-                app.UseEndpoints(endpoints => { endpoints.MapRazorPages(); });
-            }
+
+            //if (UseRazor)
+            //{
+            //    app.UseRouting();
+            //    app.UseEndpoints(endpoints => { endpoints.MapRazorPages(); });
+            //}
 
             var url = $"http{(useSsl ? "s" : "")}://localhost:{Port}";
 
@@ -141,7 +160,7 @@ namespace LiveReloadServer
             Console.WriteLine($"Site Url   : {url}");
             Console.WriteLine($"Site Path  : {WebRoot}");
             Console.WriteLine($"Live Reload: {UseLiveReload}");
-            Console.WriteLine($"Use Razor  : {UseRazor}");
+            //Console.WriteLine($"Use Razor  : {UseRazor}");
             Console.WriteLine("\r\npress Ctrl-C or Ctrl-Break to exit...");
             Console.WriteLine("'LiveReloadServer --help' for start options...");
             Console.WriteLine("----------------------------------------------");
