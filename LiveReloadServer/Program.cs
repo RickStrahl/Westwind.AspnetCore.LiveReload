@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -8,12 +9,18 @@ namespace LiveReloadServer
 {
     public class Program
     {
+
         public static IHost WebHost;
+        public static string AppHeader;
 
         public static void Main(string[] args)
         {
             try
             {
+                var version = Assembly.GetExecutingAssembly().GetName().Version;
+                var ver = version.Major + "." + version.Minor + (version.Build > 0 ? "." + version.Build : string.Empty);
+                AppHeader = $"Live Reload Server v{ver}";
+
                 var builder = CreateHostBuilder(args);
                 if (builder == null)
                     return;
@@ -25,7 +32,7 @@ namespace LiveReloadServer
             {
                 Console.Clear();
                 Console.WriteLine("---------------------------------------------------------------------------");
-                Console.WriteLine("Live Reload Server");
+                Console.WriteLine($"AppHeader");
                 Console.WriteLine("---------------------------------------------------------------------------");
                 Console.WriteLine("Unable to start the Web Server...");
                 Console.WriteLine("Most likely this means the port is already in use by another application.");
@@ -79,9 +86,16 @@ namespace LiveReloadServer
 
         static void ShowHelp()
         {
-            Console.WriteLine(@"
-Live Reload Server
-------------------
+
+            string razorFlag = null;
+#if USE_RAZORPAGES
+            razorFlag = "\r\n--RazorEnabled       True | False";
+#endif
+            
+            Console.WriteLine($@"
+---------------------------
+Live Reload Server v{AppHeader}
+---------------------------
 (c) Rick Strahl, West Wind Technologies, 2019
 
 Static and Razor File Service with Live Reload for changed content.
@@ -95,7 +109,7 @@ Commandline options (optional):
 --WebRoot            <path>  (current Path if not provided)
 --Port               5200*
 --UseSsl             True|False*
---LiveReloadEnabled  True*|False
+--LiveReloadEnabled  True*|False{razorFlag}
 --ShowUrls           True|False*
 --OpenBrowser        True*|False
 --DefaultFiles       ""index.html,default.htm,default.html""
@@ -121,7 +135,7 @@ LiveReload
         }
 
 
-        #region External Access
+#region External Access
 
         public static void Start(string[] args)
         {
@@ -137,7 +151,7 @@ LiveReload
         {
             WebHost.StopAsync().GetAwaiter().GetResult();
         }
-        #endregion
+#endregion
     }
 
 

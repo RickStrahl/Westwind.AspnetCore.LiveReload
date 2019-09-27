@@ -40,10 +40,10 @@ namespace LiveReloadServer
             var lrEnabled = Configuration["LiveReloadEnabled"];
             UseLiveReload = string.IsNullOrEmpty(lrEnabled) ||
                             !lrEnabled.Equals("false", StringComparison.InvariantCultureIgnoreCase);
+
             var razEnabled = Configuration["RazorEnabled"];
             UseRazor = string.IsNullOrEmpty(razEnabled) ||
                        !razEnabled.Equals("false", StringComparison.InvariantCultureIgnoreCase);
-            
 
             WebRoot = Configuration["WebRoot"];
             if (string.IsNullOrEmpty(WebRoot))
@@ -60,18 +60,21 @@ namespace LiveReloadServer
                 });
             }
 
-            //if (UseRazor)
-            //{
-            //    services.AddRazorPages(opt => { opt.RootDirectory = "/"; })
-            //        .AddRazorRuntimeCompilation(
-            //            opt =>
-            //            {
-            //                // This would be useful but it's READ-ONLY
-            //                // opt.AdditionalReferencePaths = Path.Combine(WebRoot,"bin");
 
-            //                opt.FileProviders.Add(new PhysicalFileProvider(WebRoot));
-            //            });
-            //}
+#if USE_RAZORPAGES
+            if (UseRazor)
+            {
+                services.AddRazorPages(opt => { opt.RootDirectory = "/"; })
+                    .AddRazorRuntimeCompilation(
+                        opt =>
+                        {
+                            // This would be useful but it's READ-ONLY
+                            // opt.AdditionalReferencePaths = Path.Combine(WebRoot,"bin");
+
+                            opt.FileProviders.Add(new PhysicalFileProvider(WebRoot));
+                        });
+            }
+#endif
         }
 
         
@@ -144,23 +147,25 @@ namespace LiveReloadServer
                 RequestPath = new PathString("")
             });
 
-
-            //if (UseRazor)
-            //{
-            //    app.UseRouting();
-            //    app.UseEndpoints(endpoints => { endpoints.MapRazorPages(); });
-            //}
-
+#if USE_RAZORPAGES
+            if (UseRazor)
+            {
+                app.UseRouting();
+                app.UseEndpoints(endpoints => { endpoints.MapRazorPages(); });
+            }
+#endif
             var url = $"http{(useSsl ? "s" : "")}://localhost:{Port}";
 
             Console.WriteLine("----------------------------------------------");
-            Console.WriteLine("Live Reload Server");
+            Console.WriteLine($"{Program.AppHeader}");
             Console.WriteLine("----------------------------------------------");
             Console.WriteLine($"(c) West Wind Technologies, 2018-{DateTime.Now.Year}\r\n");
             Console.WriteLine($"Site Url   : {url}");
             Console.WriteLine($"Site Path  : {WebRoot}");
             Console.WriteLine($"Live Reload: {UseLiveReload}");
-            //Console.WriteLine($"Use Razor  : {UseRazor}");
+#if USE_RAZORPAGES
+            Console.WriteLine($"Use Razor  : {UseRazor}");
+#endif
             Console.WriteLine("\r\npress Ctrl-C or Ctrl-Break to exit...");
             Console.WriteLine("'LiveReloadServer --help' for start options...");
             Console.WriteLine("----------------------------------------------");

@@ -17,7 +17,7 @@
     },
     "LiveReloadServer": {
       "commandName": "Project",
-      "commandLineArgs": "--UseSsl True --WebRoot c:\\webconnectionprojects\\testproject1\\web --port 5310",
+      "commandLineArgs": "--UseSsl True --WebRoot c:\\webconnectionprojects\\testproject1\\web --port 5310 --ShowUrls True --RazorEnabled True",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
