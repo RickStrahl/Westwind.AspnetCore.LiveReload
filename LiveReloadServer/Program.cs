@@ -37,6 +37,9 @@ namespace LiveReloadServer
         }
 
 
+
+
+
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
             // Custom Config
@@ -61,7 +64,7 @@ namespace LiveReloadServer
                         .UseConfiguration(config);
 
                     string sport = config["Port"];
-                    bool useSsl = string.IsNullOrEmpty(config["UseSsl"]);
+                    bool useSsl = config["UseSsl"].Equals("true",StringComparison.InvariantCultureIgnoreCase);
                     int.TryParse(sport, out int port);
                     if (port == 0)
                         port = 5000;
@@ -91,7 +94,7 @@ Commandline options (optional):
 
 --WebRoot            <path>  (current Path if not provided)
 --Port               5200*
---UseSsl             True*|False
+--UseSsl             True|False*
 --LiveReloadEnabled  True*|False
 --RazorEnabled       True*|False
 --OpenBrowser        True*|False
@@ -101,7 +104,7 @@ Live Reload options:
 
 --LiveReload.ClientFileExtensions   "".cshtml,.css,.js,.htm,.html,.ts""
 --LiveReload ServerRefreshTimeout   3000,
---LiveReload.WebSocketUrl:          ""/__livereload""
+--LiveReload.WebSocketUrl           ""/__livereload""
 
 Configuration options can be specified in:
 

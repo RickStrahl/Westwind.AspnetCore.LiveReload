@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Westwind.AspNetCore.LiveReload;
 
+
 namespace LiveReloadServer
 {
     public class Startup
@@ -78,14 +79,14 @@ namespace LiveReloadServer
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            bool useSsl = true;
+            bool useSsl = false;
             var temp = Configuration["UseSsl"];
-            if (temp == "False")
-                useSsl = false;
+            if (temp.Equals("true",StringComparison.InvariantCultureIgnoreCase))
+                useSsl = true;
 
             bool openBrowser = true;
             temp = Configuration["OpenBrowser"];
-            if (temp == "False")
+            if (temp.Equals("false",StringComparison.InvariantCultureIgnoreCase))
                 openBrowser = true;
 
             string defaultFiles = Configuration["DefaultFiles"];
