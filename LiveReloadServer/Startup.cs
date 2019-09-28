@@ -37,14 +37,9 @@ namespace LiveReloadServer
         public void ConfigureServices(IServiceCollection services)
         {
             // Get Configuration Settings
-            var lrEnabled = Configuration["LiveReloadEnabled"];
-            UseLiveReload = string.IsNullOrEmpty(lrEnabled) ||
-                            !lrEnabled.Equals("false", StringComparison.InvariantCultureIgnoreCase);
-
-            var razEnabled = Configuration["RazorEnabled"];
-            UseRazor = string.IsNullOrEmpty(razEnabled) ||
-                       !razEnabled.Equals("false", StringComparison.InvariantCultureIgnoreCase);
-
+            UseLiveReload = GetLogicalSetting("LiveReloadEnabled");
+            UseRazor = GetLogicalSetting("RazorEnabled");
+            
             WebRoot = Configuration["WebRoot"];
             if (string.IsNullOrEmpty(WebRoot))
                 WebRoot = Environment.CurrentDirectory;
@@ -70,7 +65,6 @@ namespace LiveReloadServer
                         {
                             // This would be useful but it's READ-ONLY
                             // opt.AdditionalReferencePaths = Path.Combine(WebRoot,"bin");
-
                             opt.FileProviders.Add(new PhysicalFileProvider(WebRoot));
                         });
             }
@@ -80,99 +74,76 @@ namespace LiveReloadServer
         
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+public void Configure(IApplicationBuilder app, Microsoft.AspNetCore.Hosting.IWebHostEnvironment env)
+{
+    bool useSsl = GetLogicalSetting("useSsl");
+    bool showUrls = GetLogicalSetting("ShowUrls");
+    bool openBrowser = GetLogicalSetting("OpenBrowser");
+    
+    string defaultFiles = Configuration["DefaultFiles"];
+    if (string.IsNullOrEmpty(defaultFiles))
+        defaultFiles = "index.html,default.htm,default.html";
+
+    var strPort = Configuration["Port"];
+    if (!int.TryParse(strPort, out Port))
+        Port = 5000;
+
+    if (UseLiveReload)
+        app.UseLiveReload();
+
+    if (env.IsDevelopment())
+        app.UseDeveloperExceptionPage();
+    else
+        app.UseExceptionHandler("/Error");
+
+    if (showUrls)
+    {
+        app.Use(async (context, next) =>
         {
-            bool useSsl = false;
-            var temp = Configuration["UseSsl"];
-            if (temp.Equals("true",StringComparison.InvariantCultureIgnoreCase))
-                useSsl = true;
+            var url = $"{context.Request.Scheme}://{context.Request.Host}  {context.Request.Path}{context.Request.QueryString}";
+            Console.WriteLine(url);
+            await next();
+        });
+    }
 
-            bool showUrls = false;
-            temp = Configuration["ShowUrls"];
-            if (temp.Equals("true", StringComparison.InvariantCultureIgnoreCase))
-                showUrls = true;
+    app.UseDefaultFiles(new DefaultFilesOptions
+    {
+        FileProvider = new PhysicalFileProvider(WebRoot),
+        DefaultFileNames = new List<string>(defaultFiles.Split(',',';'))
+    });
 
-
-            bool openBrowser = true;
-            temp = Configuration["OpenBrowser"];
-            if (temp.Equals("false",StringComparison.InvariantCultureIgnoreCase))
-                openBrowser = true;
-
-            string defaultFiles = Configuration["DefaultFiles"];
-            if (string.IsNullOrEmpty(defaultFiles))
-                defaultFiles = "index.html,default.htm,default.html";
-
-            var strPort = Configuration["Port"];
-            if (!int.TryParse(strPort, out Port))
-                Port = 5000;
-
-            
-
-            env.ContentRootPath = WebRoot;
-            env.WebRootPath = WebRoot;
-
-            if (UseLiveReload)
-            {
-                app.UseLiveReload();
-            }
-
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-            }
-
-            if (showUrls)
-            {
-                app.Use(async (context, next) =>
-                {
-                    var url = $"{context.Request.Scheme}://{context.Request.Host}  {context.Request.Path}{context.Request.QueryString}";
-                    Console.WriteLine(url);
-                    await next();
-                });
-            }
-
-            app.UseDefaultFiles(new DefaultFilesOptions
-            {
-                FileProvider = new PhysicalFileProvider(WebRoot),
-                DefaultFileNames = new List<string>(defaultFiles.Split(',',';'))
-            });
-
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(WebRoot),
-                RequestPath = new PathString("")
-            });
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(WebRoot),
+        RequestPath = new PathString("")
+    });
 
 #if USE_RAZORPAGES
-            if (UseRazor)
-            {
-                app.UseRouting();
-                app.UseEndpoints(endpoints => { endpoints.MapRazorPages(); });
-            }
+    if (UseRazor)
+    {
+        app.UseRouting();
+        app.UseEndpoints(endpoints => { endpoints.MapRazorPages(); });
+    }
 #endif
-            var url = $"http{(useSsl ? "s" : "")}://localhost:{Port}";
+    var url = $"http{(useSsl ? "s" : "")}://localhost:{Port}";
 
-            Console.WriteLine("----------------------------------------------");
-            Console.WriteLine($"{Program.AppHeader}");
-            Console.WriteLine("----------------------------------------------");
-            Console.WriteLine($"(c) West Wind Technologies, 2018-{DateTime.Now.Year}\r\n");
-            Console.WriteLine($"Site Url   : {url}");
-            Console.WriteLine($"Site Path  : {WebRoot}");
-            Console.WriteLine($"Live Reload: {UseLiveReload}");
+    Console.WriteLine("----------------------------------------------");
+    Console.WriteLine($"{Program.AppHeader}");
+    Console.WriteLine("----------------------------------------------");
+    Console.WriteLine($"(c) West Wind Technologies, 2018-{DateTime.Now.Year}\r\n");
+    Console.WriteLine($"Site Url   : {url}");
+    Console.WriteLine($"Site Path  : {WebRoot}");
+    Console.WriteLine($"Live Reload: {UseLiveReload}");
 #if USE_RAZORPAGES
-            Console.WriteLine($"Use Razor  : {UseRazor}");
+    Console.WriteLine($"Use Razor  : {UseRazor}");
 #endif
-            Console.WriteLine("\r\npress Ctrl-C or Ctrl-Break to exit...");
-            Console.WriteLine("'LiveReloadServer --help' for start options...");
-            Console.WriteLine("----------------------------------------------");
-            
-            if (openBrowser)
-                OpenUrl(url);
-        }
+    Console.WriteLine("\r\npress Ctrl-C or Ctrl-Break to exit...");
+    Console.WriteLine("'LiveReloadServer --help' for start options...");
+    Console.WriteLine("----------------------------------------------");
+    
+    if (openBrowser)
+        OpenUrl(url);
+}
 
         public static void OpenUrl(string url)
         {
@@ -203,6 +174,16 @@ namespace LiveReloadServer
 
             }
 
+        }
+
+        bool GetLogicalSetting(string key)
+        {
+            bool resultValue = false;
+            var temp = Configuration[key];
+            if (temp.Equals("true", StringComparison.InvariantCultureIgnoreCase))
+                resultValue = true;
+
+            return resultValue;
         }
     }
 }
