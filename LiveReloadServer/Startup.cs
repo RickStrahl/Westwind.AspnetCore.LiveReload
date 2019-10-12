@@ -100,7 +100,7 @@ public void Configure(IApplicationBuilder app, Microsoft.AspNetCore.Hosting.IWeb
     {
         app.Use(async (context, next) =>
         {
-            var url = $"{context.Request.Scheme}://{context.Request.Host}  {context.Request.Path}{context.Request.QueryString}";
+            var url = $"{context.Request.Method}  {context.Request.Scheme}://{context.Request.Host}  {context.Request.Path}{context.Request.QueryString}";
             Console.WriteLine(url);
             await next();
         });
@@ -127,9 +127,10 @@ public void Configure(IApplicationBuilder app, Microsoft.AspNetCore.Hosting.IWeb
 #endif
     var url = $"http{(useSsl ? "s" : "")}://localhost:{Port}";
 
-    Console.WriteLine("----------------------------------------------");
-    Console.WriteLine($"{Program.AppHeader}");
-    Console.WriteLine("----------------------------------------------");
+    string headerLine = new string('-', Program.AppHeader.Length);
+    Console.WriteLine(headerLine);
+    Console.WriteLine(Program.AppHeader);
+    Console.WriteLine(headerLine);
     Console.WriteLine($"(c) West Wind Technologies, 2018-{DateTime.Now.Year}\r\n");
     Console.WriteLine($"Site Url   : {url}");
     Console.WriteLine($"Site Path  : {WebRoot}");
@@ -178,12 +179,25 @@ public void Configure(IApplicationBuilder app, Microsoft.AspNetCore.Hosting.IWeb
 
         bool GetLogicalSetting(string key)
         {
-            bool resultValue = false;
+            bool? resultValue = null;
             var temp = Configuration[key];
-            if (temp.Equals("true", StringComparison.InvariantCultureIgnoreCase))
-                resultValue = true;
 
-            return resultValue;
+            if(temp != null)
+            {
+                if (temp.Equals("true", StringComparison.InvariantCultureIgnoreCase))
+                    resultValue = true;
+                if (temp.Equals("false", StringComparison.InvariantCultureIgnoreCase))
+                    resultValue = false;
+            }
+            else
+            {
+                if (Environment.CommandLine.Contains($"--{key}", StringComparison.InvariantCultureIgnoreCase))
+                    resultValue = true;
+                else
+                    resultValue = false;
+            }
+
+            return resultValue.Value;
         }
     }
 }

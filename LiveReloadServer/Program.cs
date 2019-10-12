@@ -18,7 +18,8 @@ namespace LiveReloadServer
             try
             {
                 var version = Assembly.GetExecutingAssembly().GetName().Version;
-                var ver = version.Major + "." + version.Minor + (version.Build > 0 ? "." + version.Build : string.Empty);
+                var ver = version.Major + "." + version.Minor +
+                          (version.Build > 0 ? "." + version.Build : string.Empty);
                 AppHeader = $"Live Reload Server v{ver}";
 
                 var builder = CreateHostBuilder(args);
@@ -30,15 +31,23 @@ namespace LiveReloadServer
             }
             catch (Exception ex)
             {
-                Console.Clear();
-                Console.WriteLine("---------------------------------------------------------------------------");
-                Console.WriteLine($"AppHeader");
-                Console.WriteLine("---------------------------------------------------------------------------");
+                // can't catch internal type
+                if (ex.StackTrace.Contains("ThrowOperationCanceledException"))
+                    return;
+
+                string headerLine = new string('-', AppHeader.Length);
+                //Console.Clear();
+                Console.WriteLine(headerLine);
+                Console.WriteLine(AppHeader);
+                Console.WriteLine(headerLine);
                 Console.WriteLine("Unable to start the Web Server...");
                 Console.WriteLine("Most likely this means the port is already in use by another application.");
                 Console.WriteLine("Please try and choose another port with the `--port` switch. And try again.");
                 Console.WriteLine("\r\n\r\nException Info:");
                 Console.WriteLine(ex.Message);
+                Console.WriteLine("---");
+                Console.WriteLine(ex.StackTrace);
+                Console.WriteLine(ex.Source);
                 Console.WriteLine("---------------------------------------------------------------------------");
             }
         }
@@ -67,11 +76,18 @@ namespace LiveReloadServer
             return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    var webRoot = config["WebRoot"];
+                    if (!string.IsNullOrEmpty(webRoot))
+                        webBuilder.UseWebRoot(webRoot);
+
                     webBuilder
                         .UseConfiguration(config);
 
+                    
+                    string tSsl = config["UseSsl"];
+                    bool useSsl = !string.IsNullOrEmpty(tSsl) && tSsl.Equals("true", StringComparison.InvariantCultureIgnoreCase);
+
                     string sport = config["Port"];
-                    bool useSsl = config["UseSsl"].Equals("true",StringComparison.InvariantCultureIgnoreCase);
                     int.TryParse(sport, out int port);
                     if (port == 0)
                         port = 5000;
@@ -89,13 +105,15 @@ namespace LiveReloadServer
 
             string razorFlag = null;
 #if USE_RAZORPAGES
-            razorFlag = "\r\n--RazorEnabled       True | False";
+            razorFlag = "\r\n--RazorEnabled       True|False";
 #endif
-            
+
+            string headerLine = new string('-',AppHeader.Length);
+
             Console.WriteLine($@"
----------------------------
-Live Reload Server v{AppHeader}
----------------------------
+{headerLine}
+{AppHeader}
+{headerLine}
 (c) Rick Strahl, West Wind Technologies, 2019
 
 Static and Razor File Service with Live Reload for changed content.
