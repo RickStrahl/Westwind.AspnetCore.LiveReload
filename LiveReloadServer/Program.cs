@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Hosting;
@@ -15,12 +16,12 @@ namespace LiveReloadServer
 
         public static void Main(string[] args)
         {
-            try
+             try
             {
                 var version = Assembly.GetExecutingAssembly().GetName().Version;
                 var ver = version.Major + "." + version.Minor +
                           (version.Build > 0 ? "." + version.Build : string.Empty);
-                AppHeader = $"Live Reload Server v{ver}";
+                AppHeader = $"Live Reload Web Server v{ver}";
 
                 var builder = CreateHostBuilder(args);
                 if (builder == null)
@@ -29,6 +30,20 @@ namespace LiveReloadServer
                 WebHost = builder.Build();
                 WebHost.Run();
             }
+            catch (IOException ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("\r\nUnable to start the Web Server");
+                Console.ResetColor();
+                Console.WriteLine("------------------------------");
+                
+                
+                Console.WriteLine("The server port is already in use by another application.");
+                Console.WriteLine("Please try and choose another port with the `--port` switch. And try again.");
+                Console.WriteLine("\r\n\r\nException Info:");
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("---------------------------------------------------------------------------");
+            }
             catch (Exception ex)
             {
                 // can't catch internal type
@@ -36,13 +51,17 @@ namespace LiveReloadServer
                     return;
 
                 string headerLine = new string('-', AppHeader.Length);
-                //Console.Clear();
                 Console.WriteLine(headerLine);
                 Console.WriteLine(AppHeader);
                 Console.WriteLine(headerLine);
-                Console.WriteLine("Unable to start the Web Server...");
-                Console.WriteLine("Most likely this means the port is already in use by another application.");
-                Console.WriteLine("Please try and choose another port with the `--port` switch. And try again.");
+
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("\r\nYikes. That wasn't supposed to happen. Something went wrong!");
+                Console.WriteLine();
+                Console.ResetColor();
+
+                Console.WriteLine("The Live Reload Server has run into a problem and has stopped working.");
+                Console.WriteLine("Here's some more information...");
                 Console.WriteLine("\r\n\r\nException Info:");
                 Console.WriteLine(ex.Message);
                 Console.WriteLine("---");
@@ -51,9 +70,6 @@ namespace LiveReloadServer
                 Console.WriteLine("---------------------------------------------------------------------------");
             }
         }
-
-
-
 
 
         public static IHostBuilder CreateHostBuilder(string[] args)
@@ -83,9 +99,7 @@ namespace LiveReloadServer
                     webBuilder
                         .UseConfiguration(config);
 
-                    
-                    string tSsl = config["UseSsl"];
-                    bool useSsl = !string.IsNullOrEmpty(tSsl) && tSsl.Equals("true", StringComparison.InvariantCultureIgnoreCase);
+                    bool useSsl = StartupHelpers.GetLogicalSetting("UseSsl", config);
 
                     string sport = config["Port"];
                     int.TryParse(sport, out int port);
@@ -104,11 +118,13 @@ namespace LiveReloadServer
         {
 
             string razorFlag = null;
+            bool useRazor = false;
 #if USE_RAZORPAGES
-            razorFlag = "\r\n--RazorEnabled       True|False";
+            razorFlag = "\r\n--UseRazor         True|False*";
+            useRazor = true;
 #endif
 
-            string headerLine = new string('-',AppHeader.Length);
+            string headerLine = new string('-', AppHeader.Length);
 
             Console.WriteLine($@"
 {headerLine}
@@ -122,32 +138,28 @@ Syntax:
 -------
 LiveReloadServer  <options>
 
-Commandline options (optional):
-
 --WebRoot            <path>  (current Path if not provided)
 --Port               5200*
---UseSsl             True|False*
---LiveReloadEnabled  True*|False{razorFlag}
+--UseSsl             True|False*{razorFlag}
 --ShowUrls           True|False*
 --OpenBrowser        True*|False
---DefaultFiles       ""index.html,default.htm,default.html""
-
-Live Reload options:
-
---LiveReload.ClientFileExtensions   "".cshtml,.css,.js,.htm,.html,.ts""
---LiveReload ServerRefreshTimeout   3000,
---LiveReload.WebSocketUrl           ""/__livereload""
+--DefaultFiles       ""index.html,default.htm""*
+--Extensions         Live Reload Extensions monitored
+                     ""{(useRazor ? ".cshtml," : "")}.css,.js,.htm,.html,.ts""*
 
 Configuration options can be specified in:
 
-* Environment Variables with a `LiveReloadServer` prefix. Example: 'LiveReloadServer_Port'
 * Command Line options as shown above
+* Logical Command Line Flags for true can be set with -UseSsl or -UseRazor
+* Environment Variables with `LiveReloadServer_` prefix. Example: 'LiveReloadServer_Port'
+* You use -UseSsl without True or False to set a logical value to true
 
 Examples:
 ---------
-LiveReload --WebRoot ""c:\temp\My Site"" --port 5500 --useSsl false
+LiveReload --WebRoot ""c:\temp\My Site"" --port 5500 -useSsl -useRazor --openBrowser false
 
-$env:LiveReload_Port 5500
+$env:LiveReloadServer_Port 5500
+$env:LiveReloadServer_WebRoot c:\mySites\Site1\Web
 LiveReload
 ");
         }

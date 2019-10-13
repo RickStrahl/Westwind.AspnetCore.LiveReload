@@ -24,21 +24,20 @@ namespace LiveReloadServer
         private string WebRoot;
         private int Port = 0;
         public bool UseLiveReload = true;
-        private bool UseRazor = true;
+        private bool UseRazor = false;
 
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
-
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             // Get Configuration Settings
-            UseLiveReload = GetLogicalSetting("LiveReloadEnabled");
-            UseRazor = GetLogicalSetting("RazorEnabled");
+            UseLiveReload = StartupHelpers.GetLogicalSetting("LiveReloadEnabled",Configuration);
+            UseRazor = StartupHelpers.GetLogicalSetting("UseRazor",Configuration);
             
             WebRoot = Configuration["WebRoot"];
             if (string.IsNullOrEmpty(WebRoot))
@@ -52,6 +51,10 @@ namespace LiveReloadServer
                 {
                     opt.FolderToMonitor = WebRoot;
                     opt.LiveReloadEnabled = UseLiveReload;
+
+                    var extensions = Configuration["Extensions"];
+                    if (!string.IsNullOrEmpty(extensions))
+                        opt.ClientFileExtensions = extensions;
                 });
             }
 
@@ -76,9 +79,9 @@ namespace LiveReloadServer
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 public void Configure(IApplicationBuilder app, Microsoft.AspNetCore.Hosting.IWebHostEnvironment env)
 {
-    bool useSsl = GetLogicalSetting("useSsl");
-    bool showUrls = GetLogicalSetting("ShowUrls");
-    bool openBrowser = GetLogicalSetting("OpenBrowser");
+    bool useSsl = StartupHelpers.GetLogicalSetting("useSsl",Configuration);
+    bool showUrls = StartupHelpers.GetLogicalSetting("ShowUrls",Configuration);
+    bool openBrowser = StartupHelpers.GetLogicalSetting("OpenBrowser",Configuration);
     
     string defaultFiles = Configuration["DefaultFiles"];
     if (string.IsNullOrEmpty(defaultFiles))
@@ -126,78 +129,38 @@ public void Configure(IApplicationBuilder app, Microsoft.AspNetCore.Hosting.IWeb
     }
 #endif
     var url = $"http{(useSsl ? "s" : "")}://localhost:{Port}";
+    var extensions = Configuration["Extensions"];
 
-    string headerLine = new string('-', Program.AppHeader.Length);
+            string headerLine = new string('-', Program.AppHeader.Length);
     Console.WriteLine(headerLine);
     Console.WriteLine(Program.AppHeader);
     Console.WriteLine(headerLine);
     Console.WriteLine($"(c) West Wind Technologies, 2018-{DateTime.Now.Year}\r\n");
-    Console.WriteLine($"Site Url   : {url}");
-    Console.WriteLine($"Site Path  : {WebRoot}");
-    Console.WriteLine($"Live Reload: {UseLiveReload}");
+    Console.Write($"Site Url     : ");
+    Console.ForegroundColor = ConsoleColor.Green;
+    Console.WriteLine(url);
+    Console.ResetColor();
+    Console.WriteLine($"Web Root     : {WebRoot}");
+    Console.WriteLine($"Extensions   : {(string.IsNullOrEmpty(extensions) ? $"{(UseRazor ? ".cshtml," : "")},.css,.js,.htm,.html,.ts" : extensions)}");
+    Console.WriteLine($"Live Reload  : {UseLiveReload}");
+    
 #if USE_RAZORPAGES
-    Console.WriteLine($"Use Razor  : {UseRazor}");
+            Console.WriteLine($"Use Razor    : {UseRazor}");
 #endif
-    Console.WriteLine("\r\npress Ctrl-C or Ctrl-Break to exit...");
+    Console.WriteLine($"Show Urls    : {showUrls}");
+    Console.WriteLine($"Open Browser : {openBrowser}");
+    Console.WriteLine($"Default Pages: {defaultFiles}");
+    
+    Console.WriteLine();
     Console.WriteLine("'LiveReloadServer --help' for start options...");
+    Console.WriteLine();
+    Console.WriteLine("Ctrl-C or Ctrl-Break to exit...");
+    
     Console.WriteLine("----------------------------------------------");
     
     if (openBrowser)
-        OpenUrl(url);
+        StartupHelpers.OpenUrl(url);
 }
 
-        public static void OpenUrl(string url)
-        {
-            try
-            {
-                Process.Start(url);
-            }
-            catch
-            {
-                // hack because of this: https://github.com/dotnet/corefx/issues/10361
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
-                    url = url.Replace("&", "^&");
-                    Process.Start(new ProcessStartInfo("cmd", $"/c start {url}") {CreateNoWindow = true});
-                }
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                {
-                    Process.Start("xdg-open", url);
-                }
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-                {
-                    Process.Start("open", url);
-                }
-                else
-                {
-                    throw;
-                }
-
-            }
-
-        }
-
-        bool GetLogicalSetting(string key)
-        {
-            bool? resultValue = null;
-            var temp = Configuration[key];
-
-            if(temp != null)
-            {
-                if (temp.Equals("true", StringComparison.InvariantCultureIgnoreCase))
-                    resultValue = true;
-                if (temp.Equals("false", StringComparison.InvariantCultureIgnoreCase))
-                    resultValue = false;
-            }
-            else
-            {
-                if (Environment.CommandLine.Contains($"--{key}", StringComparison.InvariantCultureIgnoreCase))
-                    resultValue = true;
-                else
-                    resultValue = false;
-            }
-
-            return resultValue.Value;
-        }
     }
 }

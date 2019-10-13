@@ -33,10 +33,10 @@ To use it, navigate to a folder that you want to serve HTTP files out of:
 LiveReloadServer
 
 # specify a folder instead of current folder and a different port
-LiveReloadServer --webroot "c:/temp/My Local WebSite" --port 5350 --UseSsl True
+LiveReloadServer --webroot "c:/temp/My Local WebSite" --port 5350 -UseSsl
 
 # Customize some options
-LiveReloadServer --LiveReloadEnabled False --OpenBrowser False --UseSsl True --RazorEnabled True
+LiveReloadServer --LiveReloadEnabled False --OpenBrowser False -UseSsl -UseRazor
 ```
 
 ### Launching the Web Server
@@ -120,7 +120,7 @@ Some things you can do that are useful:
 All these things use intrinsic built in features which while limited to generic functionality are still very useful for simple scripting scenarios.
 
 ### Razor Limitations
-Razor Pages served are limited to **self-contained single file Pages** as no code outside of a Page can be compiled at runtime, or even reference an exeternal package/assembly that isn't installed in the actually server's start folder.
+Razor Pages served are limited to **self-contained single file Pages** as no code outside of a Page can be compiled at runtime, or even reference an external package/assembly that isn't installed in the actually server's start folder.
 
 **Essentially you're limited to using just the built-in .NET Framework/Core ASP.NET features.**
 
