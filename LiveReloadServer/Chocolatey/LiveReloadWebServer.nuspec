@@ -6,10 +6,10 @@
         <title>West Wind HTML Packager</title>
         <authors>Rick Strahl,West Wind Technologies</authors>
         <owners>West Wind Technologies</owners>
-        <licenseUrl>https://github.com/RickStrahl/Westwind.HtmlPackager#license</licenseUrl>
-        <projectUrl>https://github.com/RickStrahl/Westwind.HtmlPackager</projectUrl>
-        <projectSourceUrl>https://github.com/RickStrahl/Westwind.HtmlPackager</projectSourceUrl>
-        <docsUrl>https://github.com/RickStrahl/Westwind.HtmlPackager#standalone-htmlpackager-application-windows</docsUrl>
+        <licenseUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/tree/master/LICENSE.MD</licenseUrl>
+        <projectUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/tree/master/LiveReloadServer</projectUrl>
+        <projectSourceUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/tree/master/LiveReloadServer</projectSourceUrl>
+        <docsUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/tree/master/LiveReloadServer</docsUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>
 Live Reload Web Server is a small, local, static file Web Server that has built-in Live Reload functionality. It's great quick access development server you can use to fire up a Web server in an arbitrary folder on your machine. For development Live Reload detects changes to static files like HTML, CSS, JavaScript etc. and automatically reloads the Web browser's currently active page without running a full build process like WebPack, Browserify etc. Just point at a folder and shoot!
@@ -23,7 +23,7 @@ Live Reload Web Server is a small, local, static file Web Server that has built-
 * Configurable ports, TLS usage, extensions and more
 
 		</description>
-		<iconUrl>https://raw.githubusercontent.com/RickStrahl/Westwind.HtmlPackager/master/HtmlPackagerIcon.png</iconUrl>
+		<iconUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/raw/master/icon.png</iconUrl>
         <summary>Small utility used to package HTML content into a self contained HTML document both as a single file, or a folder with all dependencies copied to local.</summary>
         <releaseNotes></releaseNotes>
         <copyright>West Wind Technologies, 2018</copyright>
