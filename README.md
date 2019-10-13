@@ -9,10 +9,9 @@ This project provides
 Add the middleware to an existing Web UI Project to provide Live Reload functionality that causes the active page to reload if a file is changed.
 
 * **[Generic Static and Razor File  Web Server with Live Reload as a Dotnet Tool](LiveReloadServer%2FREADME.md)**  
-There's also a Dotnet Tool that provides a generic Static File and Razor Page Web Server with automatically enabled Live Reload functionality. Simply do `LiveReload` in folder with static HTML resources and you can serve the pages. Make changes and see the the changes reflected immediately. There's separate information in the [LiveReload Server](LiveReloadServer/README.md) project.
+There's also a [Dotnet Tool](https://www.nuget.org/packages/LiveReloadServer/) and [Chocolatey Package](https://chocolatey.org/packages/LiveReloadWebServer) that provide a generic Static File and Razor Page Web Server with automatically enabled Live Reload functionality. Simply do `LiveReload` in folder with static HTML resources and you can serve the pages. Make changes and see the the changes reflected immediately. There's separate information in the [LiveReload Server](LiveReloadServer/README.md) project.
 
 ## Middleware
-
 You can install the Live Reload middleware [from NuGet](https://www.nuget.org/packages/Westwind.AspNetCore.LiveReload):
 
 ```ps
