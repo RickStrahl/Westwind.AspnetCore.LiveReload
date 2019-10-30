@@ -13,7 +13,7 @@
   "DefaultFiles": "index.html,default.htm,default.html",
   "LiveReloadEnabled": true,
   "RazorEnabled":  false, 
-  "ShowUrls":  false, 
+  "ShowUrls":  true, 
   "LiveReload": {
     "LiveReloadEnabled": true,
     "ClientFileExtensions": ".cshtml,.css,.js,.htm,.html,.ts",

@@ -23,6 +23,14 @@ namespace LiveReloadServer
                           (version.Build > 0 ? "." + version.Build : string.Empty);
                 AppHeader = $"Live Reload Web Server v{ver}";
 
+
+                if (args.Contains("--help", StringComparer.InvariantCultureIgnoreCase) ||
+                    args.Contains("/h") || args.Contains("-h"))
+                {
+                    ShowHelp();
+                    return;
+                }
+
                 var builder = CreateHostBuilder(args);
                 if (builder == null)
                     return;
@@ -74,38 +82,33 @@ namespace LiveReloadServer
 
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
-            // Custom Config
-            var config = new ConfigurationBuilder()
-                .AddJsonFile("LiveReloadServer.json", optional: true)
-                .AddEnvironmentVariables("LiveReloadServer_")
-                .AddCommandLine(args)
-                .Build();
-
-
-            if (args.Contains("--help", StringComparer.InvariantCultureIgnoreCase) ||
-                args.Contains("/h") || args.Contains("-h"))
-            {
-                ShowHelp();
-                return null;
-            }
+            
 
             return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    var webRoot = config["WebRoot"];
-                    if (!string.IsNullOrEmpty(webRoot))
-                        webBuilder.UseWebRoot(webRoot);
+                    // Custom Config
+                    var config = new ConfigurationBuilder()
+                        .AddJsonFile("LiveReloadServer.json", optional: true)
+                        .AddEnvironmentVariables("LIVERELOADSERVER_")
+                        .AddCommandLine(args)
+                        .Build();
+
 
                     webBuilder
                         .UseConfiguration(config);
 
-                    bool useSsl = StartupHelpers.GetLogicalSetting("UseSsl", config);
+                    var webRoot = config["WebRoot"];
+                    if (!string.IsNullOrEmpty(webRoot))
+                        webBuilder.UseWebRoot(webRoot);
+
 
                     string sport = config["Port"];
                     int.TryParse(sport, out int port);
                     if (port == 0)
                         port = 5000;
 
+                    bool useSsl = StartupHelpers.GetLogicalSetting("UseSsl", config);
                     webBuilder.UseUrls($"http{(useSsl ? "s" : "")}://0.0.0.0:{port}");
 
                     webBuilder

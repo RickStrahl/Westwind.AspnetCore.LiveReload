@@ -25,5 +25,10 @@ namespace Westwind.AspnetCore.LiveReload.Web30.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        public IActionResult Redirect()
+        {
+            return RedirectToAction(nameof(Privacy));
+        }
     }
 }

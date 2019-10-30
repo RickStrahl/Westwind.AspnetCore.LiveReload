@@ -21,6 +21,7 @@ namespace Westwind.AspNetCore.LiveReload
             Watcher.NotifyFilter = NotifyFilters.LastWrite
                                    | NotifyFilters.FileName
                                    | NotifyFilters.DirectoryName;
+                               
 
 
             Watcher.Changed += Watcher_Changed;
