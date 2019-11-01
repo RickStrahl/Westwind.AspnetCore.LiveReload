@@ -26,7 +26,7 @@ $filetext = @"
 `$packageName = 'LiveReloadWebServer'
 `$url = 'https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/raw/$version/LiveReloadServer/LiveReloadWebServer.exe'
 `$toolsDir = '$(Split-Path -parent $MyInvocation.MyCommand.Definition)'
-Get-ChocolateyWebFile -PackageName $packageName -FileFullPath '`$toolsDir\LiveReloadWebServer.exe' -Url $url
+Get-ChocolateyWebFile -PackageName `$packageName -FileFullPath '`$toolsDir\LiveReloadWebServer.exe' -Url `$url
 "@
 out-file -filepath .\tools\chocolateyInstal.ps1 -inputobject $filetext
 
