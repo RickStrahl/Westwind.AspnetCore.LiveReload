@@ -28,6 +28,8 @@ $filetext = @"
 `$toolsDir = '$(Split-Path -parent $MyInvocation.MyCommand.Definition)'
 Get-ChocolateyWebFile -PackageName $packageName -FileFullPath '`$toolsDir\LiveReloadWebServer.exe' -Url $url
 "@
+out-file -filepath .\tools\chocolateyInstal.ps1 -inputobject $filetext
+
 
 # Write out new NuSpec file with Version
 $chocoNuspec = ".\LiveReloadWebServer.template.nuspec"
@@ -37,11 +39,11 @@ $content = $content.Replace("{{version}}",$version)
 out-file -filepath $chocoNuSpec.Replace(".template","")  -inputobject $content -Encoding utf8
 
 # Commit  current changes and add a tag
-git add -f "LiveReloadServer/LiveReloadWebServer.exe"
+git add --all
 
 git tag --delete $version
 git push --delete origin $version 
 git tag $version
 
-git commit -m "$version"
-git push origin master
+git commit -m "$version" 
+git push origin master --tags
