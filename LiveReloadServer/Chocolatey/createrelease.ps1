@@ -28,7 +28,7 @@ $filetext = @"
 `$toolsDir = '$(Split-Path -parent $MyInvocation.MyCommand.Definition)'
 Get-ChocolateyWebFile -PackageName `$packageName -FileFullPath ""`$toolsDir\LiveReloadWebServer.exe"" -Url `$url
 "@
-out-file -filepath .\tools\chocolateyInstal.ps1 -inputobject $filetext
+out-file -filepath .\tools\chocolateyInstall.ps1 -inputobject $filetext
 
 
 # Write out new NuSpec file with Version
