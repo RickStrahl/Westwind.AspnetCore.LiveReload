@@ -263,10 +263,18 @@ We can only hope Microsoft come up with a built-in solution to trigger the recom
 
 ## Change Log
 
+#### Version 1.7
+
+* **Add explicit support for .NET Core 3.0**  
+Add a .NET Core 3.0 target to the NuGet package, to minimize package resolution issues.
+
+* **Add LiveReloadWebServer Chocolatey Package**  
+Add support for a deployed fully self-contained [Chocolatey Package](https://chocolatey.org/packages/LiveReloadWebServer).
+
 #### Version 0.1.5.4
 
 * **[Add new standalone LiveReloadServer Dotnet Tool](LiveReloadServe/README.md)**  
-Added a new generic live reload server that's used that can be used to serve generic static HTML content and loose Razor Pages out of a folder. It's basically a standalone static Web Server which by default has Live Reload enabled. Although meant as a local server/tool, it can also be used like any other ASP.NET Core application and run behind a Web server like IIS or nginx.
+Added a new generic live reload server that's used that can be used to serve generic static HTML content and loose Razor Pages out of a folder. It's basically a standalone static Web Server which by default has Live Reload enabled. Although meant as a local server/tool, it can also be used like any other ASP.NET Core application and run behind a Web server like IIS or NGINX.
 
 * **Fix issues with .NET Core 3.0**  
 Fixed various compatibility issues related to API changes in .NET Core 3.0. Library now works with .NET Core 3.0.

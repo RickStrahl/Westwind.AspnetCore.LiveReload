@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 
 namespace Westwind.AspNetCore.LiveReload

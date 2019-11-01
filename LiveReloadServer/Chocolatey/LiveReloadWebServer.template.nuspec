@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>LiveReloadWebServer</id>
+        <version>{{version}}</version>
+        <title>Live Reload Local Web Server for Windows</title>
+        <authors>Rick Strahl,West Wind Technologies</authors>
+        <owners>West Wind Technologies</owners>
+        <licenseUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/tree/master/LICENSE.MD</licenseUrl>
+        <projectUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/tree/master/LiveReloadServer</projectUrl>
+        <projectSourceUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/tree/master/LiveReloadServer</projectSourceUrl>
+        <docsUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/tree/master/LiveReloadServer</docsUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>
+Live Reload Web Server is a small, local, static file Web Server that has built-in Live Reload functionality. It's great quick access development server you can use to fire up a Web server in an arbitrary folder on your machine. For development Live Reload detects changes to static files like HTML, CSS, JavaScript etc. and automatically reloads the Web browser's currently active page without running a full build process like WebPack, Browserify etc. Just point at a folder and shoot!
+
+* Run a Web site out of any local folder
+* Built-in Web Browser Live Reload for static resource changes
+* Supports HTTPS
+* Self-contained single file Server
+* Customize extensions to monitor
+* Auto-launch browser
+* Configurable ports, TLS usage, extensions and more
+        </description>
+        <iconUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/raw/master/icon.png</iconUrl>
+        <summary>A self-contained local static Web Server for Windows that includes Live Reload functionality for automatic browser refresh on changes of static resources.</summary>
+        <releaseNotes></releaseNotes>
+        <copyright>West Wind Technologies, 2019</copyright>
+        <tags>web-server live-reload web development</tags>
+    </metadata>
+    <files>
+        <file src="tools\**" target="tools" />
+    </files>
+</package>
