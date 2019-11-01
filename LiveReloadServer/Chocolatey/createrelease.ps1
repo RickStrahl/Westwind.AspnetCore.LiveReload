@@ -14,6 +14,7 @@ $version = $version.Trim().Replace(".0","")
 # Commit it and add a tag
 git commit ..\LiveReloadWebServer.exe
 git push --delete origin $version 
+git --delete $version
 git tag $version
 git push origin master
 
