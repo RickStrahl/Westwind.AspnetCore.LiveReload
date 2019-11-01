@@ -11,13 +11,8 @@ cd "$PSScriptRoot"
 Remove-Item *.nupkg
 
 # Create .nupkg from .nuspec
-choco pack
+choco pack LiveReloadWebServer.nuspec
 
 choco uninstall "LiveReloadWebServer" -f
 
 choco install "LiveReloadWebServer" -fd  -y -s ".\"
-
-
-#choco push
-remove-item .\tools\LiveReloadWebServer.exe
-remove-item .\tools\LiveReloadServer.json
