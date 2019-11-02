@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <DefineConstants>USE_RAZORPAGES</DefineConstants>
+    <!--<DefineConstants>USE_RAZORPAGES</DefineConstants>-->
     <!--<DefineConstants>BUILD_PACKAGE;</DefineConstants>-->
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

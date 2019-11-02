@@ -1,32 +1,36 @@
-# Major version
-$release = "v0.1.5" 
 $releaseFile = "$PSScriptRoot\..\LiveReloadWebServer.exe"
+$releaseZip = "$PSScriptRoot\..\LiveReloadWebServer.zip"
 
-$version = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($releaseFile).FileVersion
-"Raw version: " + $version
-$version = $version.Trim().Replace(".0","") 
-"Writing Version File for: " + $version
+$rawVersion = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($releaseFile).FileVersion
 
-# Sign the exe
-#.\signtool.exe sign /v /n "West Wind Technologies" /sm  /tr "http://timestamp.digicert.com" /td SHA256 /fd SHA256 "..\LiveReloadWebServer.exe"
+$version = $rawVersion.Trim().Replace(".0","") 
+"Writing Version File for: $version ($rawVersion)"
+
+$downloadUrl = "https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/raw/$version/LiveReloadServer/LiveReloadWebServer.zip"
+
+# Create Zip file
+7z a -tzip $releaseZip $releaseFile "..\LiveReloadServer.json" 
 
 # Write out Verification.txt
-$sha = get-filehash -path "..\LiveReloadWebServer.exe" -Algorithm SHA256  | select -ExpandProperty "Hash"
+$sha = get-filehash -path $releaseZip -Algorithm SHA256  | select -ExpandProperty "Hash"
 write-host $sha
 
 $filetext = @"
 VERIFICATION
-LiveReloadWebServer.exe
+LiveReloadWebServer.zip
 SHA256: $sha
-URL   : https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/raw/$version/LiveReloadServer/LiveReloadWebServer.exe
+URL   : $downloadUrl
 "@
 out-file -filepath .\tools\Verification.txt -inputobject $filetext
 
 $filetext = @"
 `$packageName = 'LiveReloadWebServer'
-`$url = 'https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/raw/$version/LiveReloadServer/LiveReloadWebServer.exe'
-`$toolsDir = '$(Split-Path -parent $MyInvocation.MyCommand.Definition)'
-Get-ChocolateyWebFile -PackageName `$packageName -FileFullPath "`$toolsDir\LiveReloadWebServer.exe" -Url `$url
+`$url = "$downloadUrl"
+`$drop = "`$(Split-Path -Parent `$MyInvocation.MyCommand.Definition)"
+Write-Host `$drop 
+Write-Host `$url
+Write-Host `$packageName
+Install-ChocolateyZipPackage -PackageName `$packageName -Url `$url -UnzipLocation `$drop
 "@
 out-file -filepath .\tools\chocolateyInstall.ps1 -inputobject $filetext
 

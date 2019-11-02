@@ -17,9 +17,12 @@
 # to cut the size of the exe in half.
 
 remove-item ./LiveReloadWebServer.exe
-remove-item ./SingleFileExe/*.*
+remove-item ./SingleFileExe -Recurse -Force
 
 dotnet publish -c Release /p:PublishSingleFile=true /p:PublishTrimmed=true -r win-x64 --output SingleFileExe
 
 Move-Item ./SingleFileExe/LiveReloadServer.exe ./LiveReloadWebServer.exe -force
-remove-item ./SingleFileExe/*.*
+remove-item ./SingleFileExe -Recurse -Force
+
+# Sign exe
+.\Chocolatey\signtool.exe sign /v /n "West Wind Technologies" /sm  /tr "http://timestamp.digicert.com" /td SHA256 /fd SHA256 ".\LiveReloadWebServer.exe"
