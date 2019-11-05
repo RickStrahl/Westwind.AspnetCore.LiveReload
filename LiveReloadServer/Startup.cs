@@ -64,18 +64,18 @@ namespace LiveReloadServer
 
 
 #if USE_RAZORPAGES
-if (UseRazor)
-{
-    services.AddRazorPages(opt => { opt.RootDirectory = "/"; })
-        .AddRazorRuntimeCompilation(
-            opt =>
+            if (UseRazor)
             {
-                
-                opt.FileProviders.Add(new PhysicalFileProvider(WebRoot));
-                LoadPrivateBinAssemblies(opt);
-            });
+                services.AddRazorPages(opt => { opt.RootDirectory = "/"; })
+                    .AddRazorRuntimeCompilation(
+                        opt =>
+                        {
 
-}
+                            opt.FileProviders.Add(new PhysicalFileProvider(WebRoot));
+                            LoadPrivateBinAssemblies(opt);
+                        });
+
+            }
 #endif
         }
 
@@ -165,31 +165,21 @@ if (UseRazor)
 
             Console.WriteLine("----------------------------------------------");
 
+            var oldColor = Console.ForegroundColor;
+            foreach (var assmbly in LoadedPrivateAssemblies)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("Additional Assembly: " + assmbly);
+            }
+            foreach (var assmbly in FailedPrivateAssemblies)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Failed Additional Assembly: " + assmbly);
+            }
+            Console.ForegroundColor = oldColor;
+
             if (openBrowser)
                 StartupHelpers.OpenUrl(url);
-
-            //LoadPrivateBinAssemblies();
-            ////var list = AppDomain.CurrentDomain.GetAssemblies();
-            //var list = AssemblyLoadContext.Default.Assemblies;
-
-            //try
-            //{
-            //    //var a = list.FirstOrDefault(a => a.FullName.Contains("Markdig"));
-            //    //var t1 = a.GetType("Markdig.Markdown", true); // works
-            //    //var t2 = Type.GetType("Markdig.Markdown, Markdig", true); // fails even if type is referenced by project!
-            //    ////var t3 = Type.GetType("Markdig.Markdown", true); // fails even if type is referenced by project!
-
-
-            //    var md = GetTypeFromName("Westwind.AspNetCore.Markdown.Markdown");
-            //    md.InvokeMember("Parse", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Static, null,
-            //        null, new object[] { "**asdasd**", false, false, false });
-            //}
-            //catch (Exception ex)
-            //{
-
-            //}
-
-
         }
 
         public static Type GetTypeFromName(string TypeName)
@@ -211,43 +201,37 @@ if (UseRazor)
             return type;
         }
 
+        private List<string> LoadedPrivateAssemblies = new List<string>();
+        private List<string> FailedPrivateAssemblies = new List<string>();
+
         private void LoadPrivateBinAssemblies(MvcRazorRuntimeCompilationOptions opt)
+{
+    var binPath = Path.Combine(WebRoot, "privatebin");
+    if (Directory.Exists(binPath))
+    {
+        var files = Directory.GetFiles(binPath);
+        foreach (var file in files)
         {
-            var binPath = Path.Combine(WebRoot, "PrivateBin");
-            if (Directory.Exists(binPath))
+            if (!file.EndsWith(".dll", StringComparison.CurrentCultureIgnoreCase) &&
+               !file.EndsWith(".exe", StringComparison.InvariantCultureIgnoreCase))
+                continue;
+
+            try
             {
-                var files = Directory.GetFiles(binPath);
-                foreach (var file in files)
-                {
-                    if (!file.EndsWith(".dll", StringComparison.CurrentCultureIgnoreCase) &&
-                       !file.EndsWith(".exe", StringComparison.InvariantCultureIgnoreCase))
-                        continue;
+                var asm = AssemblyLoadContext.Default.LoadFromAssemblyPath(file);
+                opt.AdditionalReferencePaths.Add(file);
 
-                    try
-                    {
-                        //var asm = AssemblyLoadContext.Default.LoadFromAssemblyPath(file);
-
-                        opt.AdditionalReferencePaths.Add(file);
-
-                        //var asm = Assembly.LoadFrom(file);
-                        var oldColor = Console.ForegroundColor;
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("Additional Assembly: " + file);
-                        Console.ForegroundColor = oldColor;
-                    }
-                    catch (Exception ex)
-                    {
-                        var oldColor = Console.ForegroundColor;
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Failed to load private assembly: " + file);
-                        Console.WriteLine("   " + ex.Message);
-                        Console.ForegroundColor = oldColor;
-                    }
-
-                }
+                LoadedPrivateAssemblies.Add(file);
+            }
+            catch (Exception ex)
+            {
+                FailedPrivateAssemblies.Add(file + "\n    - " + ex.Message);
             }
 
         }
+    }
+
+}
 
     }
 }

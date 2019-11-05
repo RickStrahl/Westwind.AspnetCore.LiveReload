@@ -114,7 +114,7 @@ You can also use 'loose Razor Files' in the designated folder, which means you c
 But there's no support for:
 
 * No compiled Source Code files (.cs)
-* No external Package/Assembly loading
+* ~~No external Package/Assembly loading~~
 
 In short, this is not meant to be an Application Development environment, but rather provide **static pages with benefits**.
 
@@ -125,6 +125,16 @@ Some things you can do that are useful:
 * Check versions of files on disk to display version number for downloads
 
 All these things use intrinsic built in features which while limited to generic functionality are still very useful for simple scripting scenarios.
+
+### Load External Assemblies
+It's also possible to pull in additional assemblies that can then be accessed in the Razor Pages. To do this:
+
+* Create a `./privatebin` folder in your specified WebRoot folder
+* Add any assemblies and their dependencies there
+
+Note: You have to use **assemblies** rather than NuGet packages and you are responsible for adding all required dependencies in the folder. For example, if I wanted to add `Westwind.AspNetCore.Markdown` for Markdown features I can add the `Westwind.AspNetCore.Markdown.dll`. However, that dll also has a dependency on `Markdig.dll` so that assembly has to be available in the `./privatebin` folder as well.
+
+Finding all dependencies may be tricky since NuGet doesn't show you all `dll` depedencies, so this may require some sleuthing in a project's `project.dep.json` file in a `publish` folder.
 
 ### Razor Limitations
 Razor Pages served are limited to **self-contained single file Pages** as no code outside of a Page can be compiled at runtime, or even reference an external package/assembly that isn't installed in the actually server's start folder.
