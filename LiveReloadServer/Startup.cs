@@ -66,15 +66,15 @@ namespace LiveReloadServer
 #if USE_RAZORPAGES
             if (UseRazor)
             {
-                services.AddRazorPages(opt => { opt.RootDirectory = "/"; })
+                var mvcBuilder = services.AddRazorPages(opt => { opt.RootDirectory = "/"; })
                     .AddRazorRuntimeCompilation(
                         opt =>
                         {
 
                             opt.FileProviders.Add(new PhysicalFileProvider(WebRoot));
-                            LoadPrivateBinAssemblies(opt);
                         });
 
+                LoadPrivateBinAssemblies(mvcBuilder);
             }
 #endif
         }
@@ -204,7 +204,7 @@ namespace LiveReloadServer
         private List<string> LoadedPrivateAssemblies = new List<string>();
         private List<string> FailedPrivateAssemblies = new List<string>();
 
-        private void LoadPrivateBinAssemblies(MvcRazorRuntimeCompilationOptions opt)
+        private void LoadPrivateBinAssemblies(IMvcBuilder mvcBuilder)
 {
     var binPath = Path.Combine(WebRoot, "privatebin");
     if (Directory.Exists(binPath))
@@ -219,7 +219,7 @@ namespace LiveReloadServer
             try
             {
                 var asm = AssemblyLoadContext.Default.LoadFromAssemblyPath(file);
-                opt.AdditionalReferencePaths.Add(file);
+                mvcBuilder.AddApplicationPart(asm);
 
                 LoadedPrivateAssemblies.Add(file);
             }
