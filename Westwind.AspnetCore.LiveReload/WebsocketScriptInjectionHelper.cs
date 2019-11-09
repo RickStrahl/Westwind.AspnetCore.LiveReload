@@ -154,7 +154,16 @@ function retryConnection() {{
    retry = setInterval(function() {{ 
                 console.log('Live Reload retrying connection.'); 
                 connection = tryConnect();  
-                if(connection) location.reload(true);                    
+                if(connection)
+                {{
+                    if(connection.readyState === 1){{
+                        location.reload(true);
+                    }} else {{
+                        connection.onopen = function(event) {{
+                            location.reload(true);
+                        }}
+                    }}
+                }}                 
             }},{config.ServerRefreshTimeout});
 }}
 
