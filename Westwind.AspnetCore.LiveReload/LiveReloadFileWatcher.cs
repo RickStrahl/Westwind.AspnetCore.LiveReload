@@ -7,7 +7,7 @@ namespace Westwind.AspNetCore.LiveReload
 
         private static System.IO.FileSystemWatcher Watcher;
 
-        
+
         public static void StartFileWatcher()
         {
             var path = LiveReloadConfiguration.Current.FolderToMonitor;
@@ -21,7 +21,7 @@ namespace Westwind.AspNetCore.LiveReload
             Watcher.NotifyFilter = NotifyFilters.LastWrite
                                    | NotifyFilters.FileName
                                    | NotifyFilters.DirectoryName;
-                               
+
 
 
             Watcher.Changed += Watcher_Changed;
@@ -50,9 +50,9 @@ namespace Westwind.AspNetCore.LiveReload
 
             if (LiveReloadConfiguration.Current.ClientFileExtensions.Contains(ext))
             {
-                var task  = LiveReloadMiddleware.RefreshWebSocketRequest();
+                LiveReloadMiddleware.RefreshWebSocketRequest().Wait();
             }
-            
+
         }
 
         private static void Watcher_Renamed(object sender, RenamedEventArgs e)

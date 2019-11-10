@@ -132,13 +132,13 @@ namespace Westwind.AspNetCore.LiveReload
                 }
             }
 
-            
+
             ActiveSockets.Remove(webSocket);
             if (webSocket.State != WebSocketState.Closed &&
                 webSocket.State != WebSocketState.Aborted)
                 await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Socket closed",
                                            CancellationToken.None);
-            
+
         }
 
         /// <summary>
