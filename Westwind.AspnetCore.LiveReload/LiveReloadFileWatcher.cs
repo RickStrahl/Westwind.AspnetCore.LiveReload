@@ -50,9 +50,9 @@ namespace Westwind.AspNetCore.LiveReload
 
             if (LiveReloadConfiguration.Current.ClientFileExtensions.Contains(ext))
             {
-                LiveReloadMiddleware.RefreshWebSocketRequest().Wait();
+                // fire and forget
+                _ = LiveReloadMiddleware.RefreshWebSocketRequest();   //.GetAwaiter().GetResult();
             }
-
         }
 
         private static void Watcher_Renamed(object sender, RenamedEventArgs e)
