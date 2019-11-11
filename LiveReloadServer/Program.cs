@@ -90,7 +90,9 @@ namespace LiveReloadServer
                     // Custom Config
                     var config = new ConfigurationBuilder()
                         .AddJsonFile("LiveReloadServer.json", optional: true)
+                        .AddJsonFile("LiveReloadWebServer.json", optional: true)
                         .AddEnvironmentVariables("LIVERELOADSERVER_")
+                        .AddEnvironmentVariables("LIVERELOADWEBSERVER_")
                         .AddCommandLine(args)
                         .Build();
 
@@ -128,7 +130,11 @@ namespace LiveReloadServer
 #endif
 
             string headerLine = new string('-', AppHeader.Length);
+            string exe = "LiveReloadServer";
 
+            if (Environment.CommandLine.Contains("LiveReloadWebServer", StringComparison.InvariantCultureIgnoreCase))
+                exe = "LiveReloadWebServer";
+            
             Console.WriteLine($@"
 {headerLine}
 {AppHeader}
@@ -139,7 +145,7 @@ Static and Razor File Service with Live Reload for changed content.
 
 Syntax:
 -------
-LiveReloadServer  <options>
+{exe}  <options>
 
 --WebRoot            <path>  (current Path if not provided)
 --Port               5200*
@@ -159,11 +165,11 @@ Configuration options can be specified in:
 
 Examples:
 ---------
-LiveReload --WebRoot ""c:\temp\My Site"" --port 5500 -useSsl -useRazor --openBrowser false
+{exe} --WebRoot ""c:\temp\My Site"" --port 5500 -useSsl -useRazor --openBrowser false
 
-$env:LiveReloadServer_Port 5500
-$env:LiveReloadServer_WebRoot c:\mySites\Site1\Web
-LiveReload
+$env:{exe}_Port 5500
+$env:{exe}_WebRoot c:\mySites\Site1\Web
+{exe}
 ");
         }
 

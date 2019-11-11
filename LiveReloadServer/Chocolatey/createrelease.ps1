@@ -9,28 +9,18 @@ $version = $rawVersion.Trim().Replace(".0","")
 $downloadUrl = "https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/raw/$version/LiveReloadServer/LiveReloadWebServer.zip"
 
 # Create Zip file
-7z a -tzip $releaseZip $releaseFile "..\LiveReloadServer.json" 
+7z a -tzip $releaseZip $releaseFile "..\LiveReloadWebServer.json" 
 
 # Write out Verification.txt
 $sha = get-filehash -path $releaseZip -Algorithm SHA256  | select -ExpandProperty "Hash"
 write-host $sha
 
 $filetext = @"
-VERIFICATION
-LiveReloadWebServer.zip
-SHA256: $sha
-URL   : $downloadUrl
-"@
-out-file -filepath .\tools\Verification.txt -inputobject $filetext
-
-$filetext = @"
 `$packageName = 'LiveReloadWebServer'
 `$url = "$downloadUrl"
 `$drop = "`$(Split-Path -Parent `$MyInvocation.MyCommand.Definition)"
-Write-Host `$drop 
-Write-Host `$url
-Write-Host `$packageName
-Install-ChocolateyZipPackage -PackageName `$packageName -Url `$url -UnzipLocation `$drop
+`$sha = "$sha"
+Install-ChocolateyZipPackage -PackageName `$packageName -Url `$url -UnzipLocation `$drop -checksum "`$sha" -checksumtype "sha256" 
 "@
 out-file -filepath .\tools\chocolateyInstall.ps1 -inputobject $filetext
 

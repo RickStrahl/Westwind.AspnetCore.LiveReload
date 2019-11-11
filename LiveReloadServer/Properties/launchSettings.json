@@ -17,7 +17,7 @@
     },
     "LiveReloadServer": {
       "commandName": "Project",
-      "commandLineArgs": "--WebRoot c:\\webconnectionprojects\\vue\\web --useRazor --ShowUrls True",
+      "commandLineArgs": "--WebRoot c:\\webconnectionprojects\\vue\\web --useRazor --ShowUrls True --help",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
