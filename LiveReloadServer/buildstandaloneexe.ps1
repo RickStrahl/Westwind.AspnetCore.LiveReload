@@ -16,10 +16,10 @@
 # with this LiveReloadServer, you can set /p:PublishTrimmed=true
 # to cut the size of the exe in half.
 
-remove-item ./LiveReloadWebServer.exe
-remove-item ./SingleFileExe -Recurse -Force
+if (test-path './LiveReloadWebServer.exe' -PathType Leaf) { remove-item ./LiveReloadWebServer.exe }
+if (test-path '/SingleFileExe' -PathType Container) { remove-item ./SingleFileExe -Recurse -Force }
 
-dotnet publish -c Release /p:PublishSingleFile=true /p:PublishTrimmed=true -r win-x64 --output SingleFileExe
+dotnet publish -c Release /p:PublishSingleFile=true /p:PublishTrimmed=false -r win-x64 --output SingleFileExe
 
 Move-Item ./SingleFileExe/LiveReloadServer.exe ./LiveReloadWebServer.exe -force
 remove-item ./SingleFileExe -Recurse -Force

@@ -36,6 +36,11 @@ There is also a standalone 'LiveReloadServer' Dotnet Tool package that can be us
 
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">
+    <DefineConstants>NETCORE2</DefineConstants>
+    <!--<DefineConstants>TRACE</DefineConstants>-->
+  </PropertyGroup>
+
   <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.1' ">
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />

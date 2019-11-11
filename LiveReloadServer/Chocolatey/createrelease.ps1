@@ -16,21 +16,11 @@ $sha = get-filehash -path $releaseZip -Algorithm SHA256  | select -ExpandPropert
 write-host $sha
 
 $filetext = @"
-VERIFICATION
-LiveReloadWebServer.zip
-SHA256: $sha
-URL   : $downloadUrl
-"@
-out-file -filepath .\tools\Verification.txt -inputobject $filetext
-
-$filetext = @"
 `$packageName = 'LiveReloadWebServer'
 `$url = "$downloadUrl"
 `$drop = "`$(Split-Path -Parent `$MyInvocation.MyCommand.Definition)"
-Write-Host `$drop 
-Write-Host `$url
-Write-Host `$packageName
-Install-ChocolateyZipPackage -PackageName `$packageName -Url `$url -UnzipLocation `$drop
+`$sha = "$sha"
+Install-ChocolateyZipPackage -PackageName `$packageName -Url `$url -UnzipLocation `$drop -Checksum `$sha -ChecksumType "sha256" 
 "@
 out-file -filepath .\tools\chocolateyInstall.ps1 -inputobject $filetext
 

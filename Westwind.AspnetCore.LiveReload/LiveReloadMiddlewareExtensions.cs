@@ -31,14 +31,17 @@ namespace Westwind.AspNetCore.LiveReload
 
             if (config.LiveReloadEnabled)
             {
+#if NETCORE2
+                var env = provider.GetService<IHostingEnvironment>();
+#else
+                var env = provider.GetService<IWebHostEnvironment>();
+#endif
                 if (string.IsNullOrEmpty(config.FolderToMonitor))
                 {
-                    var env = provider.GetService<IHostingEnvironment>();
                     config.FolderToMonitor = env.ContentRootPath;
                 }
                 else if (config.FolderToMonitor.StartsWith("~"))
                 {
-                    var env = provider.GetService<IHostingEnvironment>();
                     if (config.FolderToMonitor.Length > 1)
                     {
                         var folder = config.FolderToMonitor.Substring(1);
