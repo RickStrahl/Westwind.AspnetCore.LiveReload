@@ -9,8 +9,11 @@ using Microsoft.Extensions.Configuration;
 
 namespace LiveReloadServer
 {
-    public class StartupHelpers
+    public class Helpers
     {
+
+        public static string AppHeader;
+        public static string ExeName = "LiveReloadServer";
 
         public static void OpenUrl(string url)
         {

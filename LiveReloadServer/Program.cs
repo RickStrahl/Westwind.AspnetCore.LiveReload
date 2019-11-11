@@ -12,16 +12,20 @@ namespace LiveReloadServer
     {
 
         public static IHost WebHost;
-        public static string AppHeader;
+        
 
         public static void Main(string[] args)
         {
-             try
+
+            if (Environment.CommandLine.Contains("LiveReloadWebServer", StringComparison.InvariantCultureIgnoreCase))
+                Helpers.ExeName = "LiveReloadWebServer";
+
+            try
             {
                 var version = Assembly.GetExecutingAssembly().GetName().Version;
                 var ver = version.Major + "." + version.Minor +
                           (version.Build > 0 ? "." + version.Build : string.Empty);
-                AppHeader = $"Live Reload Web Server v{ver}";
+                Helpers.AppHeader = $"Live Reload Web Server v{ver}";
 
 
                 if (args.Contains("--help", StringComparer.InvariantCultureIgnoreCase) ||
@@ -58,9 +62,9 @@ namespace LiveReloadServer
                 if (ex.StackTrace.Contains("ThrowOperationCanceledException"))
                     return;
 
-                string headerLine = new string('-', AppHeader.Length);
+                string headerLine = new string('-', Helpers.AppHeader.Length);
                 Console.WriteLine(headerLine);
-                Console.WriteLine(AppHeader);
+                Console.WriteLine(Helpers.AppHeader);
                 Console.WriteLine(headerLine);
 
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -110,7 +114,7 @@ namespace LiveReloadServer
                     if (port == 0)
                         port = 5000;
 
-                    bool useSsl = StartupHelpers.GetLogicalSetting("UseSsl", config);
+                    bool useSsl = Helpers.GetLogicalSetting("UseSsl", config);
                     webBuilder.UseUrls($"http{(useSsl ? "s" : "")}://0.0.0.0:{port}");
 
                     webBuilder
@@ -129,15 +133,11 @@ namespace LiveReloadServer
             useRazor = true;
 #endif
 
-            string headerLine = new string('-', AppHeader.Length);
-            string exe = "LiveReloadServer";
-
-            if (Environment.CommandLine.Contains("LiveReloadWebServer", StringComparison.InvariantCultureIgnoreCase))
-                exe = "LiveReloadWebServer";
+            string headerLine = new string('-', Helpers.AppHeader.Length);
             
             Console.WriteLine($@"
 {headerLine}
-{AppHeader}
+{Helpers.AppHeader}
 {headerLine}
 (c) Rick Strahl, West Wind Technologies, 2019
 
@@ -145,7 +145,7 @@ Static and Razor File Service with Live Reload for changed content.
 
 Syntax:
 -------
-{exe}  <options>
+{Helpers.ExeName}  <options>
 
 --WebRoot            <path>  (current Path if not provided)
 --Port               5200*
@@ -165,11 +165,11 @@ Configuration options can be specified in:
 
 Examples:
 ---------
-{exe} --WebRoot ""c:\temp\My Site"" --port 5500 -useSsl -useRazor --openBrowser false
+{Helpers.ExeName} --WebRoot ""c:\temp\My Site"" --port 5500 -useSsl -useRazor --openBrowser false
 
-$env:{exe}_Port 5500
-$env:{exe}_WebRoot c:\mySites\Site1\Web
-{exe}
+$env:{Helpers.ExeName}_Port 5500
+$env:{Helpers.ExeName}_WebRoot c:\mySites\Site1\Web
+{Helpers.ExeName}
 ");
         }
 

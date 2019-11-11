@@ -40,8 +40,8 @@ namespace LiveReloadServer
         public void ConfigureServices(IServiceCollection services)
         {
             // Get Configuration Settings
-            UseLiveReload = StartupHelpers.GetLogicalSetting("LiveReloadEnabled", Configuration);
-            UseRazor = StartupHelpers.GetLogicalSetting("UseRazor", Configuration);
+            UseLiveReload = Helpers.GetLogicalSetting("LiveReloadEnabled", Configuration);
+            UseRazor = Helpers.GetLogicalSetting("UseRazor", Configuration);
 
             WebRoot = Configuration["WebRoot"];
             if (string.IsNullOrEmpty(WebRoot))
@@ -84,9 +84,9 @@ namespace LiveReloadServer
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, Microsoft.AspNetCore.Hosting.IWebHostEnvironment env)
         {
-            bool useSsl = StartupHelpers.GetLogicalSetting("useSsl", Configuration);
-            bool showUrls = StartupHelpers.GetLogicalSetting("ShowUrls", Configuration);
-            bool openBrowser = StartupHelpers.GetLogicalSetting("OpenBrowser", Configuration);
+            bool useSsl = Helpers.GetLogicalSetting("useSsl", Configuration);
+            bool showUrls = Helpers.GetLogicalSetting("ShowUrls", Configuration);
+            bool openBrowser = Helpers.GetLogicalSetting("OpenBrowser", Configuration);
 
             string defaultFiles = Configuration["DefaultFiles"];
             if (string.IsNullOrEmpty(defaultFiles))
@@ -137,9 +137,9 @@ namespace LiveReloadServer
             var url = $"http{(useSsl ? "s" : "")}://localhost:{Port}";
             var extensions = Configuration["Extensions"];
 
-            string headerLine = new string('-', Program.AppHeader.Length);
+            string headerLine = new string('-', Helpers.AppHeader.Length);
             Console.WriteLine(headerLine);
-            Console.WriteLine(Program.AppHeader);
+            Console.WriteLine(Helpers.AppHeader);
             Console.WriteLine(headerLine);
             Console.WriteLine($"(c) West Wind Technologies, 2018-{DateTime.Now.Year}\r\n");
             Console.Write($"Site Url     : ");
@@ -159,7 +159,7 @@ namespace LiveReloadServer
             Console.WriteLine($"Default Pages: {defaultFiles}");
 
             Console.WriteLine();
-            Console.WriteLine("'LiveReloadServer --help' for start options...");
+            Console.WriteLine($"'{Helpers.ExeName} --help' for start options...");
             Console.WriteLine();
             Console.WriteLine("Ctrl-C or Ctrl-Break to exit...");
 
@@ -179,7 +179,7 @@ namespace LiveReloadServer
             Console.ForegroundColor = oldColor;
 
             if (openBrowser)
-                StartupHelpers.OpenUrl(url);
+                Helpers.OpenUrl(url);
         }
 
         public static Type GetTypeFromName(string TypeName)
