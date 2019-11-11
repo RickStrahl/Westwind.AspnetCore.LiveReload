@@ -9,7 +9,7 @@ $version = $rawVersion.Trim().Replace(".0","")
 $downloadUrl = "https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/raw/$version/LiveReloadServer/LiveReloadWebServer.zip"
 
 # Create Zip file
-7z a -tzip $releaseZip $releaseFile "..\LiveReloadServer.json" 
+7z a -tzip $releaseZip $releaseFile "..\LiveReloadWebServer.json" 
 
 # Write out Verification.txt
 $sha = get-filehash -path $releaseZip -Algorithm SHA256  | select -ExpandProperty "Hash"
