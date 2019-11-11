@@ -115,47 +115,70 @@ namespace Westwind.AspnetCore.LiveReload
 (function() {{
 
 var retry = 0;
-var connection = tryConnect();
+var connection = tryConnect(true);
 
-function tryConnect(){{
+function tryConnect(retryOnFail){{
     try{{
         var host = '{hostString}';
         connection = new WebSocket(host); 
     }}
-    catch(ex) {{ console.log(ex); retryConnection(); }}
+    catch(ex) {{ 
+        console.log(ex);  
+        if(retryOnFail)
+            retryConnection();
+    }}
 
     if (!connection)
        return null;
 
-    clearInterval(retry);
+    
 
     connection.onmessage = function(message) 
     {{ 
         if (message.data == 'DelayRefresh') {{
-                    alert('Live Reload Delayed Reload.');
-            setTimeout( function() {{ location.reload(true); }},{config.ServerRefreshTimeout});
-                }}
+            alert('Live Reload Delayed Reload.');
+            setTimeout( 
+                function() {{ 
+                    location.reload(true); 
+                }},{config.ServerRefreshTimeout});
+        }}
         if (message.data == 'Refresh') 
           location.reload(true); 
     }}    
     connection.onerror = function(event)  {{
         console.log('Live Reload Socket error.', event);
-        retryConnection();
+        if(retryOnFail)
+            retryConnection();
     }}
     connection.onclose = function(event) {{
         console.log('Live Reload Socket closed.');
-        retryConnection();
+        if(retryOnFail)
+            retryConnection();
     }}
-
-    console.log('Live Reload socket connected.');
+    connection.onopen = function(event) {{
+        console.log('Live Reload socket connected.');
+    }}
     return connection;  
 }}
 function retryConnection() {{   
-   retry = setInterval(function() {{ 
-                console.log('Live Reload retrying connection.'); 
-                connection = tryConnect();  
-                if(connection) location.reload(true);                    
-            }},{config.ServerRefreshTimeout});
+   // we'll try every x ms to reconnect to the server
+   // once the server answer, we refresh the page as the build process is done
+   // we don't need to cancel the timeout as it'll be cancelled by the page refresh
+   setInterval(function() {{ 
+        console.log('Live Reload retrying connection.'); 
+        connection = tryConnect(false);  //we won't try to  reconnect onerror or onclose because it's handled by the settimeout
+        if(connection)
+        {{
+            if(connection.readyState === 1){{
+                location.reload(true);
+            }} else {{
+                connection.onopen = function(event) {{
+                    console.log('Live Reload socket connected.');
+                    location.reload(true);
+                }}
+            }}
+        }}                 
+    }},{config.ServerRefreshTimeout});
 }}
 
 }})();
