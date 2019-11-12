@@ -5,6 +5,7 @@ using System.Reflection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace LiveReloadServer
 {
@@ -100,15 +101,20 @@ namespace LiveReloadServer
                         .AddCommandLine(args)
                         .Build();
 
-
+                    // Custom Logging
                     webBuilder
+                        .ConfigureLogging(logging =>
+                        {
+                            logging.ClearProviders();
+                            logging.AddConsole();
+                            logging.AddConfiguration(config);
+                        })
                         .UseConfiguration(config);
 
                     var webRoot = config["WebRoot"];
                     if (!string.IsNullOrEmpty(webRoot))
                         webBuilder.UseWebRoot(webRoot);
-
-
+                    
                     string sport = config["Port"];
                     int.TryParse(sport, out int port);
                     if (port == 0)
@@ -122,14 +128,13 @@ namespace LiveReloadServer
                 });
         }
 
-
         static void ShowHelp()
         {
 
             string razorFlag = null;
             bool useRazor = false;
 #if USE_RAZORPAGES
-            razorFlag = "\r\n--UseRazor         True|False*";
+            razorFlag = "\r\n--UseRazor           True|False*";
             useRazor = true;
 #endif
 

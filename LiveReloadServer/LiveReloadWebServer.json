@@ -1,9 +1,9 @@
 {
   "Logging": {
     "LogLevel": {
-      "Default": "None",
-      "Microsoft": "None",
-      "Microsoft.Hosting.Lifetime": "None"
+      "Default": "Warning",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Warning"
     }
   },
   "WebRoot": null,
