@@ -108,8 +108,6 @@ namespace LiveReloadServer
                     if (environment == null)
                         environment = "Production";
 
-                    Console.WriteLine("Environment: " + environment);
-
                     // Custom Logging
                     webBuilder
                         .ConfigureLogging(logging =>

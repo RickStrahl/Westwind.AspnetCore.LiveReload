@@ -66,13 +66,9 @@ namespace LiveReloadServer
 #if USE_RAZORPAGES
             if (UseRazor)
             {
-                var mvcBuilder = services.AddRazorPages(opt => { opt.RootDirectory = "/"; })
+                var mvcBuilder = services.AddRazorPages(opt => opt.RootDirectory = "/")
                     .AddRazorRuntimeCompilation(
-                        opt =>
-                        {
-
-                            opt.FileProviders.Add(new PhysicalFileProvider(WebRoot));
-                        });
+                        opt => { opt.FileProviders.Add(new PhysicalFileProvider(WebRoot)); });
 
                 LoadPrivateBinAssemblies(mvcBuilder);
             }
@@ -99,10 +95,10 @@ namespace LiveReloadServer
             if (UseLiveReload)
                 app.UseLiveReload();
 
-            if (env.IsDevelopment())
-                app.UseDeveloperExceptionPage();
-            else
-                app.UseExceptionHandler("/Error");
+            ////if (env.IsDevelopment())
+            ////    app.UseDeveloperExceptionPage();
+            ////else
+            app.UseExceptionHandler("/Error");
 
             if (showUrls)
             {
@@ -123,8 +119,7 @@ namespace LiveReloadServer
 
             app.UseStaticFiles(new StaticFileOptions
             {
-                FileProvider = new PhysicalFileProvider(WebRoot),
-                RequestPath = new PathString("")
+                FileProvider = new PhysicalFileProvider(WebRoot), RequestPath = new PathString("")
             });
 
 #if USE_RAZORPAGES
@@ -172,11 +167,13 @@ namespace LiveReloadServer
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("Additional Assembly: " + assmbly);
             }
+
             foreach (var assmbly in FailedPrivateAssemblies)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Failed Additional Assembly: " + assmbly);
             }
+
             Console.ForegroundColor = oldColor;
 
             if (openBrowser)
@@ -199,6 +196,7 @@ namespace LiveReloadServer
                     break;
 
             }
+
             return type;
         }
 
@@ -206,33 +204,32 @@ namespace LiveReloadServer
         private List<string> FailedPrivateAssemblies = new List<string>();
 
         private void LoadPrivateBinAssemblies(IMvcBuilder mvcBuilder)
-{
-    var binPath = Path.Combine(WebRoot, "privatebin");
-    if (Directory.Exists(binPath))
-    {
-        var files = Directory.GetFiles(binPath);
-        foreach (var file in files)
         {
-            if (!file.EndsWith(".dll", StringComparison.CurrentCultureIgnoreCase) &&
-               !file.EndsWith(".exe", StringComparison.InvariantCultureIgnoreCase))
-                continue;
-
-            try
+            var binPath = Path.Combine(WebRoot, "privatebin");
+            if (Directory.Exists(binPath))
             {
-                var asm = AssemblyLoadContext.Default.LoadFromAssemblyPath(file);
-                mvcBuilder.AddApplicationPart(asm);
+                var files = Directory.GetFiles(binPath);
+                foreach (var file in files)
+                {
+                    if (!file.EndsWith(".dll", StringComparison.CurrentCultureIgnoreCase) &&
+                        !file.EndsWith(".exe", StringComparison.InvariantCultureIgnoreCase))
+                        continue;
 
-                LoadedPrivateAssemblies.Add(file);
-            }
-            catch (Exception ex)
-            {
-                FailedPrivateAssemblies.Add(file + "\n    - " + ex.Message);
+                    try
+                    {
+                        var asm = AssemblyLoadContext.Default.LoadFromAssemblyPath(file);
+                        mvcBuilder.AddApplicationPart(asm);
+                        LoadedPrivateAssemblies.Add(file);
+                    }
+                    catch (Exception ex)
+                    {
+                        FailedPrivateAssemblies.Add(file + "\n    - " + ex.Message);
+                    }
+
+                }
             }
 
         }
-    }
-
-}
 
     }
 }
