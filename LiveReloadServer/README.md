@@ -217,12 +217,12 @@ All these things use intrinsic built in features which while limited to generic 
 ### Load External Assemblies
 It's also possible to pull in additional assemblies that can then be accessed in the Razor Pages. To do this:
 
-* Create a `./privatebin` folder in your specified WebRoot folder
+* Create a `./PrivateBin` folder in your specified WebRoot folder
 * Add any assemblies and their dependencies there
 
-Note: You have to use **assemblies** rather than NuGet packages and you are responsible for adding all required dependencies in the folder. For example, if I wanted to add `Westwind.AspNetCore.Markdown` for Markdown features I can add the `Westwind.AspNetCore.Markdown.dll`. However, that dll also has a dependency on `Markdig.dll` so that assembly has to be available in the `./privatebin` folder as well.
+Note: You have to use **assemblies** rather than NuGet packages and you are responsible for adding all required dependencies in the folder. For example, if I wanted to add `Westwind.AspNetCore.Markdown` for Markdown features I can add the `Westwind.AspNetCore.Markdown.dll`. However, that dll also has a dependency on `Markdig.dll` so that assembly has to be available in the `./PrivateBin` folder as well.
 
-Finding all dependencies may be tricky since NuGet doesn't show you all `dll` depedencies, so this may require some sleuthing in a project's `project.dep.json` file in a `publish` folder.
+Finding all dependencies may be tricky since NuGet doesn't show you all `dll` dependencies, so this may require some sleuthing in a project's `project.dep.json` file in a `publish` folder.
 
 ### Razor Limitations
 Razor Pages served are limited to **self-contained single file Pages** as no code outside of a Page can be compiled at runtime, or even reference an external package/assembly that isn't installed in the actually server's start folder.
