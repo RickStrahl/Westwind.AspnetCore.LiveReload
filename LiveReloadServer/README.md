@@ -108,9 +108,97 @@ LiveReload
 ## Static Files
 The Web Server automatically serves all static files and Live Reload is automatically enabled unless explicitly turned off. Making a change to any static file causes the current HTML page loaded in the browser to be reloaded.
 
+You can specify explicit file extensions to monitor using the `--Extensions` switch. The default is: `".cshtml,.css,.js,.htm,.html,.ts"`.
+
 ## Razor Files
 You can also use 'loose Razor Files' in the designated folder, which means you can use `.cshtml` Razor Pages with this server with single file functionality. There is support for Layout pages, ViewStart, ViewImport, partials etc. 
 
+To serve a Razor page create a page that uses some .NET code using C# Razor syntax. For example here's a `Hello.cshtml`:
+
+```html
+@page
+<html>
+<body>
+<h1>Hello World</h1>
+
+<p>Time is: @DateTime.Now.ToString("hh:mm:ss tt")</p>
+
+<hr>
+
+@{
+    var client = new System.Net.WebClient();
+    var xml = await client.DownloadStringTaskAsync("https://west-wind.com/files/MarkdownMonster_version.xml");
+    var start = xml.IndexOf("<Version>") + 9;        
+    var end = xml.LastIndexOf("</Version>");
+    var version = xml.Substring(start, end - start);
+}
+
+<h3>Latest Markdown Monster Version: @version</h3>
+<hr>
+
+</body>
+</html>
+```
+
+Assuming you place this into the `--WebRoot` folder that's the root you can then access this page with:
+
+```
+http://localhost:5200/hello
+```
+
+Note it's the name of the Razor Page **without the extension**. If you create the `.cshtml` in a sub-folder, just provide the path name:
+
+```
+http://localhost:5200/subfolder/hello
+```
+
+### Files and Folder Support
+As mentioned above you can use most Razor Pages file based constructs like _Layout and Partial pages as well as shared folders etc. The root folder works like any other Razor Pages folder or Area in ASP.NET Core and so all the relative linking and child page access are available.
+
+#### Error Page
+When an error occurs errors are fired into an `Error.cshtml` page. You have to create this page as the tool uses a folder that you provide. 
+
+You can create an error page and return error information like this using the HttpContext features to retrieve an `IExceptionHandlerPathFeature`
+
+```html
+@page
+
+<html>
+<body>
+<h1>Razor Pages Error Page</h1>
+<hr/>
+<div style="font-size: 1.2em;margin: 20px;">
+    Yikes. Something went wrong...
+</div>
+@{
+            var errorHandler = HttpContext
+                .Features
+                .Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>();
+}
+<hr/>
+@if(errorHandler != null )
+{
+            var error = errorHandler.Error;
+            var message = error?.Message;
+            if (message == null)
+              message = "No Errors found.";
+
+            <text>            
+            @message     
+            </text>
+
+            <pre>
+            @error?.StackTrace
+            </pre>
+}
+</body>
+</html>
+```
+
+> @icon-info-circle Set Development Environment
+> Note you can set the Development Environment by setting the `LIVERELOADWEBSERVER_ENVIRONMENT` variable to `Production` or `Development`. In Development mode it will show the error information above. The default is production.
+
+### Non-Razor Page Code
 But there's no support for:
 
 * No compiled Source Code files (.cs)

@@ -87,19 +87,28 @@ namespace LiveReloadServer
 
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
-            
+
 
             return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+
                     // Custom Config
                     var config = new ConfigurationBuilder()
                         .AddJsonFile("LiveReloadServer.json", optional: true)
                         .AddJsonFile("LiveReloadWebServer.json", optional: true)
+                        .AddEnvironmentVariables()
                         .AddEnvironmentVariables("LIVERELOADSERVER_")
                         .AddEnvironmentVariables("LIVERELOADWEBSERVER_")
                         .AddCommandLine(args)
                         .Build();
+
+
+                    var environment = config["Environment"];
+                    if (environment == null)
+                        environment = "Production";
+
+                    Console.WriteLine("Environment: " + environment);
 
                     // Custom Logging
                     webBuilder
@@ -110,6 +119,8 @@ namespace LiveReloadServer
                             logging.AddConfiguration(config);
                         })
                         .UseConfiguration(config);
+
+                    
 
                     var webRoot = config["WebRoot"];
                     if (!string.IsNullOrEmpty(webRoot))
@@ -158,8 +169,8 @@ Syntax:
 --ShowUrls           True|False*
 --OpenBrowser        True*|False
 --DefaultFiles       ""index.html,default.htm""*
---Extensions         Live Reload Extensions monitored
-                     ""{(useRazor ? ".cshtml," : "")}.css,.js,.htm,.html,.ts""*
+--Extensions         ""{(useRazor ? ".cshtml," : "")}.css,.js,.htm,.html,.ts""*
+--Environment        Production*|Development
 
 Configuration options can be specified in:
 
