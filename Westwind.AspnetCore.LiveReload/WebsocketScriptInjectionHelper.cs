@@ -131,12 +131,11 @@ function tryConnect(retryOnFail){{
     if (!connection)
        return null;
 
-    
 
     connection.onmessage = function(message) 
     {{ 
         if (message.data == 'DelayRefresh') {{
-            alert('Live Reload Delayed Reload.');
+            console.log('Live Reload Delayed Reload.');
             setTimeout( 
                 function() {{ 
                     location.reload(true); 
@@ -161,12 +160,9 @@ function tryConnect(retryOnFail){{
     return connection;  
 }}
 function retryConnection() {{   
-   // we'll try every x ms to reconnect to the server
-   // once the server answer, we refresh the page as the build process is done
-   // we don't need to cancel the timeout as it'll be cancelled by the page refresh
-   setInterval(function() {{ 
+      setInterval(function() {{ 
         console.log('Live Reload retrying connection.'); 
-        connection = tryConnect(false);  //we won't try to  reconnect onerror or onclose because it's handled by the settimeout
+        connection = tryConnect(false);
         if(connection)
         {{
             if(connection.readyState === 1){{
