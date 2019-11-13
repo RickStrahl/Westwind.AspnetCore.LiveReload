@@ -148,7 +148,7 @@ namespace LiveReloadServer
             Console.ResetColor();
             Console.WriteLine($"Web Root     : {WebRoot}");
             Console.WriteLine(
-                $"Extensions   : {(string.IsNullOrEmpty(extensions) ? $"{(UseRazor ? ".cshtml," : "")},.css,.js,.htm,.html,.ts" : extensions)}");
+                $"Extensions   : {(string.IsNullOrEmpty(extensions) ? $"{(UseRazor ? ".cshtml," : "")}.css,.js,.htm,.html,.ts" : extensions)}");
             Console.WriteLine($"Live Reload  : {UseLiveReload}");
 
 #if USE_RAZORPAGES
@@ -157,6 +157,7 @@ namespace LiveReloadServer
             Console.WriteLine($"Show Urls    : {showUrls}");
             Console.WriteLine($"Open Browser : {openBrowser}");
             Console.WriteLine($"Default Pages: {defaultFiles}");
+            Console.WriteLine($"Environment  : {env.EnvironmentName}");
 
             Console.WriteLine();
             Console.WriteLine($"'{Helpers.ExeName} --help' for start options...");
