@@ -17,9 +17,14 @@
 # to cut the size of the exe in half.
 
 if (test-path './LiveReloadWebServer.exe' -PathType Leaf) { remove-item ./LiveReloadWebServer.exe }
-if (test-path '/SingleFileExe' -PathType Container) { remove-item ./SingleFileExe -Recurse -Force }
+if (test-path './SingleFileExe' -PathType Container) { remove-item ./SingleFileExe -Recurse -Force }
+if (test-path './Hhosted' -PathType Container) { remove-item ./hosted -Recurse -Force }
 
+# Single File Exe output
 dotnet publish -c Release /p:PublishSingleFile=true /p:PublishTrimmed=false -r win-x64 --output SingleFileExe
+
+# Hosted Folder Output - Requires .NET Core Runtime and ASP.NET Framework (or Runtime Hosting Bundle on Windows)
+dotnet publish -c Release --output hosted
 
 Move-Item ./SingleFileExe/LiveReloadServer.exe ./LiveReloadWebServer.exe -force
 remove-item ./SingleFileExe -Recurse -Force

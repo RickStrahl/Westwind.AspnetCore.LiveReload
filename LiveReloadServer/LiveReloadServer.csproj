@@ -3,10 +3,10 @@
 
   <PropertyGroup>
     <!-- Exe with Razor Support -->
-    <!--<DefineConstants>USE_RAZORPAGES</DefineConstants>-->
+    <DefineConstants>USE_RAZORPAGES</DefineConstants>
 
     <!-- Build Package with Razor Support -->
-    <DefineConstants>USE_RAZORPAGES;BUILD_PACKAGE</DefineConstants>
+    <!--<DefineConstants>USE_RAZORPAGES;BUILD_PACKAGE</DefineConstants>-->
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;BUILD_PACKAGE;USE_RAZORPAGES</DefineConstants>

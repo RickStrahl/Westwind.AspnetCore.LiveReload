@@ -27,6 +27,8 @@ bld/
 [Oo]bj/
 [Ll]og/
 LiveReloadWebServer.exe
+hosted/
+nupkg/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/

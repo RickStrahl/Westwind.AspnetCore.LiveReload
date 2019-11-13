@@ -17,7 +17,7 @@
   "LiveReload": {
     "LiveReloadEnabled": true,
     "ClientFileExtensions": ".cshtml,.css,.js,.htm,.html,.ts",
-    "ServerRefreshTimeout": 3000,
+    "ServerRefreshTimeout": 200,
     "WebSocketUrl": "/__livereload"
   }
 }

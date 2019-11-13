@@ -1,5 +1,7 @@
-$releaseFile = "$PSScriptRoot\..\LiveReloadWebServer.exe"
-$releaseZip = "$PSScriptRoot\..\LiveReloadWebServer.zip"
+$releaseFolder = "$PSScriptRoot\.."
+$releaseFile = "$releaseFolder\LiveReloadWebServer.exe"
+$releaseZip = "$releaseFolder\LiveReloadWebServer.zip"
+$hostedZip = "$releaseFolder\LiveReloadWebServer-Hosted.zip"
 
 $rawVersion = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($releaseFile).FileVersion
 
@@ -8,8 +10,12 @@ $version = $rawVersion.Trim().Replace(".0","")
 
 $downloadUrl = "https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/raw/$version/LiveReloadServer/LiveReloadWebServer.zip"
 
-# Create Zip file
+# Create Release Zip file
 7z a -tzip $releaseZip $releaseFile "..\LiveReloadWebServer.json" 
+
+# Created Hosted Zip file
+7z a -tzip $hostedZip "$releaseFolder\hosted\*.*" -r
+
 
 # Write out Verification.txt
 $sha = get-filehash -path $releaseZip -Algorithm SHA256  | select -ExpandProperty "Hash"
@@ -33,11 +39,11 @@ $content = $content.Replace("{{version}}",$version)
 out-file -filepath $chocoNuSpec.Replace(".template","")  -inputobject $content -Encoding utf8
 
 # Commit  current changes and add a tag
-git add --all
+# git add --all
 
-git tag --delete $version
-git push --delete origin $version 
-git tag $version
+# git tag --delete $version
+# git push --delete origin $version 
+# git tag $version
 
-git commit -m "$version" 
-git push origin master --tags
+# git commit -m "$version" 
+# git push origin master --tags
