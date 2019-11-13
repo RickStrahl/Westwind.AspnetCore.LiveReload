@@ -173,9 +173,8 @@ Syntax:
 Configuration options can be specified in:
 
 * Command Line options as shown above
-* Logical Command Line Flags for true can be set with -UseSsl or -UseRazor
-* Environment Variables with `LiveReloadServer_` prefix. Example: 'LiveReloadServer_Port'
-* You use -UseSsl without True or False to set a logical value to true
+* Logical Command Line Flags for true can be set like: -UseSsl or -UseRazor or -OpenBrowser
+* Environment Variables with '{Helpers.ExeName.ToUpper()}_' prefix. Example: '{Helpers.ExeName.ToUpper()}_PORT'
 
 Examples:
 ---------

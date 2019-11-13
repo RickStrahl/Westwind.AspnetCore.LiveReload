@@ -1,22 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Runtime.Loader;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Westwind.AspNetCore.LiveReload;
-using Westwind.Utilities;
 
 
 namespace LiveReloadServer
@@ -68,7 +60,10 @@ namespace LiveReloadServer
             {
                 var mvcBuilder = services.AddRazorPages(opt => opt.RootDirectory = "/")
                     .AddRazorRuntimeCompilation(
-                        opt => { opt.FileProviders.Add(new PhysicalFileProvider(WebRoot)); });
+                        opt =>
+                        {
+                            opt.FileProviders.Add(new PhysicalFileProvider(WebRoot));
+                        });
 
                 LoadPrivateBinAssemblies(mvcBuilder);
             }

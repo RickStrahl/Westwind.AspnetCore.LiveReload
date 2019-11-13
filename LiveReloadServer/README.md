@@ -51,11 +51,13 @@ LiveReloadServer --webroot "c:/temp/My Local WebSite" --port 5350 -UseSsl
 LiveReloadServer --LiveReloadEnabled False --OpenBrowser False -UseSsl -UseRazor
 ```
 
-You can also install from Chocolatey in which case there are no dependencies (but you won't get Razor support):
+You can also install from Chocolatey:
 
 ```ps
 choco install LiveReloadWebServer
 ```
+
+Note that EXE filename is `LiveReloadWebServer` which is different from the Dotnet Tool's `LiveReloadServer` so they can exist side by side without conflict.
 
 ### Launching the Web Server
 You can use the command line to customize how the server runs. By default files are served out of the current directory on port `5200`, but you can override the `WebRoot` folder.
@@ -76,12 +78,12 @@ LiveReloadServer  <options>
 --WebRoot            <path>  (current Path if not provided)
 --Port               5200*
 --UseSsl             True|False*
+--UseRazor           True|False*
 --ShowUrls           True|False*
---UseRazor           True|False* (only available in .NET Tool)
 --OpenBrowser        True*|False
 --DefaultFiles       "index.html,default.htm"*
---Extensions         Live Reload Extensions monitored
-                     ".css,.js,.htm,.html,.ts"*
+--Extensions         ".cshtml,.css,.js,.htm,.html,.ts"*
+--Environment        Production*|Development
 
 Configuration options can be specified in:
 
@@ -92,11 +94,11 @@ Configuration options can be specified in:
 
 Examples:
 ---------
-LiveReload --WebRoot "c:\temp\My Site" --port 5500 -useSsl -useRazor --openBrowser false
+LiveReloadServer --WebRoot "c:\temp\My Site" --port 5500 -useSsl -useRazor --openBrowser false
 
 $env:LiveReloadServer_Port 5500
 $env:LiveReloadServer_WebRoot c:\mySites\Site1\Web
-LiveReload
+LiveReloadServer
 ```
 
 You can also use Environment variables to set these save options by using a `LiveReloadServer_` prefix:
