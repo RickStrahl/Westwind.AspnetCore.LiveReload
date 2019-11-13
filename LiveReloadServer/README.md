@@ -17,7 +17,7 @@ You can grab the compiled tool as:
  `choco install LiveReloadWebServer`
 * [Direct Single File Download (zipped)](https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/raw/master/LiveReloadServer/LiveReloadWebServer.zip)
 
-> All three versions have the same features and interface, just the delivery mechanism is different. However, the Chocolatey and Standalone EXE versions **do not have Razor enabled** in order to keep the size down.  You can build your custom versions that build a Razor enabled version.
+> All three versions have the same features and interface, just the delivery mechanism and the executable name is different. The EXE uses `LiveReloadWebServer` while the Dotnet Tool uses `LiveReloadServer`.
   
 ### What does it do?
 This tool is a generic local Web Server that you can start in **any folder** to provide simple and quick HTTP access. You can serve static resoures as well as loose Razor Pages as long as those Razor Pages don't require external dependencies.
