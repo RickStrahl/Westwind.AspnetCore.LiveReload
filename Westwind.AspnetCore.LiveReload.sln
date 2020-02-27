@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Support Files", "Support Fi
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Westwind.AspnetCore.LiveReload.Web30", "Westwind.AspnetCore.LiveReload.Web30\Westwind.AspnetCore.LiveReload.Web30.csproj", "{2D8F61A3-8CB3-4AA2-9AB1-578C85428ED0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Westwind.AspnetCore.LiveReload.Web31", "Westwind.AspnetCore.LiveReload.Web30\Westwind.AspnetCore.LiveReload.Web31.csproj", "{2D8F61A3-8CB3-4AA2-9AB1-578C85428ED0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample Web Sites", "Sample Web Sites", "{2B5B0811-4169-4B72-891C-6D0563703332}"
 EndProject

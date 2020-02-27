@@ -262,6 +262,15 @@ We can only hope Microsoft come up with a built-in solution to trigger the recom
 
 ## Change Log
 
+#### Version 1.14
+
+* **Change Targeting to .NET Core 2.1 and 3.1**  
+Changed targets to the LTS releases of .NET Core. Also changed dependencies to `Microsoft.AspNetCore.App` to reference all base ASP.NET Core base dependencies for better update package management support for apps integrating with this library.
+
+* **Update Samples**  
+Updated the samples to be easier to use and provide links to files that can be edited so it's easier to try out the sample and see live reloading work. Also re-targeted the sample app to .NET Core 2.2 and 3.1 (two separate projects due to separate ASP.NET configuration config).
+
+
 #### Version 1.7
 
 * **Add explicit support for .NET Core 3.0**  

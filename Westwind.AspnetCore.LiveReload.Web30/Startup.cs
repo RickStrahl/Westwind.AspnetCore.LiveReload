@@ -33,7 +33,9 @@ namespace Westwind.AspnetCore.LiveReload.Web30
 
             services.AddLiveReload(config =>
             {
-
+                // optional - use config instead
+                //config.LiveReloadEnabled = true;
+                //config.FolderToMonitor = Env.ContentRootPath;
             });
 
 

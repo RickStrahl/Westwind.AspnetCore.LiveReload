@@ -20,6 +20,7 @@ namespace Westwind.AspNetCore.LiveReload
         /// <returns></returns>
         public static IServiceCollection AddLiveReload(this IServiceCollection services,
             Action<LiveReloadConfiguration> configAction = null)
+            
         {
             var provider = services.BuildServiceProvider();
             var configuration = provider.GetService<IConfiguration>();

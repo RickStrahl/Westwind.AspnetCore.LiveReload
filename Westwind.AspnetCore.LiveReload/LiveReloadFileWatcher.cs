@@ -10,7 +10,10 @@ namespace Westwind.AspNetCore.LiveReload
 
         public static void StartFileWatcher()
         {
-            var path = LiveReloadConfiguration.Current.FolderToMonitor;
+            if (!LiveReloadConfiguration.Current.LiveReloadEnabled)
+                return;
+            
+           var path = LiveReloadConfiguration.Current.FolderToMonitor;
             path = Path.GetFullPath(path);
 
             Watcher = new FileSystemWatcher(path);
@@ -32,12 +35,12 @@ namespace Westwind.AspNetCore.LiveReload
         public void StopFileWatcher()
         {
             Watcher?.Dispose();
+            Watcher = null;
         }
 
         private static void FileChanged(string filename)
         {
-            if (!LiveReloadConfiguration.Current.LiveReloadEnabled ||
-                filename.Contains("\\node_modules\\"))
+            if (filename.Contains("\\node_modules\\"))
                 return;
 
             if (string.IsNullOrEmpty(filename) ||

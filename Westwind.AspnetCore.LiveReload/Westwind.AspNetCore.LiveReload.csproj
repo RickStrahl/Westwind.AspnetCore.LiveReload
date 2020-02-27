@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.0;netcoreapp2.1</TargetFrameworks>
-    <Version>0.1.12</Version>
+    <TargetFrameworks>netcoreapp3.1;netcoreapp2.1</TargetFrameworks>
+    <Version>0.1.14</Version>
 
     <Authors>Rick Strahl, West Wind Technologies</Authors>
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
@@ -20,14 +20,14 @@ There is also a standalone 'LiveReloadServer' Dotnet Tool package that can be us
     <Summary>
       ASP.NET Core Live Reload Middleware that monitors file changes in your project and automatically reloads the browser's active page
       .</Summary>
-    <PackageCopyright>Rick Strahl, West Wind Technologies 2019</PackageCopyright>
+    <PackageCopyright>Rick Strahl, West Wind Technologies 2019-2020</PackageCopyright>
     <PackageTags>Live-Reload AspNetCore Middleware Westwind</PackageTags>
     <PackageReleaseNotes></PackageReleaseNotes>
     <PackageIconUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/raw/master/icon.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload</PackageProjectUrl>
     <PackageLicense>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/LICSENSE.md</PackageLicense>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Copyright>Rick Strahl, West Wind Technologies, 2019</Copyright>
+    <!--<AllowUnsafeBlocks>true</AllowUnsafeBlocks>-->
+    <Copyright>Rick Strahl, West Wind Technologies, 2019-2020</Copyright>
     <RepositoryType>Github</RepositoryType>
     <Company>West Wind Technologies</Company>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -38,20 +38,12 @@ There is also a standalone 'LiveReloadServer' Dotnet Tool package that can be us
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">
     <DefineConstants>NETCORE2</DefineConstants>
-    <!--<DefineConstants>TRACE</DefineConstants>-->
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.1' ">
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.WebSockets" Version="2.2.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
-
-    <!--<FrameworkReference Include="Microsoft.AspNetCore.App" />-->
+    <PackageReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.0' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
