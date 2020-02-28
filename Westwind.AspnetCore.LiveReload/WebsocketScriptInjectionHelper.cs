@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Westwind.AspNetCore.LiveReload;
 
 namespace Westwind.AspnetCore.LiveReload
@@ -97,7 +99,7 @@ namespace Westwind.AspnetCore.LiveReload
 
         public static string GetWebSocketClientJavaScript(HttpContext context)
         {
-            var config = LiveReloadConfiguration.Current;
+            var config = context.RequestServices.GetRequiredService<IOptionsMonitor<LiveReloadConfiguration>>().CurrentValue;
 
             var host = context.Request.Host;
             string hostString;

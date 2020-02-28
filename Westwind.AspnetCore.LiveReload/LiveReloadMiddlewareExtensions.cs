@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
+using Westwind.AspnetCore.LiveReload;
 
 namespace Westwind.AspNetCore.LiveReload
 {
@@ -13,57 +16,53 @@ namespace Westwind.AspNetCore.LiveReload
     public static class LiveReloadMiddlewareExtensions
     {
         /// <summary>
+        /// Bypass the automatic configuration that uses the <c>LiveReload</c> section of the configuration file.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="configuration">The selected configuration section to use typically selected via <c>Configuration.GetSection("Section:Name")</c>.</param>
+        /// <param name="configAction">An optional custom configuration action you would like to occur in order to further configure the settings.</param>
+        public static IServiceCollection AddLiveReload(this IServiceCollection services, IConfiguration configuration, Action<LiveReloadConfiguration> configAction = null)
+        {
+            // Conveniently allow the user to select their own section in the configuration file to use
+            services.Configure<LiveReloadConfiguration>(configuration);
+
+            if (!(configAction is null)) services.Configure(configAction);
+
+            // Make sure that the post configure is registered (don't register it twice to avoid problems)
+            services.TryAddTransient<IPostConfigureOptions<LiveReloadConfiguration>, PostConfigureLiveReloadConfiguration>();
+            // Due to how Middleware works in ASP.NET Core you cannot register middleware this way
+            // They are "magically" present when the .UseMiddleware() happens since the middleware method needs to
+            // resolve dependencies from DI in a way that is abnormal for normal DI. RequestDelegate in the constructor
+            // isn't actually resolved from DI, its just ASP.NET Core magic making it seem like everything is DI.
+            //services.TryAddSingleton<LiveReloadMiddleware>();
+
+            return services;
+        }
+
+        /// <summary>
         /// Configure the MarkdownPageProcessor in Startup.ConfigureServices.
         /// </summary>
         /// <param name="services"></param>
         /// <param name="configAction"></param>
         /// <returns></returns>
-        public static IServiceCollection AddLiveReload(this IServiceCollection services,
-            Action<LiveReloadConfiguration> configAction = null)
-            
+        public static IServiceCollection AddLiveReload(this IServiceCollection services, Action<LiveReloadConfiguration> configAction = null)
         {
-            var provider = services.BuildServiceProvider();
-            var configuration = provider.GetService<IConfiguration>();
-            
-            var config = new LiveReloadConfiguration();
-            configuration.Bind("LiveReload",config);
+            // This does the automatic configuration from IConfiguration
+            services.TryAddTransient<IConfigureOptions<LiveReloadConfiguration>, AutoConfigureLiveReloadConfiguration>();
 
-            LiveReloadConfiguration.Current = config;
+            // This gives an extra configuration ability to users
+            if (!(configAction is null)) services.Configure(configAction);
 
-            if (config.LiveReloadEnabled)
-            {
-#if NETCORE2
-                var env = provider.GetService<IHostingEnvironment>();
-#else
-                var env = provider.GetService<IWebHostEnvironment>();
-#endif
-                if (string.IsNullOrEmpty(config.FolderToMonitor))
-                {
-                    config.FolderToMonitor = env.ContentRootPath;
-                }
-                else if (config.FolderToMonitor.StartsWith("~"))
-                {
-                    if (config.FolderToMonitor.Length > 1)
-                    {
-                        var folder = config.FolderToMonitor.Substring(1);
-                        if (folder.StartsWith('/') || folder.StartsWith("\\")) 
-                            folder = folder.Substring(1); 
-                        config.FolderToMonitor = Path.Combine(env.ContentRootPath,folder);
-                        config.FolderToMonitor = Path.GetFullPath(config.FolderToMonitor);
-                    }
-                    else
-                        config.FolderToMonitor = env.ContentRootPath;
-                }
-
-                if (configAction != null)
-                    configAction.Invoke(config);
-
-                LiveReloadConfiguration.Current = config;
-            }
+            // Make sure that the post configure is registered (don't register it twice to avoid problems)
+            services.TryAddTransient<IPostConfigureOptions<LiveReloadConfiguration>, PostConfigureLiveReloadConfiguration>();
+            // Due to how Middleware works in ASP.NET Core you cannot register middleware this way
+            // They are "magically" present when the .UseMiddleware() happens since the middleware method needs to
+            // resolve dependencies from DI in a way that is abnormal for normal DI. RequestDelegate in the constructor
+            // isn't actually resolved from DI, its just ASP.NET Core magic making it seem like everything is DI.
+            //services.TryAddSingleton<LiveReloadMiddleware>();
 
             return services;
         }
-
 
         /// <summary>
         /// Hook up the Markdown Page Processing functionality in the Startup.Configure method
@@ -72,24 +71,28 @@ namespace Westwind.AspNetCore.LiveReload
         /// <returns></returns>
         public static IApplicationBuilder UseLiveReload(this IApplicationBuilder builder)
         {
-            var config = LiveReloadConfiguration.Current;
+            var configuration = builder.ApplicationServices.GetRequiredService<IOptionsMonitor<LiveReloadConfiguration>>();
 
-            if (config.LiveReloadEnabled)
-            {
-                var webSocketOptions = new WebSocketOptions()
+            builder.UseWhen(
+                // Decide if the middleware should activate
+                (_) => configuration.CurrentValue.LiveReloadEnabled,
+                (subAppBuilder) =>
                 {
-                    KeepAliveInterval = TimeSpan.FromSeconds(240),
-                    ReceiveBufferSize = 256
-                };
-                builder.UseWebSockets(webSocketOptions);
+                    var webSocketOptions = new WebSocketOptions()
+                    {
+                        KeepAliveInterval = TimeSpan.FromSeconds(240),
+                        ReceiveBufferSize = 256
+                    };
+                    subAppBuilder.UseWebSockets(webSocketOptions);
 
-                builder.UseMiddleware<LiveReloadMiddleware>();
+                    subAppBuilder.UseMiddleware<LiveReloadMiddleware>();
 
-                LiveReloadFileWatcher.StartFileWatcher();
+                    LiveReloadFileWatcher.StartFileWatcher(configuration);
 
-                // this isn't necessary as the browser disconnects and on reconnect refreshes
-                //LiveReloadMiddleware.RefreshWebSocketRequest();
-            }
+                    // this isn't necessary as the browser disconnects and on reconnect refreshes
+                    //LiveReloadMiddleware.RefreshWebSocketRequest();
+                }
+            );
 
             return builder;
         }

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using Westwind.AspnetCore.LiveReload;
 
 namespace Westwind.AspNetCore.LiveReload
@@ -18,12 +19,14 @@ namespace Westwind.AspNetCore.LiveReload
     public class LiveReloadMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly IOptionsMonitor<LiveReloadConfiguration> _configuration;
         internal static HashSet<WebSocket> ActiveSockets = new HashSet<WebSocket>();
 
 
-        public LiveReloadMiddleware(RequestDelegate next)
+        public LiveReloadMiddleware(RequestDelegate next, IOptionsMonitor<LiveReloadConfiguration> configuration)
         {
             _next = next;
+            _configuration = configuration;
         }
 
 
@@ -36,7 +39,7 @@ namespace Westwind.AspNetCore.LiveReload
 
         public async Task InvokeAsync(HttpContext context)
         {
-            var config = LiveReloadConfiguration.Current;
+            var config = _configuration.CurrentValue;
             if (!config.LiveReloadEnabled)
             {
                 await _next(context);
@@ -82,7 +85,7 @@ namespace Westwind.AspNetCore.LiveReload
         /// <returns></returns>
         private async Task<bool> HandleWebSocketRequest(HttpContext context)
         {
-            var config = LiveReloadConfiguration.Current;
+            var config = _configuration.CurrentValue;
 
             // Handle WebSocket Connection
             if (context.Request.Path == config.WebSocketUrl)

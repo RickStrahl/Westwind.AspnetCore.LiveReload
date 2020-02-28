@@ -1,19 +1,27 @@
 ﻿using System.IO;
+using Microsoft.Extensions.Options;
 
 namespace Westwind.AspNetCore.LiveReload
 {
-    public class LiveReloadFileWatcher
+    public static class LiveReloadFileWatcher
     {
 
         private static System.IO.FileSystemWatcher Watcher;
+        private static IOptionsMonitor<LiveReloadConfiguration> Config = null;
 
-
-        public static void StartFileWatcher()
+        public static void StartFileWatcher(IOptionsMonitor<LiveReloadConfiguration> config)
         {
-            if (!LiveReloadConfiguration.Current.LiveReloadEnabled)
+            // If this is a first start, initialize the config monitoring
+            if (Config is null)
+            {
+                Config = config;
+                Config.OnChange(OnConfigChanged);
+            }
+
+            if (!Config.CurrentValue.LiveReloadEnabled)
                 return;
-            
-           var path = LiveReloadConfiguration.Current.FolderToMonitor;
+
+           var path = Config.CurrentValue.FolderToMonitor;
             path = Path.GetFullPath(path);
 
             Watcher = new FileSystemWatcher(path);
@@ -32,7 +40,19 @@ namespace Westwind.AspNetCore.LiveReload
             Watcher.Renamed += Watcher_Renamed;
         }
 
-        public void StopFileWatcher()
+        private static void OnConfigChanged(LiveReloadConfiguration config, string configName)
+        {
+            if (config.LiveReloadEnabled)
+            {
+                StartFileWatcher(Config);
+            }
+            else
+            {
+                StopFileWatcher();
+            }
+        }
+
+        public static void StopFileWatcher()
         {
             Watcher?.Dispose();
             Watcher = null;
@@ -44,14 +64,14 @@ namespace Westwind.AspNetCore.LiveReload
                 return;
 
             if (string.IsNullOrEmpty(filename) ||
-                !LiveReloadConfiguration.Current.LiveReloadEnabled)
+                !Config.CurrentValue.LiveReloadEnabled)
                 return;
 
             var ext = Path.GetExtension(filename);
             if (ext == null)
                 return;
 
-            if (LiveReloadConfiguration.Current.ClientFileExtensions.Contains(ext))
+            if (Config.CurrentValue.ClientFileExtensions.Contains(ext))
             {
                 _ = LiveReloadMiddleware.RefreshWebSocketRequest();
             }

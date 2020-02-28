@@ -9,12 +9,6 @@ namespace Westwind.AspNetCore.LiveReload
     public class LiveReloadConfiguration
     {
         /// <summary>
-        /// Current configuration instance accessible through out the middleware
-        /// </summary>
-        public static LiveReloadConfiguration Current { get; set; }
-
-
-        /// <summary>
         /// Determines whether live reload is enabled. If off, there's no
         /// overhead in this middleware and it simply passes through requests.
         /// </summary>
