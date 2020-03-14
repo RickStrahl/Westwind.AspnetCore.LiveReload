@@ -30,7 +30,7 @@ namespace Westwind.AspnetCore.LiveReload
 
         public override Task FlushAsync(CancellationToken cancellationToken)
         {
-            // this is called at the beginning of a request in 3.0 and so
+            // this is called at the beginning of a request in 3.x and so
             // we have to set the ContentLength here as the flush/write locks headers
             if (!_isContentLengthSet && IsHtmlResponse())
             {
@@ -42,13 +42,18 @@ namespace Westwind.AspnetCore.LiveReload
         }
 
 
-        public override int Read(byte[] buffer, int offset, int count) => _baseStream.Read(buffer, offset, count);
+        public override int Read(byte[] buffer, int offset, int count)
+        {
+            return _baseStream.Read(buffer, offset, count);
+        }
 
         public override long Seek(long offset, SeekOrigin origin) => _baseStream.Seek(offset, origin);
 
-        public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken) =>
-            _baseStream.ReadAsync(buffer, offset, count, cancellationToken);
-        
+        public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        {
+            return _baseStream.ReadAsync(buffer, offset, count, cancellationToken);
+        }
+
 
         public override void SetLength(long value)
         {
@@ -71,7 +76,6 @@ namespace Westwind.AspnetCore.LiveReload
         {
             if (IsHtmlResponse())
             {
-
                 WebsocketScriptInjectionHelper.InjectLiveReloadScriptAsync(buffer, offset, count, _context, _baseStream)
                                               .GetAwaiter()
                                               .GetResult();
@@ -105,9 +109,9 @@ namespace Westwind.AspnetCore.LiveReload
             _isHtmlResponse =
                 _context.Response.StatusCode == 200 &&
                 _context.Response.ContentType != null &&
-                _context.Response.ContentType.Contains("text/html", StringComparison.InvariantCultureIgnoreCase) &&
-                (_context.Response.ContentType.Contains("utf-8", StringComparison.InvariantCultureIgnoreCase) ||
-                !_context.Response.ContentType.Contains("charset=", StringComparison.InvariantCultureIgnoreCase));
+                _context.Response.ContentType.Contains("text/html", StringComparison.OrdinalIgnoreCase) &&
+                (_context.Response.ContentType.Contains("utf-8", StringComparison.OrdinalIgnoreCase) ||
+                !_context.Response.ContentType.Contains("charset=", StringComparison.OrdinalIgnoreCase));
 
             // Make sure we force dynamic content type since we're
             // rewriting the content - static content will set the header explicitly

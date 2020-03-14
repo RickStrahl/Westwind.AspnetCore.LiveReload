@@ -68,10 +68,15 @@ namespace Westwind.AspnetCore.LiveReload
 
             var endIndex = index + _bodyBytes.Length;
 
+            // Write pre-marker buffer
             await baseStream.WriteAsync(buffer, 0, index - 1);
-            var scriptBytes = Encoding.UTF8.GetBytes(GetWebSocketClientJavaScript(context));
 
+
+            // Write the injected script
+            var scriptBytes = Encoding.UTF8.GetBytes(GetWebSocketClientJavaScript(context));
             await baseStream.WriteAsync(scriptBytes, 0, scriptBytes.Length);
+
+            // Write the rest of the buffer/HTML doc
             await baseStream.WriteAsync(buffer, endIndex, buffer.Length - endIndex);
         }
 

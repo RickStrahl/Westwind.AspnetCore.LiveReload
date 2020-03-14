@@ -3,7 +3,6 @@
 [![NuGet](https://img.shields.io/nuget/v/Westwind.AspnetCore.LiveReload.svg)](https://www.nuget.org/packages/Westwind.AspnetCore.LiveReload/)
 ![](https://img.shields.io/nuget/dt/Westwind.AspnetCore.LiveReload.svg)
 
-
 * **Live Reload Middleware Component**  
 Add the middleware to an existing Web UI Project to provide Live Reload functionality that causes the active page to reload if a file is changed.
 

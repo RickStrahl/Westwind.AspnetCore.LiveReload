@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Westwind.AspnetCore.LiveReload;
 
 namespace Westwind.AspNetCore.LiveReload
@@ -66,11 +67,24 @@ namespace Westwind.AspNetCore.LiveReload
         /// <returns></returns>
         private async Task HandleHtmlInjection(HttpContext context)
         {
+            var path = context.Request.Path.Value;
+
+            // Use a custom StreamWrapper to rewrite output on Write/WriteAsync
             using (var filteredResponse = new ResponseStreamWrapper(context.Response.Body, context))
             {
+#if !NETCORE2
+                // Use new IHttpResponseBodyFeature for abstractions of pilelines/streams etc.
+                // For 3.x this works reliably while direct Response.Body was causing random HTTP failures
+                context.Features.Set<IHttpResponseBodyFeature>(new StreamResponseBodyFeature(filteredResponse));
+
+                //var feature = context.Features.Get<IHttpResponseBodyFeature>();
+#else
                 context.Response.Body = filteredResponse;
+#endif
+
                 await _next(context);
             }
+    
         }
 
 
@@ -131,7 +145,6 @@ namespace Westwind.AspNetCore.LiveReload
                     break;
                 }
             }
-
 
             ActiveSockets.Remove(webSocket);
             if (webSocket.State != WebSocketState.Closed &&
