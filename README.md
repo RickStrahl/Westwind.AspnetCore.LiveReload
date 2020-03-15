@@ -261,7 +261,15 @@ We can only hope Microsoft come up with a built-in solution to trigger the recom
 
 ## Change Log
 
-#### Version 1.14
+### Version 1.17
+
+* **Delay load injected WebSocket Script Code**   
+Change the injected WebSocket script code so it delay loads to avoid potential page load hangs or dual updates.
+
+* **Update Response Rewrite to use IHttpResponseStreamFeature**  
+Update internal code used to rewrite response data for HTML content using the recommended HTTP Features rather than rewriting the Response.Body stream directly.
+
+#### Version 0.1.14
 
 * **Change Targeting to .NET Core 2.1 and 3.1**  
 Changed targets to the LTS releases of .NET Core. Also changed dependencies to `Microsoft.AspNetCore.App` to reference all base ASP.NET Core base dependencies for better update package management support for apps integrating with this library.
@@ -270,7 +278,7 @@ Changed targets to the LTS releases of .NET Core. Also changed dependencies to `
 Updated the samples to be easier to use and provide links to files that can be edited so it's easier to try out the sample and see live reloading work. Also re-targeted the sample app to .NET Core 2.2 and 3.1 (two separate projects due to separate ASP.NET configuration config).
 
 
-#### Version 1.7
+#### Version 0.1.07
 
 * **Add explicit support for .NET Core 3.0**  
 Add a .NET Core 3.0 target to the NuGet package, to minimize package resolution issues.

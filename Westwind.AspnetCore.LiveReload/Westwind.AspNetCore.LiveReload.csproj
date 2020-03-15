@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.1;netcoreapp2.1</TargetFrameworks>
-    <Version>0.1.16</Version>
+    <Version>0.1.17</Version>
 
     <Authors>Rick Strahl, West Wind Technologies</Authors>
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>

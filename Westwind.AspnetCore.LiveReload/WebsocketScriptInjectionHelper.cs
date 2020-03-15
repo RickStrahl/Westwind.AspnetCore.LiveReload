@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -41,6 +39,21 @@ namespace Westwind.AspnetCore.LiveReload
             return html;
         }
 
+        /// <summary>
+        /// Adds Live Reload WebSocket script into the page before the body tag.
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        /// <param name="context"></param>
+        /// <param name="baseStream">The raw Response Stream</param>
+        /// <returns></returns>
+        public static Task InjectLiveReloadScriptAsync(byte[] buffer, int offset, int count, HttpContext context, Stream baseStream)
+        {
+            Span<byte> currentBuffer = buffer;
+            var curBuffer = currentBuffer.Slice(offset, count).ToArray();
+            return InjectLiveReloadScriptAsync(curBuffer, context, baseStream);
+        }
 
         /// <summary>
         /// Adds Live Reload WebSocket script into the page before the body tag.
@@ -83,21 +96,7 @@ namespace Westwind.AspnetCore.LiveReload
         static int LastIndexOf<T>(this T[] array, T[] sought) where T : IEquatable<T> =>
             array.AsSpan().LastIndexOf(sought);
 
-        /// <summary>
-        /// Adds Live Reload WebSocket script into the page before the body tag.
-        /// </summary>
-        /// <param name="buffer"></param>
-        /// <param name="offset"></param>
-        /// <param name="count"></param>
-        /// <param name="context"></param>
-        /// <param name="baseStream">The raw Response Stream</param>
-        /// <returns></returns>
-        public static Task InjectLiveReloadScriptAsync(byte[] buffer, int offset, int count, HttpContext context, Stream baseStream)
-        {
-            Span<byte> currentBuffer = buffer;
-            var curBuffer = currentBuffer.Slice(offset, count).ToArray();
-            return InjectLiveReloadScriptAsync(curBuffer, context, baseStream);
-        }
+        
 
 
         public static string GetWebSocketClientJavaScript(HttpContext context)
@@ -117,7 +116,7 @@ namespace Westwind.AspnetCore.LiveReload
             string script = $@"
 <!-- West Wind Live Reload -->
 <script>
-(function() {{
+setTimeout( function() {{
 
 var retry = 0;
 var connection = tryConnect(true);
@@ -182,7 +181,7 @@ function retryConnection() {{
     }},{config.ServerRefreshTimeout});
 }}
 
-}})();
+}},1000);
 </script>
 <!-- End Live Reload -->
 
