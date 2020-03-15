@@ -261,7 +261,7 @@ We can only hope Microsoft come up with a built-in solution to trigger the recom
 
 ## Change Log
 
-### Version 1.17
+### Version 0.1.17
 
 * **Delay load injected WebSocket Script Code**   
 Change the injected WebSocket script code so it delay loads to avoid potential page load hangs or dual updates.
