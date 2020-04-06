@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.1;netcoreapp2.1</TargetFrameworks>
-    <Version>0.1.17</Version>
+    <Version>0.1.18</Version>
 
     <Authors>Rick Strahl, West Wind Technologies</Authors>
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
@@ -20,10 +20,12 @@ There is also a standalone 'LiveReloadServer' Dotnet Tool package that can be us
     <Summary>
       ASP.NET Core Live Reload Middleware that monitors file changes in your project and automatically reloads the browser's active page
       .</Summary>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageCopyright>Rick Strahl, West Wind Technologies 2019-2020</PackageCopyright>
     <PackageTags>Live-Reload AspNetCore Middleware Westwind</PackageTags>
     <PackageReleaseNotes></PackageReleaseNotes>
-    <PackageIconUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/raw/master/icon.png</PackageIconUrl>
+    <PackageIcon>icon.png</PackageIcon>
     <PackageProjectUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload</PackageProjectUrl>
     <PackageLicense>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/LICSENSE.md</PackageLicense>
     <!--<AllowUnsafeBlocks>true</AllowUnsafeBlocks>-->
@@ -40,6 +42,10 @@ There is also a standalone 'LiveReloadServer' Dotnet Tool package that can be us
     <DefineConstants>NETCORE2</DefineConstants>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp3.1|AnyCPU'">
+    <DocumentationFile>C:\projects\Westwind.AspnetCore.LiveReload\Westwind.AspNetCore.LiveReload\Westwind.AspnetCore.LiveReload.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.1' ">
     <PackageReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
@@ -47,4 +53,7 @@ There is also a standalone 'LiveReloadServer' Dotnet Tool package that can be us
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="icon.png" Pack="true" PackagePath="" />
+  </ItemGroup>
 </Project>

@@ -15,23 +15,24 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
-    <Version>0.1.13</Version>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Version>0.1.18</Version>
     <RazorCompileOnPublish>false</RazorCompileOnPublish>
 
     <Authors>Rick Strahl</Authors>
     <Company>West Wind Technolologies</Company>
     <Product>Westwind.AspnetCore.LiveReload</Product>
-    <Copyright>© Rick Strahl - West Wind Technologies, 2019</Copyright>
+    <Copyright>© Rick Strahl - West Wind Technologies, 2019-2020</Copyright>
 
     <Description>
-      LiveReloadServer provides a generic Web Server for static files and loose Razor files in any local folder. Commandline options let you customize the path, port and a host of other options. Live Reload provides the ability to change static files and Razor files and automatically refresh the active page in the browser.
+      LiveReloadServer provides a generic Web Server with configurable Live Reload functionality for static files and loose Razor files in any local folder. Simply point it at a -- Commandline options let you customize the path, port and a host of other options. Live Reload provides the ability to change static files and Razor files and automatically refresh the active page in the browser.
 
       Works with:
 
       * Static HTML, CSS, JavaScript etc. files
       * Loose Razor Pages (without external dependencies)
       * Options to configure extensions to monitor, port, folder and more.
+
     </Description>
 
     <PackageProjectUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/tree/master/LiveReloadServer</PackageProjectUrl>
@@ -39,7 +40,7 @@
     <RepositoryUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/tree/master/LiveReloadServer</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>Westwind LiveReload Static WebServer DotnetTool</PackageTags>
-    <PackageIconUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/raw/master/icon.png</PackageIconUrl>
+    <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
 
   <!-- Build NuGet Tool Package -->
@@ -62,11 +63,11 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Westwind.Utilities" Version="3.0.30" />
+    <PackageReference Include="Westwind.Utilities" Version="3.0.36" />
   </ItemGroup>
 
   <ItemGroup Condition="$(DefineConstants.Contains('USE_RAZORPAGES'))">
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -74,8 +75,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="icon.png" Pack="true" PackagePath="" />
     <None Update="LiveReloadWebServer.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+     
   </ItemGroup>
 </Project>

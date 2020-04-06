@@ -25,8 +25,6 @@ namespace Westwind.AspNetCore.LiveReload
                                    | NotifyFilters.FileName
                                    | NotifyFilters.DirectoryName;
 
-
-
             Watcher.Changed += Watcher_Changed;
             Watcher.Created += Watcher_Changed;
             Watcher.Renamed += Watcher_Renamed;
