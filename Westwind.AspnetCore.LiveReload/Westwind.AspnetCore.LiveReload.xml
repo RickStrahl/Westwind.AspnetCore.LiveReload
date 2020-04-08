@@ -1,0 +1,176 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Westwind.AspnetCore.LiveReload</name>
+    </assembly>
+    <members>
+        <member name="P:Westwind.AspNetCore.LiveReload.LiveReloadConfiguration.Current">
+            <summary>
+            Current configuration instance accessible through out the middleware
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.LiveReload.LiveReloadConfiguration.LiveReloadEnabled">
+            <summary>
+            Determines whether live reload is enabled. If off, there's no
+            overhead in this middleware and it simply passes through requests.
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.LiveReload.LiveReloadConfiguration.FolderToMonitor">
+            <summary>
+            Optional - the folder to monitor for file changes. By default
+            this value is set to the Web application root folder (ContentRootPath)
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.LiveReload.LiveReloadConfiguration.ClientFileExtensions">
+             <summary>
+             Comma delimited list of file extensions that the file watcher
+             responds to.
+            
+             Note the `.live` extension which is used for server restarts. Please
+             make sure you always add that to your list or server reloads won't work.
+             </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.LiveReload.LiveReloadConfiguration.ServerRefreshTimeout">
+            <summary>
+            The timeout to wait before refreshing the page when shutting down
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.LiveReload.LiveReloadConfiguration.WebSocketUrl">
+            <summary>
+            The URL used for the Web Socket connection on the page to refresh
+            </summary>
+        </member>
+        <member name="P:Westwind.AspNetCore.LiveReload.LiveReloadConfiguration.WebSocketHost">
+            <summary>
+            Optional WebSocket host. Use this if you are on an Https2 connection
+            to point at a http1 connection. "ws://localhost:5000"
+            </summary>
+        </member>
+        <member name="T:Westwind.AspNetCore.LiveReload.LiveReloadMiddleware">
+            <summary>
+            Live Reload middleware routes WebSocket Server requests
+            for the Live Reload push to connected browsers and handles
+            injecting WebSocket client JavaScript into any HTML content.
+            </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.LiveReload.LiveReloadMiddleware.InvokeAsync(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Routes to WebSocket handler and injects javascript into
+            HTML content
+            </summary>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.LiveReload.LiveReloadMiddleware.HandleHtmlInjection(Microsoft.AspNetCore.Http.HttpContext)">
+             <summary>
+             Inspects all non WebSocket content for HTML documents
+             and if it finds HTML injects the JavaScript needed to
+             refresh the browser via Web Sockets.
+            
+             Uses a wrapper stream to wrap the response and examine
+             only text/html requests - other content is passed through
+             as is.
+             </summary>
+             <param name="context"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.LiveReload.LiveReloadMiddleware.HandleWebSocketRequest(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Checks for WebService Requests and if it is routes it to the
+            WebSocket handler event loop.
+            </summary>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.LiveReload.LiveReloadMiddleware.WebSocketWaitLoop(System.Net.WebSockets.WebSocket)">
+            <summary>
+             Web Socket event loop. Just sits and waits
+            for disconnection or error to break.
+            </summary>
+            <param name="webSocket"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.LiveReload.LiveReloadMiddleware.RefreshWebSocketRequest(System.Boolean)">
+             <summary>
+             Static method that can be called from code to force
+             the browser to refresh itself.
+            
+             Use Delayed refresh for server code refreshes that
+             are slow to refresh due to restart
+             </summary>
+             <param name="delayed"></param>
+             <returns></returns>
+        </member>
+        <member name="T:Westwind.AspNetCore.LiveReload.LiveReloadMiddlewareExtensions">
+            <summary>
+            The Middleware Hookup extensions.
+            </summary>
+        </member>
+        <member name="M:Westwind.AspNetCore.LiveReload.LiveReloadMiddlewareExtensions.AddLiveReload(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Westwind.AspNetCore.LiveReload.LiveReloadConfiguration})">
+            <summary>
+            Configure the MarkdownPageProcessor in Startup.ConfigureServices.
+            </summary>
+            <param name="services"></param>
+            <param name="configAction"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspNetCore.LiveReload.LiveReloadMiddlewareExtensions.UseLiveReload(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+            Hook up the Markdown Page Processing functionality in the Startup.Configure method
+            </summary>
+            <param name="builder"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Westwind.AspnetCore.LiveReload.ResponseStreamWrapper">
+            <summary>
+            Wraps the Response Stream to inject the WebSocket HTML into 
+            an HTML Page.
+            </summary>
+        </member>
+        <member name="M:Westwind.AspnetCore.LiveReload.ResponseStreamWrapper.IndexOfByteArray(System.Byte[],System.Byte[])">
+            <summary>
+            Tries to find a
+            </summary>
+            <param name="buffer">byte array to be searched</param>
+            <param name="bufferToFind">byte to find</param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspnetCore.LiveReload.ResponseStreamWrapper.IndexOfByteArray(System.Byte[],System.String,System.Text.Encoding)">
+            <summary>
+            Returns an index into a byte array to find a string in the byte array.
+            Exact match using the encoding provided or UTF-8 by default.
+            </summary>
+            <param name="buffer"></param>
+            <param name="stringToFind"></param>
+            <param name="encoding"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Westwind.AspnetCore.LiveReload.WebsocketScriptInjectionHelper">
+            <summary>
+            Helper class that handles the HTML injection into
+            a string or byte array.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Westwind.AspnetCore.LiveReload.WebsocketScriptInjectionHelper.InjectLiveReloadScript(System.String,Microsoft.AspNetCore.Http.HttpContext)" -->
+        <member name="M:Westwind.AspnetCore.LiveReload.WebsocketScriptInjectionHelper.InjectLiveReloadScriptAsync(System.Byte[],System.Int32,System.Int32,Microsoft.AspNetCore.Http.HttpContext,System.IO.Stream)">
+            <summary>
+            Adds Live Reload WebSocket script into the page before the body tag.
+            </summary>
+            <param name="buffer"></param>
+            <param name="offset"></param>
+            <param name="count"></param>
+            <param name="context"></param>
+            <param name="baseStream">The raw Response Stream</param>
+            <returns></returns>
+        </member>
+        <member name="M:Westwind.AspnetCore.LiveReload.WebsocketScriptInjectionHelper.InjectLiveReloadScriptAsync(System.Byte[],Microsoft.AspNetCore.Http.HttpContext,System.IO.Stream)">
+            <summary>
+            Adds Live Reload WebSocket script into the page before the body tag.
+            </summary>
+            <param name="buffer"></param>
+            <param name="context"></param>
+            <param name="baseStream">The raw Response Stream</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
