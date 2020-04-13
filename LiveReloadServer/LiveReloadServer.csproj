@@ -30,7 +30,7 @@
       Works with:
 
       * Static HTML, CSS, JavaScript etc. files
-      * Loose Razor Pages (without external dependencies)
+      * Loose, single-file Razor Pages including assembly dependencies
       * Options to configure extensions to monitor, port, folder and more.
 
     </Description>
