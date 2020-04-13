@@ -129,14 +129,14 @@ namespace LiveReloadServer
 
             string headerLine = new string('-', Helpers.AppHeader.Length);
             Console.WriteLine(headerLine);
-            Console.WriteLine(Helpers.AppHeader);
+            ConsoleHelper.WriteLine(Helpers.AppHeader,ConsoleColor.Yellow);
             Console.WriteLine(headerLine);
-            Console.WriteLine($"(c) West Wind Technologies, 2018-{DateTime.Now.Year}\r\n");
+            Console.WriteLine($"(c) West Wind Technologies, 2019-{DateTime.Now.Year}\r\n");
+
             Console.Write($"Site Url     : ");
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(url);
-            Console.ResetColor();
+            ConsoleHelper.WriteLine(url,ConsoleColor.Cyan);
             Console.WriteLine($"Web Root     : {WebRoot}");
+            Console.WriteLine($"Executable   : {Assembly.GetExecutingAssembly().Location}");
             Console.WriteLine(
                 $"Extensions   : {(string.IsNullOrEmpty(extensions) ? $"{(UseRazor ? ".cshtml," : "")}.css,.js,.htm,.html,.ts" : extensions)}");
             Console.WriteLine($"Live Reload  : {UseLiveReload}");
@@ -152,7 +152,7 @@ namespace LiveReloadServer
             Console.WriteLine();
             Console.WriteLine($"'{Helpers.ExeName} --help' for start options...");
             Console.WriteLine();
-            Console.WriteLine("Ctrl-C or Ctrl-Break to exit...");
+            ConsoleHelper.WriteLine("Ctrl-C or Ctrl-Break to exit...",ConsoleColor.Yellow);
 
             Console.WriteLine("----------------------------------------------");
 

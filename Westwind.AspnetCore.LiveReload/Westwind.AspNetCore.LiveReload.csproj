@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.1;netcoreapp2.1</TargetFrameworks>
-    <Version>0.1.18</Version>
+    <Version>0.1.19</Version>
 
     <Authors>Rick Strahl, West Wind Technologies</Authors>
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
@@ -35,7 +35,7 @@ There is also a standalone 'LiveReloadServer' Dotnet Tool package that can be us
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 
     <RepositoryUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload</RepositoryUrl>
-
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">

@@ -6,17 +6,17 @@
     <!--<DefineConstants>USE_RAZORPAGES</DefineConstants>-->
 
     <!-- Build Package with Razor Support -->
-    <DefineConstants>USE_RAZORPAGES;BUILD_PACKAGE</DefineConstants>
+    <DefineConstants>USE_RAZORPAGES;BUILD_EXE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE;BUILD_PACKAGE;USE_RAZORPAGES</DefineConstants>
+    <DefineConstants>TRACE;USE_RAZORPAGES</DefineConstants>
   </PropertyGroup>
 
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Version>0.1.18</Version>
+    <Version>0.1.19</Version>
     <RazorCompileOnPublish>false</RazorCompileOnPublish>
 
     <Authors>Rick Strahl</Authors>
@@ -41,6 +41,7 @@
     <RepositoryType>Github</RepositoryType>
     <PackageTags>Westwind LiveReload Static WebServer DotnetTool</PackageTags>
     <PackageIcon>icon.png</PackageIcon>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
 
   <!-- Build NuGet Tool Package -->
@@ -53,10 +54,10 @@
   </PropertyGroup>
 
   <!-- Build Standalone Exe -->
-  <PropertyGroup Condition="!$(DefineConstants.Contains('BUILD_PACKAGE'))">
-    <!--<PublishSingleFile>true</PublishSingleFile>
+  <PropertyGroup Condition="!$(DefineConstants.Contains('BUILD_EXE'))">
+    <PublishSingleFile>true</PublishSingleFile>
     <PublishTrimmed>true</PublishTrimmed>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>-->
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
   
 

@@ -151,7 +151,15 @@
             a string or byte array.
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:Westwind.AspnetCore.LiveReload.WebsocketScriptInjectionHelper.InjectLiveReloadScript(System.String,Microsoft.AspNetCore.Http.HttpContext)" -->
+        <member name="M:Westwind.AspnetCore.LiveReload.WebsocketScriptInjectionHelper.InjectLiveReloadScript(System.String,Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Injects WebSocket Refresh code into JavaScript document
+            just above the `&lt;/body&gt;` tag.
+            </summary>
+            <param name="html"></param>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
         <member name="M:Westwind.AspnetCore.LiveReload.WebsocketScriptInjectionHelper.InjectLiveReloadScriptAsync(System.Byte[],System.Int32,System.Int32,Microsoft.AspNetCore.Http.HttpContext,System.IO.Stream)">
             <summary>
             Adds Live Reload WebSocket script into the page before the body tag.

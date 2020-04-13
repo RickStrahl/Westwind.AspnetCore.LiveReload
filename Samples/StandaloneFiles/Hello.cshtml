@@ -1,0 +1,60 @@
+@page
+
+<html>
+   <head>        
+    <link href="lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="lib/fontawesome/css/all.min.css" rel="stylesheet" />
+    <link href="css/application.css" rel="stylesheet" />
+    <style>
+        .bigger { font-size: 1.2em }
+    </style>
+    </head>
+<body>
+<div class="container mt-4" >
+
+<h1>Hello World</h1>
+
+<p class="bigger">Time is: @DateTime.Now.ToString("hh:mm:ss tt")</p>
+
+<hr>
+<p><i>
+    The following block downloads a version file from the Markdown Monster Web Site
+    and displays the version number:
+</i></p>
+@{
+    var client = new System.Net.WebClient();
+    var xml = await client.DownloadStringTaskAsync("https://west-wind.com/files/MarkdownMonster_version.xml");
+	    
+    var start = xml.IndexOf("<Version>") + 9;        
+    var end = xml.LastIndexOf("</Version>");
+    var version = xml.Substring(start, end - start);
+}
+
+<p class="bigger">
+    Latest Markdown Monster Version: <b>@version</b>
+</p>
+<hr>
+
+
+<h2>Dynamically loaded Assembly and Type access:</h2>
+
+<p><i>
+    The following adds a reference to the Westwind.AspNetCore.Markdown and Markdig packages
+    and uses them to parse Markdown to HTML. These assemblies are loaded in a `./PrivateBin`
+    folder and loaded from there and then become accessible in code.
+</i></p>
+<h3>Markdown (as HTML text):</h3>
+<div class="bigger">
+    @Markdig.Markdown.ToHtml("This is some **bold** Markdown text rendered into an `HTML` string.",null)
+</div>
+<hr>
+
+<h3>Markdown (rendered):</h3>
+
+<div class="bigger">
+    @Html.Raw(Westwind.AspNetCore.Markdown.Markdown.Parse("This is some **bold** Markdown text rendered into an `HTML` string."))
+</div>
+
+</div>
+</body>
+</html>

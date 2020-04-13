@@ -1,0 +1,208 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>TestProject2 Test Page</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="">
+
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <link rel="apple-touch-icon" href="touch-icon.png" />
+
+    <link rel="icon" href="touch-icon.png" />
+    <meta name="msapplication-TileImage" content="touch-icon.png">
+
+    <!-- application.css references bootstrap and font-awesome -->
+    <link href="lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="lib/fontawesome/css/all.min.css" rel="stylesheet" />
+    <link href="css/application.css" rel="stylesheet" />
+    <style>
+        .btn {
+            min-width: 185px;
+            margin-top: 5px;
+        }
+
+        .container > h3 {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px whitesmoke solid;
+        }
+    </style>
+</head>
+
+<body>
+<div>
+
+    <div class="banner">
+        <a class="slide-menu-toggle-open"
+           title="More Samples">
+            <i class="fas fa-bars"></i>
+        </a>
+
+        <div class="title-bar">
+            <a href="./">
+                <img src="images/icon.png" 
+                     style="height: 45px; float: left"/>
+                <div style="float: left; margin: 4px 5px; line-height: 1.0">
+                    <i style="color: #0092d0; font-size: 0.9em; font-weight: bold;">West Wind</i><br />
+                    <i style="color: whitesmoke; font-size: 1.5em; font-weight: 600;">
+                        Web Connection
+                    </i>
+                </div>
+            </a>
+        </div>
+
+        <nav class="banner-menu-top float-right">
+            <a id="SamplesLink" class="hidable">
+                <i class="fas fa-list"></i>
+                More
+            </a>
+            <a href="http://west-wind.com/webconnection/docs/" class="hidable">
+                <i class="fas fa-book"></i>
+                Documentation
+            </a>
+            <a href="admin/admin.aspx" class="hidable">
+                <i class="fas fa-cog"></i>
+                Admin
+            </a>
+        </nav>
+    </div>
+
+    <div id="MainView">
+        <div class="container">
+    
+            <div class="page-header-text">
+                <i class="fas fa-list"></i>
+                Live Reload Server Loose File Web Site Samples
+            </div>
+    
+            <p>
+                The following links let you test Live Reload server against some static
+                and Razor files.
+            </p>
+    
+    
+            <div class="panel panel-default" style="margin-top: 50px;">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Application Links</h3>
+                </div>    
+    
+                <div class="list-group">
+                    <a href="Test.html" class="list-group-item">
+                        <i class="fas fa-bullhorn"></i> 
+                        Test HTML Page
+                    </a>
+                    <a href="Hello" class="list-group-item">
+                        <i class="fas fa-globe-americas"></i> 
+                        Hello Razor Page
+                    </a>                    
+                </div>
+            </div>    
+    
+        </div> <!-- .container-->
+    
+    
+    
+        <footer>
+            <a href="http://www.west-wind.com/" class="float-right">
+                <img src="images/WestwindText.png" />
+            </a>
+            &copy; Your Company Here,
+            2020
+        </footer>
+    </div> <!-- #MainView -->
+
+    <nav class="slide-menu">
+        <div style="padding: 10px 10px 10px 3px;">
+
+            <a href="./">
+                <i class="fas fa-home"></i>
+                Home
+            </a>
+
+            <a href="http://west-wind.com/webconnection/docs/">
+                <i class="fas fa-book"></i>
+                Web Connection Documentation
+            </a>
+
+            <a href="https://support.west-wind.com">
+                <i class="fas fa-question-circle"></i>
+                Web Connection Support
+            </a>
+
+            <a href="admin/admin.aspx">
+                <i class="fas fa-cog"></i>
+                Admin
+            </a>
+        </div>
+    </nav>
+
+    <script src="lib/jquery/dist/jquery.js"></script>
+    <script src="lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script>        
+         // toggle menu, handle menu click and outside click to close
+         $(document).on("click",
+            ".slide-menu-toggle-open,.slide-menu-toggle-close," +
+            ".slide-menu a, #SamplesLink,.slide-menu",
+            function () {
+                $(".slide-menu").toggleClass("active");
+            });
+        // close when clicking outside of .slide-menu
+        $(document).on("click","#MainView",
+            function () {
+                var $sm = $(".slide-menu");
+                if ($sm.hasClass("active")) $sm.removeClass("active");
+            });
+        $("#btnSamplesLink").click(function() {
+            $(".slide-menu").toggleClass("active");    
+            return false;
+        });
+    </script>
+    <script>
+        (function () {
+            if (!localStorage)
+                return;
+
+            var LS_KEY = "wc_default_scrollpos";
+            var scrollPos = localStorage.getItem(LS_KEY);
+            if (scrollPos) {
+                $("body").scrollTop(scrollPos);   // chrome fails
+                saveScrollPos(0);
+            }
+
+            // remember scroll position
+            $(".btn").click(function () {
+                scrollPos = $("body").scrollTop();
+                saveScrollPos(scrollPos);
+            });
+            function saveScrollPos(scrollPos) {
+                if (!scrollPos)
+                    localStorage.removeItem(LS_KEY);
+                else
+                    localStorage.setItem(LS_KEY, scrollPos);
+            }
+        })();
+
+        $("#lnkMessageBoard").click(function () {
+            if (window.location.hostname.indexOf("west-wind.com") > -1) {
+                window.location.href = "http://support.west-wind.com";
+                return;
+            }
+
+            var text =
+                "The message board application is a separate application that needs to be " +
+                    "started with a separate server instances. Do you want to see the configuration instructions?\r\n\r\n" +
+                    "Ok shows configuration instructions, Cancel takes you to the online application.";
+            if (confirm(text))
+                window.location.href = "http://west-wind.com/webconnection/docs/_0190ic5zn.htm";
+            else 
+                window.location.href = "http://support.west-wind.com/";            
+
+        });
+    </script>
+</body>
+</html>

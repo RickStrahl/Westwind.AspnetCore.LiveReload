@@ -23,7 +23,7 @@ namespace Westwind.AspnetCore.LiveReload
 
         /// <summary>
         /// Injects WebSocket Refresh code into JavaScript document
-        /// just above the `</body>` tag.
+        /// just above the `&lt;/body&gt;` tag.
         /// </summary>
         /// <param name="html"></param>
         /// <param name="context"></param>
