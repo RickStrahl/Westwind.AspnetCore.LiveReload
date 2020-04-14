@@ -1,5 +1,10 @@
 # Live Reload WebServer Dotnet Tool
 
+[![NuGet](https://img.shields.io/nuget/v/LiveReloadServer.svg)](https://www.nuget.org/packages/LiveReloadServer/)
+![](https://img.shields.io/nuget/dt/LiveReloadServer.svg)
+
+[![NuGet](https://img.shields.io/chocolatey/v/livereloadwebserver.svg)](https://chocolatey.org/packages/livereloadwebserver) [![](https://img.shields.io/chocolatey/dt/livereloadwebserver.svg)](https://chocolatey.org/packages/livereloadwebserver)
+
 This is a self-contained Web Server for serving static HTML and loose Razor files that automatically includes Live Reload functionality. 
 
 * Generic Static File Web Server you can launch in any folder
