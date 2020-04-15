@@ -17,7 +17,7 @@
     },
     "LiveReloadServer": {
       "commandName": "Project",
-      "commandLineArgs": "--WebRoot ..\\..\\..\\..\\..\\Samples\\StandaloneFiles --useRazor --ShowUrls True",
+      "commandLineArgs": "--WebRoot ..\\..\\..\\..\\Samples\\StandaloneFiles -useSSL -useRazor --ShowUrls True",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

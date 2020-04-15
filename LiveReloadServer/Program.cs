@@ -127,7 +127,7 @@ namespace LiveReloadServer
                     string sport = config["Port"];
                     int.TryParse(sport, out int port);
                     if (port == 0)
-                        port = 5000;
+                        port = 5200;
 
                     bool useSsl = Helpers.GetLogicalSetting("UseSsl", config);
                     webBuilder.UseUrls($"http{(useSsl ? "s" : "")}://0.0.0.0:{port}");

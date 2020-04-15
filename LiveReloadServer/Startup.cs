@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Loader;
@@ -32,7 +33,7 @@ namespace LiveReloadServer
         public void ConfigureServices(IServiceCollection services)
         {
             // Get Configuration Settings
-            UseLiveReload = Helpers.GetLogicalSetting("LiveReloadEnabled", Configuration);
+            UseLiveReload = Helpers.GetLogicalSetting("LiveReloadEnabled", Configuration, true);
             UseRazor = Helpers.GetLogicalSetting("UseRazor", Configuration);
 
             WebRoot = Configuration["WebRoot"];
@@ -71,13 +72,15 @@ namespace LiveReloadServer
         }
 
 
+        private static object consoleLock = new object();
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, Microsoft.AspNetCore.Hosting.IWebHostEnvironment env)
         {
-            bool useSsl = Helpers.GetLogicalSetting("useSsl", Configuration);
-            bool showUrls = Helpers.GetLogicalSetting("ShowUrls", Configuration);
-            bool openBrowser = Helpers.GetLogicalSetting("OpenBrowser", Configuration);
+            bool useSsl = Helpers.GetLogicalSetting("useSsl", Configuration, false);
+            bool showUrls = Helpers.GetLogicalSetting("ShowUrls", Configuration, true);
+            bool openBrowser = Helpers.GetLogicalSetting("OpenBrowser", Configuration, true);
 
             string defaultFiles = Configuration["DefaultFiles"];
             if (string.IsNullOrEmpty(defaultFiles))
@@ -85,7 +88,7 @@ namespace LiveReloadServer
 
             var strPort = Configuration["Port"];
             if (!int.TryParse(strPort, out Port))
-                Port = 5000;
+                Port = 5200;
 
             if (UseLiveReload)
                 app.UseLiveReload();
@@ -97,12 +100,58 @@ namespace LiveReloadServer
 
             if (showUrls)
             {
+                var socketUrl = Configuration["LiveReload:WebSocketUrl"];
+
                 app.Use(async (context, next) =>
                 {
-                    var url =
-                        $"{context.Request.Method}  {context.Request.Scheme}://{context.Request.Host}  {context.Request.Path}{context.Request.QueryString}";
-                    Console.WriteLine(url);
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+
                     await next();
+
+                    // ignore Web socket requests
+                    if(context.Request.Path.Value == socketUrl)
+                        return;
+
+                    lock (consoleLock)
+                    {
+                        var ct = context.Response.ContentType;
+
+                        var url =
+                            $"{context.Request.Method}  {context.Request.Scheme}://{context.Request.Host}  {context.Request.Path}{context.Request.QueryString}";
+
+                        url = url.PadRight(80, ' ');
+
+                        bool isPrimary = ct != null &&
+                                         (ct.StartsWith("text/html") ||
+                                          ct.StartsWith("text/plain") ||
+                                          ct.StartsWith("application/json") ||
+                                          ct.StartsWith("text/xml"));
+
+                        if (ct == null) // no response
+                        {
+                            ConsoleHelper.Write(url + " ", ConsoleColor.Red);
+                            isPrimary = true;
+                        }
+                        else if (isPrimary)
+                            ConsoleHelper.Write(url + " ", ConsoleColor.Gray);
+                        else
+                            ConsoleHelper.Write(url + " ", ConsoleColor.DarkGray);
+
+                        var status = context.Response.StatusCode;
+                        if (status >= 200 && status < 400)
+                            ConsoleHelper.Write(status.ToString(),
+                                isPrimary ? ConsoleColor.Green : ConsoleColor.DarkGreen);
+                        else if (status == 401)
+                            ConsoleHelper.Write(status.ToString(),
+                                isPrimary ? ConsoleColor.Yellow : ConsoleColor.DarkYellow);
+                        else if (status >= 400)
+                            ConsoleHelper.Write(status.ToString(), isPrimary ? ConsoleColor.Red : ConsoleColor.DarkRed);
+
+                        sw.Stop();
+                        ConsoleHelper.WriteLine($" {sw.ElapsedMilliseconds:n0}ms".PadLeft(6), ConsoleColor.DarkGray);
+                    }
+
                 });
             }
 
@@ -134,7 +183,7 @@ namespace LiveReloadServer
             Console.WriteLine($"(c) West Wind Technologies, 2019-{DateTime.Now.Year}\r\n");
 
             Console.Write($"Site Url     : ");
-            ConsoleHelper.WriteLine(url,ConsoleColor.Cyan);
+            ConsoleHelper.WriteLine(url,ConsoleColor.DarkCyan);
             Console.WriteLine($"Web Root     : {WebRoot}");
             Console.WriteLine($"Executable   : {Assembly.GetExecutingAssembly().Location}");
             Console.WriteLine(
@@ -150,7 +199,8 @@ namespace LiveReloadServer
             Console.WriteLine($"Environment  : {env.EnvironmentName}");
 
             Console.WriteLine();
-            Console.WriteLine($"'{Helpers.ExeName} --help' for start options...");
+            ConsoleHelper.Write(Helpers.ExeName +  "--help", ConsoleColor.DarkCyan);
+            Console.WriteLine(" for start options...");
             Console.WriteLine();
             ConsoleHelper.WriteLine("Ctrl-C or Ctrl-Break to exit...",ConsoleColor.Yellow);
 
@@ -159,14 +209,14 @@ namespace LiveReloadServer
             var oldColor = Console.ForegroundColor;
             foreach (var assmbly in LoadedPrivateAssemblies)
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("Additional Assembly: " + assmbly);
+                var fname = Path.GetFileName(assmbly);
+                ConsoleHelper.WriteLine("Additional Assembly: " + fname,ConsoleColor.DarkGreen);
             }
 
             foreach (var assmbly in FailedPrivateAssemblies)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Failed Additional Assembly: " + assmbly);
+                var fname = Path.GetFileName(assmbly);
+                ConsoleHelper.WriteLine("Failed Additional Assembly: " + fname,ConsoleColor.DarkGreen);
             }
 
             Console.ForegroundColor = oldColor;
