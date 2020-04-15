@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>TestProject2 Test Page</title>
+    <title>Live Reload Server Sample</title>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -61,13 +61,9 @@
                 <i class="fas fa-list"></i>
                 More
             </a>
-            <a href="http://west-wind.com/webconnection/docs/" class="hidable">
-                <i class="fas fa-book"></i>
+            <a href="https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/blob/master/LiveReloadServer%2FREADME.md" class="hidable">
+                <i class="fab fa-github"></i>
                 Documentation
-            </a>
-            <a href="admin/admin.aspx" class="hidable">
-                <i class="fas fa-cog"></i>
-                Admin
             </a>
         </nav>
     </div>
@@ -128,25 +124,26 @@
                 Home
             </a>
 
-            <a href="http://west-wind.com/webconnection/docs/">
-                <i class="fas fa-book"></i>
-                Web Connection Documentation
+            <a href="https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/blob/master/LiveReloadServer%2FREADME.md">
+                <i class="fab fa-github"></i>
+                Documentation
+            </a>       
+            <a href="https://www.nuget.org/packages/LiveReloadServer/" class="hidable">
+                <i class="fas fa-download"></i>
+                Dotnet Tool NuGet
+            </a>
+            <a href="https://chocolatey.org/packages/LiveReloadWebServer" class="hidable">
+                <i class="fas fa-download"></i>
+                Chocolatey Windows Package
             </a>
 
-            <a href="https://support.west-wind.com">
-                <i class="fas fa-question-circle"></i>
-                Web Connection Support
-            </a>
-
-            <a href="admin/admin.aspx">
-                <i class="fas fa-cog"></i>
-                Admin
-            </a>
+            
         </div>
     </nav>
 
+    <script src="lib/jquery.min.js"></script>
     <script>        
-         // toggle menu, handle menu click and outside click to close
+         // toggle menu, handle menu click and outside click to close         
          $(document).on("click",
             ".slide-menu-toggle-open,.slide-menu-toggle-close," +
             ".slide-menu a, #SamplesLink,.slide-menu",
