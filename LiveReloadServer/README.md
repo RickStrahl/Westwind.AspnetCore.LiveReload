@@ -240,7 +240,7 @@ You have to use **assemblies** rather than NuGet packages and you are responsibl
 Finding all dependencies may be tricky since NuGet doesn't show you all `dll` dependencies, so this may require some sleuthing in a project's `project.dep.json` file in a `publish` folder.
 
 
-### Use Cases for a Static Server with Benfits
+### Use Cases for a Static Server with Benefits
 Some things you can do that are useful:
 
 * Update a Copyright notice year with `2017-@DateTime.Now.Year`
