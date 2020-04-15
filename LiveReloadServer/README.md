@@ -25,7 +25,7 @@ You can grab the compiled tool as:
 > All three versions have the same features and interface, just the delivery mechanism and the executable name is different. The EXE uses `LiveReloadWebServer` while the Dotnet Tool uses `LiveReloadServer`.
   
 ### What does it do?
-This tool is a generic local Web Server that you can start in **any folder** to provide simple and quick HTTP access. You can serve static resoures as well as loose Razor Pages as long as those Razor Pages don't require external dependencies.
+This tool is a generic **local Web Server** that you can start in **any folder** to provide simple and quick HTTP access to HTML and other Web resources. You can serve any static resources - HTML, CSS, JS etc. - as well as loose Razor Pages that don't require any code behind or dependent source code. 
 
 Live Reload is enabled by default and checks for changes to common static files. If a checked file is changed, the browser's current page is refreshed. You can map additional extensions that trigger the LiveReload.
 
@@ -117,10 +117,20 @@ The Web Server automatically serves all static files and Live Reload is automati
 
 You can specify explicit file extensions to monitor using the `--Extensions` switch. The default is: `".cshtml,.css,.js,.htm,.html,.ts"`.
 
-## Razor Files
-You can also use 'loose Razor Files' in the designated folder, which means you can use `.cshtml` Razor Pages with this server with single file functionality. There is support for Layout pages, ViewStart, ViewImport, partials etc. 
+> #### Slow First Time Razor Startup
+> First time Razor Page startup can be slow. Cold start requires the Razor Runtime to load the compiler and related resources so the very first page hit can take a few seconds before the Razor page renders. Subsequent page compilation is faster but still 'laggy' (few hundred ms), and previously compiled pages run very fast at pre-compiled speed.
 
-To serve a Razor page create a page that uses some .NET code using C# Razor syntax. For example here's a `Hello.cshtml`:
+## Razor Files
+LiveReloadServer has **basic Razor Pages support**, which means you can create **single file, inline Razor content in Razor pages** as well as use Layout, Partials, ViewStart etc. in the traditional Razor Pages project hierarchy. As long as **all code** is inside of `.cshtml` Razor pages it should work.
+
+### No Compiled C# Code
+However, there's **no support for code behind razor models** or  **loose C# .cs compilation** as runtime compilation outside of Razor is not supported. All dynamic compilable code has to live in Razor `.shtml` content.
+
+### External Assembly Support
+You can however add **external assemblies** to support external code in your site, by adding final dependent assemblies (not NuGet packages!) into a `./privatebin` folder below your WebRoot. Assemblies in this folder will be loaded when the site is launched and become available for access in your Razor page code.
+
+## Using Razor Features
+To serve a Razor page create a page that uses some .NET code using C# Razor syntax. For example here's a `hello.cshtml`:
 
 ```html
 @page
@@ -159,10 +169,14 @@ Note it's the name of the Razor Page **without the extension**. If you create th
 http://localhost:5200/subfolder/hello
 ```
 
-### Files and Folder Support
-As mentioned above you can use most Razor Pages file based constructs like _Layout and Partial pages as well as shared folders etc. The root folder works like any other Razor Pages folder or Area in ASP.NET Core and so all the relative linking and child page access are available.
+Same as you would expect with Razor Page in full ASP.NET Core applications.
 
-#### Error Page
+I want to stress though, that this is a limited Razor Pages implementation that is not meant to substitute for a full ASP.NET Core Razor Application. Since there's no code behind compilation or ability to 
+
+### Files and Folder Support
+As mentioned above you can use most Razor Pages file based constructs like _Layout and Partial pages, ViewStart as well as shared folders etc. The root folder works like any other Razor Pages folder or Area in ASP.NET Core and so all the relative linking and child page access are available.
+
+### Error Page
 When an error occurs errors are fired into an `Error.cshtml` page. You have to create this page as the tool uses a folder that you provide. 
 
 You can create an error page and return error information like this using the HttpContext features to retrieve an `IExceptionHandlerPathFeature`
@@ -205,43 +219,44 @@ You can create an error page and return error information like this using the Ht
 > @icon-info-circle Set Development Environment
 > Note you can set the Development Environment by setting the `LIVERELOADWEBSERVER_ENVIRONMENT` variable to `Production` or `Development`. In Development mode it will show the error information above. The default is production.
 
-### Non-Razor Page Code
-But there's no support for:
+### Non-Razor Page Code is not supported
+The following code execution features are not available:
 
-* No compiled Source Code files (.cs)
-* ~~No external Package/Assembly loading~~
+* No code behind model code (.cs)
+* No compiled source code files (.cs)
 
-In short, this is not meant to be an Application Development environment, but rather provide **static pages with benefits**.
+You can however load external assemblies by placing assemblies in `./privatebin` of the web root.
 
+I want to stress that LiveReloadServer is not meant to replace RazorPages or a full ASP.NET Core application - it is meant as a local or lightweight static site Web Server with 'benefits' of some dynamic code execution. But it's not well suited to building a business application!
+
+### Load External Assemblies
+It's also possible to pull in additional assemblies that can then be accessed in the Razor Pages. To do this:
+
+* Create a `./privateBin` folder in your specified WebRoot folder
+* Add any **assemblies** and their dependencies there
+
+You have to use **assemblies** rather than NuGet packages and you are responsible for adding all required dependencies in the `./privatebin` folder in order for the application to run. For example, if I wanted to add `Westwind.AspNetCore.Markdown` for Markdown features I can add the `Westwind.AspNetCore.Markdown.dll`. However, that dll also has a dependency on `Markdig.dll` so that assembly has to be available in the `./PrivateBin` folder as well.
+
+Finding all dependencies may be tricky since NuGet doesn't show you all `dll` dependencies, so this may require some sleuthing in a project's `project.dep.json` file in a `publish` folder.
+
+
+### Use Cases for a Static Server with Benfits
 Some things you can do that are useful:
 
 * Update a Copyright notice year with `2017-@DateTime.Now.Year`
 * Read authentication values
 * Check versions of files on disk to display version number for downloads
+* Download content from other Web sites to retrieve information or text
 
-All these things use intrinsic built in features which while limited to generic functionality are still very useful for simple scripting scenarios.
+All these things use intrinsic built-in features of .NET or ASP.NET which, while limited to generic functionality, are still very useful for simple scripting scenarios.
 
-### Load External Assemblies
-It's also possible to pull in additional assemblies that can then be accessed in the Razor Pages. To do this:
+Also keep in mind this is meant as a generic **local** server and although you can in theory host this generic server on a Web site, the primary use case for this library is local hosting either for testing or for integration into local (desktop) applications that might require visual HTML content and a Web server to serve local Web content.
 
-* Create a `./PrivateBin` folder in your specified WebRoot folder
-* Add any assemblies and their dependencies there
+### More Features?
+The primary goal of LiveReload server is as a local server, not a hosted do-it-all solution. Other features may be explored but at the moment the feature set is well suited to the stated usage scenario I intended it for.
 
-Note: You have to use **assemblies** rather than NuGet packages and you are responsible for adding all required dependencies in the folder. For example, if I wanted to add `Westwind.AspNetCore.Markdown` for Markdown features I can add the `Westwind.AspNetCore.Markdown.dll`. However, that dll also has a dependency on `Markdig.dll` so that assembly has to be available in the `./PrivateBin` folder as well.
+More features like dynamic compilation of loose C# code files at runtime might be possible in this generic server, but currently that has not been explored. Personally I think this goes against the simplicity of this solution. If you really have a need for complex code that requires breaking out of Razor Page script code, it's time to build a full ASP.NET Core RazorPages application instead of using this server. 
 
-Finding all dependencies may be tricky since NuGet doesn't show you all `dll` dependencies, so this may require some sleuthing in a project's `project.dep.json` file in a `publish` folder.
+But that won't stop some from asking or trying to hook it up anyway I bet :smile:
 
-### Razor Limitations
-Razor Pages served are limited to **self-contained single file Pages** as no code outside of a Page can be compiled at runtime, or even reference an external package/assembly that isn't installed in the actually server's start folder.
-
-**Essentially you're limited to using just the built-in .NET Framework/Core ASP.NET features.**
-
-* No support for external libraries or NuGet Packages (only what is compiled in)
-* No data access support
-* No compiled code files (no .cs)
-
-The goal of this tool isn't to provide the full Razor Pages environment - if that's what you need build a proper ASP.NET Core Web application. Rather it's meant to provide just **slightly enhanced static page like behavior** for otherwise mostly static Web functionality.
-  
-Also keep in mind this is meant as a generic **local** server and although you can in theory be hosted on a Web site, the primary use case for this library is local hosting either for testing or for integration into local (desktop) applications that might require visual HTML content.
-
-More might be possible in this generic server, but currently that has not been explored. If that's of interest to you or you want to contribute, please file an issue to discuss and explore the use cases and what might be possible. As it stands for now, Razor functionality is kind of a **gimmicky, limited use scenario** that works for basic use cases.
+If that's of interest to you or you want to contribute, please file an issue to discuss and explore the use cases and what might be possible.
