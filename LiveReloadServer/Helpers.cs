@@ -42,7 +42,7 @@ namespace LiveReloadServer
 
         }
 
-        public static bool GetLogicalSetting(string key, IConfiguration config)
+        public static bool GetLogicalSetting(string key, IConfiguration config, bool defaultValue = false)
         {
             bool? resultValue = null;
             var temp = config[key];
@@ -57,10 +57,10 @@ namespace LiveReloadServer
 
             if (resultValue == null)
             {
-                if (Environment.CommandLine.Contains($"-{key}", StringComparison.InvariantCultureIgnoreCase))
+                if (Environment.CommandLine.Contains($"-{key}", StringComparison.OrdinalIgnoreCase))
                     resultValue = true;
                 else
-                    resultValue = false;
+                    resultValue = defaultValue;
             }
 
             return resultValue.Value;
