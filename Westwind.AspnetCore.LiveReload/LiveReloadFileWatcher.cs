@@ -1,4 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace Westwind.AspNetCore.LiveReload
 {
@@ -36,6 +39,7 @@ namespace Westwind.AspNetCore.LiveReload
             Watcher = null;
         }
 
+        private static List<string> _extensionList;
         private static void FileChanged(string filename)
         {
             if (filename.Contains("\\node_modules\\"))
@@ -46,13 +50,19 @@ namespace Westwind.AspNetCore.LiveReload
                 return;
 
             var ext = Path.GetExtension(filename);
-            if (ext == null)
+            if (string.IsNullOrEmpty(ext))
                 return;
 
-            if (LiveReloadConfiguration.Current.ClientFileExtensions.Contains(ext))
+            if (_extensionList == null)
+                _extensionList = LiveReloadConfiguration.Current.ClientFileExtensions
+                    .Split(',', System.StringSplitOptions.RemoveEmptyEntries)
+                    .ToList();
+
+            if (_extensionList.Contains(ext,StringComparer.OrdinalIgnoreCase))
             {
-                bool delayed = ext == ".cshtml" || ext == ".cs" || ext == ".json"  || ext == ".xml";
-                _ = LiveReloadMiddleware.RefreshWebSocketRequest(delayed);
+                // delayed - no longer needed as server restarts automatically refresh on restart
+                //bool delayed = ext == ".cshtml" || ext == ".cs" || ext == ".json"  || ext == ".xml";
+                _ = LiveReloadMiddleware.RefreshWebSocketRequest(); // delayed
             }
 
         }
