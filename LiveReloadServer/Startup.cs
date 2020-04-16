@@ -115,13 +115,14 @@ namespace LiveReloadServer
 
                     lock (consoleLock)
                     {
-                        var ct = context.Response.ContentType;
+                        
 
                         var url =
                             $"{context.Request.Method}  {context.Request.Scheme}://{context.Request.Host}  {context.Request.Path}{context.Request.QueryString}";
 
                         url = url.PadRight(80, ' ');
 
+                        var ct = context.Response.ContentType;
                         bool isPrimary = ct != null &&
                                          (ct.StartsWith("text/html") ||
                                           ct.StartsWith("text/plain") ||

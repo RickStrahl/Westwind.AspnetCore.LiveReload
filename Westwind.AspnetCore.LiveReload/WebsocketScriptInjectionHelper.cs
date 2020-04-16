@@ -181,7 +181,7 @@ function retryConnection() {{
     }},{config.ServerRefreshTimeout});
 }}
 
-}},700);
+}},500);
 </script>
 <!-- End Live Reload -->
 

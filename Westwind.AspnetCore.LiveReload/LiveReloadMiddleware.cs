@@ -76,8 +76,6 @@ namespace Westwind.AspNetCore.LiveReload
                 // Use new IHttpResponseBodyFeature for abstractions of pilelines/streams etc.
                 // For 3.x this works reliably while direct Response.Body was causing random HTTP failures
                 context.Features.Set<IHttpResponseBodyFeature>(new StreamResponseBodyFeature(filteredResponse));
-
-                //var feature = context.Features.Get<IHttpResponseBodyFeature>();
 #else
                 context.Response.Body = filteredResponse;
 #endif
