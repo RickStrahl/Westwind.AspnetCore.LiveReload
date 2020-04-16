@@ -9,7 +9,7 @@
   "LiveReload": {
     "LiveReloadEnabled": true,
     "ClientFileExtensions": ".cshtml,.css,.js,.htm,.html,.ts,.razor",
-    "ServerRefreshTimeout": 200,
+    "ServerRefreshTimeout": 300,
     "WebSocketUrl": "/__livereload"
   }
 }

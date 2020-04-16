@@ -149,7 +149,7 @@ namespace LiveReloadServer
                             ConsoleHelper.Write(status.ToString(), isPrimary ? ConsoleColor.Red : ConsoleColor.DarkRed);
 
                         sw.Stop();
-                        ConsoleHelper.WriteLine($" {sw.ElapsedMilliseconds:n0}ms".PadLeft(6), ConsoleColor.DarkGray);
+                        ConsoleHelper.WriteLine($" {sw.ElapsedMilliseconds:n0}ms".PadLeft(8), ConsoleColor.DarkGray);
                     }
 
                 });

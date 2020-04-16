@@ -51,7 +51,8 @@ namespace Westwind.AspNetCore.LiveReload
 
             if (LiveReloadConfiguration.Current.ClientFileExtensions.Contains(ext))
             {
-                _ = LiveReloadMiddleware.RefreshWebSocketRequest();
+                bool delayed = ext == ".cshtml" || ext == ".cs" || ext == ".json"  || ext == ".xml";
+                _ = LiveReloadMiddleware.RefreshWebSocketRequest(delayed);
             }
 
         }
