@@ -10,6 +10,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Westwind.AspNetCore.LiveReload;
+using Westwind.AspNetCore.Markdown;
 
 
 namespace LiveReloadServer
@@ -20,6 +21,7 @@ namespace LiveReloadServer
         private string WebRoot;
         private int Port = 0;
         public bool UseLiveReload = true;
+        public bool UseMarkdown = true;
         private bool UseRazor = false;
 
         public Startup(IConfiguration configuration)
@@ -33,7 +35,8 @@ namespace LiveReloadServer
         public void ConfigureServices(IServiceCollection services)
         {
             // Get Configuration Settings
-            UseLiveReload = Helpers.GetLogicalSetting("LiveReloadEnabled", Configuration, true);
+            UseLiveReload = Helpers.GetLogicalSetting("UseLiveReload", Configuration, true);
+            UseMarkdown = Helpers.GetLogicalSetting("UseMarkdown", Configuration, true);
             UseRazor = Helpers.GetLogicalSetting("UseRazor", Configuration);
 
             WebRoot = Configuration["WebRoot"];
@@ -52,19 +55,54 @@ namespace LiveReloadServer
                     var extensions = Configuration["Extensions"];
                     if (!string.IsNullOrEmpty(extensions))
                         opt.ClientFileExtensions = extensions;
+
+                    if (UseMarkdown && !opt.ClientFileExtensions.Contains(".md", StringComparison.OrdinalIgnoreCase))
+                    {
+                        opt.ClientFileExtensions += ",.md,.mkdown";
+                    }
                 });
+            }
+
+            if (UseMarkdown)
+            {
+                services.AddMarkdown(config =>
+                {
+                    var folderConfig = config.AddMarkdownProcessingFolder("/","~/__MarkdownPageTemplate.cshtml");
+                    
+                    // Optional configuration settings
+                    folderConfig.ProcessExtensionlessUrls = true;  // default
+                    folderConfig.ProcessMdFiles = true; // default
+
+                });
+                
+                // we have to force MVC in order for the controller routing to work                    
+                services
+                    .AddMvc()
+                    .AddApplicationPart(typeof(MarkdownPageProcessorMiddleware).Assembly)
+                    .AddRazorRuntimeCompilation(
+                        opt =>
+                        {
+                            opt.FileProviders.Add(new PhysicalFileProvider(WebRoot));
+                        });
+
+
+
             }
 
 
 #if USE_RAZORPAGES
             if (UseRazor)
             {
-                var mvcBuilder = services.AddRazorPages(opt => opt.RootDirectory = "/")
+                var mvcBuilder = services.AddRazorPages(opt =>
+                    {
+                        opt.RootDirectory = "/";
+                    })
                     .AddRazorRuntimeCompilation(
                         opt =>
                         {
                             opt.FileProviders.Add(new PhysicalFileProvider(WebRoot));
                         });
+
 
                 LoadPrivateBinAssemblies(mvcBuilder);
             }
@@ -113,48 +151,16 @@ namespace LiveReloadServer
                     if(context.Request.Path.Value == socketUrl)
                         return;
 
+                    // need to ensure this happens all at once otherwise multiple threads
+                    // write intermixed console output on simultaneous requests
                     lock (consoleLock)
                     {
-                        
-
-                        var url =
-                            $"{context.Request.Method}  {context.Request.Scheme}://{context.Request.Host}  {context.Request.Path}{context.Request.QueryString}";
-
-                        url = url.PadRight(80, ' ');
-
-                        var ct = context.Response.ContentType;
-                        bool isPrimary = ct != null &&
-                                         (ct.StartsWith("text/html") ||
-                                          ct.StartsWith("text/plain") ||
-                                          ct.StartsWith("application/json") ||
-                                          ct.StartsWith("text/xml"));
-
-                        if (ct == null) // no response
-                        {
-                            ConsoleHelper.Write(url + " ", ConsoleColor.Red);
-                            isPrimary = true;
-                        }
-                        else if (isPrimary)
-                            ConsoleHelper.Write(url + " ", ConsoleColor.Gray);
-                        else
-                            ConsoleHelper.Write(url + " ", ConsoleColor.DarkGray);
-
-                        var status = context.Response.StatusCode;
-                        if (status >= 200 && status < 400)
-                            ConsoleHelper.Write(status.ToString(),
-                                isPrimary ? ConsoleColor.Green : ConsoleColor.DarkGreen);
-                        else if (status == 401)
-                            ConsoleHelper.Write(status.ToString(),
-                                isPrimary ? ConsoleColor.Yellow : ConsoleColor.DarkYellow);
-                        else if (status >= 400)
-                            ConsoleHelper.Write(status.ToString(), isPrimary ? ConsoleColor.Red : ConsoleColor.DarkRed);
-
-                        sw.Stop();
-                        ConsoleHelper.WriteLine($" {sw.ElapsedMilliseconds:n0}ms".PadLeft(8), ConsoleColor.DarkGray);
+                        WriteConsoleLogDisplay(context, sw);
                     }
-
                 });
             }
+
+            app.UseMarkdown();
 
             app.UseDefaultFiles(new DefaultFilesOptions
             {
@@ -174,6 +180,16 @@ namespace LiveReloadServer
                 app.UseEndpoints(endpoints => { endpoints.MapRazorPages(); });
             }
 #endif
+            if (UseMarkdown)
+            {
+                app.UseRouting();
+                app.UseEndpoints(endpoints =>
+                {
+                    endpoints.MapDefaultControllerRoute();
+                });
+            }
+
+
             var url = $"http{(useSsl ? "s" : "")}://localhost:{Port}";
             var extensions = Configuration["Extensions"];
 
@@ -194,6 +210,8 @@ namespace LiveReloadServer
 #if USE_RAZORPAGES
             Console.WriteLine($"Use Razor    : {UseRazor}");
 #endif
+            if (UseMarkdown)
+                Console.WriteLine($"Use Markdown: {UseMarkdown}");
             Console.WriteLine($"Show Urls    : {showUrls}");
             Console.WriteLine($"Open Browser : {openBrowser}");
             Console.WriteLine($"Default Pages: {defaultFiles}");
@@ -224,6 +242,50 @@ namespace LiveReloadServer
 
             if (openBrowser)
                 Helpers.OpenUrl(url);
+        }
+
+        private void WriteConsoleLogDisplay(HttpContext context, Stopwatch sw)
+        {
+            var url =
+                $"{context.Request.Method}  {context.Request.Scheme}://{context.Request.Host}  {context.Request.Path}{context.Request.QueryString}";
+
+            url = url.PadRight(80, ' ');
+
+            var ct = context.Response.ContentType;
+            bool isPrimary = ct != null &&
+                             (ct.StartsWith("text/html") ||
+                              ct.StartsWith("text/plain") ||
+                              ct.StartsWith("application/json") ||
+                              ct.StartsWith("text/xml"));
+
+
+            var saveColor = Console.ForegroundColor;
+
+            if (ct == null) // no response
+            {
+                ConsoleHelper.Write(url + " ", ConsoleColor.Red);
+                isPrimary = true;
+            }
+            else if (isPrimary)
+                ConsoleHelper.Write(url + " ", ConsoleColor.Gray);
+            else
+                ConsoleHelper.Write(url + " ", ConsoleColor.DarkGray);
+
+            var status = context.Response.StatusCode;
+            if (status >= 200 && status < 400)
+                ConsoleHelper.Write(status.ToString(),
+                    isPrimary ? ConsoleColor.Green : ConsoleColor.DarkGreen);
+            else if (status == 401)
+                ConsoleHelper.Write(status.ToString(),
+                    isPrimary ? ConsoleColor.Yellow : ConsoleColor.DarkYellow);
+            else if (status >= 400)
+                ConsoleHelper.Write(status.ToString(), isPrimary ? ConsoleColor.Red : ConsoleColor.DarkRed);
+
+            sw.Stop();
+            ConsoleHelper.WriteLine($" {sw.ElapsedMilliseconds:n0}ms".PadLeft(8), ConsoleColor.DarkGray);
+
+
+            Console.ForegroundColor = saveColor;
         }
 
         public static Type GetTypeFromName(string TypeName)
