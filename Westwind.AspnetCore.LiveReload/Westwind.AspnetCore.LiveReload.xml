@@ -43,7 +43,7 @@
         <member name="P:Westwind.AspNetCore.LiveReload.LiveReloadConfiguration.WebSocketHost">
             <summary>
             Optional WebSocket host. Use this if you are on an Https2 connection
-            to point at a http1 connection. "ws://localhost:5000"
+            to point at a http connection. "ws://localhost:5000"
             </summary>
         </member>
         <member name="T:Westwind.AspNetCore.LiveReload.LiveReloadMiddleware">

@@ -153,7 +153,7 @@ namespace LiveReloadServer
 {headerLine}
 {Helpers.AppHeader}
 {headerLine}
-(c) Rick Strahl, West Wind Technologies, 2019
+(c) Rick Strahl, West Wind Technologies, 2019-2020
 
 Static and Razor File Service with Live Reload for changed content.
 
@@ -161,14 +161,24 @@ Syntax:
 -------
 {Helpers.ExeName}  <options>
 
---WebRoot            <path>  (current Path if not provided)
---Port               5200*
---UseSsl             True|False*{razorFlag}
---ShowUrls           True|False*
---OpenBrowser        True*|False
---DefaultFiles       ""index.html,default.htm""*
---Extensions         ""{(useRazor ? ".cshtml," : "")}.css,.js,.htm,.html,.ts""*
---Environment        Production*|Development
+--WebRoot                <path>  (current Path if not provided)
+--Port                   5200*
+--UseSsl                 True|False*{razorFlag}
+--ShowUrls               True|False*
+--OpenBrowser            True*|False
+--DefaultFiles           ""index.html,default.htm""*
+--Extensions             ""{(useRazor ? ".cshtml," : "")}.css,.js,.htm,.html,.ts""*
+--Environment            Production*|Development
+
+Razor Pages:
+------------
+--UseRazor              True|False*
+
+Markdown Options:
+-----------------
+--UseMarkdown           True|False*  Renders .md files
+--CopyMarkdownResources True*|False  Copies Markdown rendering templates
+--MarkdownTemplate      ""~/markdown-themes/__MarkdownTestmplatePage.cshtml""*
 
 Configuration options can be specified in:
 

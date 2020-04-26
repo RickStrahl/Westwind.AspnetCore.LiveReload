@@ -11,22 +11,27 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Westwind.AspNetCore.LiveReload;
 using Westwind.AspNetCore.Markdown;
+using Westwind.Utilities;
 
 
 namespace LiveReloadServer
 {
     public class Startup
     {
+        public static string StartupPath { get; set; }
 
         private string WebRoot;
         private int Port = 0;
         public bool UseLiveReload = true;
-        public bool UseMarkdown = true;
         private bool UseRazor = false;
+        public bool UseMarkdown = false;
+        private bool CopyMarkdownResources;
+        private string MarkdownTemplate = "~/markdown-themes/__MarkdownPageTemplate.cshtml";
 
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            StartupPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         }
 
         public IConfiguration Configuration { get; }
@@ -34,16 +39,29 @@ namespace LiveReloadServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Get Configuration Settings
-            UseLiveReload = Helpers.GetLogicalSetting("UseLiveReload", Configuration, true);
-            UseMarkdown = Helpers.GetLogicalSetting("UseMarkdown", Configuration, true);
-            UseRazor = Helpers.GetLogicalSetting("UseRazor", Configuration);
-
+            
             WebRoot = Configuration["WebRoot"];
             if (string.IsNullOrEmpty(WebRoot))
                 WebRoot = Environment.CurrentDirectory;
             else
                 WebRoot = Path.GetFullPath(WebRoot, Environment.CurrentDirectory);
+            
+            // Enable Live Reload Middleware
+            UseLiveReload = Helpers.GetLogicalSetting("UseLiveReload", Configuration, true);
+
+            // Razor enables compilation and Razor Page Engine
+            UseRazor = Helpers.GetLogicalSetting("UseRazor", Configuration);
+
+            // Enables Markdown Middleware and optionally copies Markdown Templates into output folder
+            UseMarkdown = Helpers.GetLogicalSetting("UseMarkdown", Configuration, false);
+            CopyMarkdownResources = false;
+            if (UseMarkdown)
+            {
+                // defaults to true but only if Markdown is enabled!
+                CopyMarkdownResources = Helpers.GetLogicalSetting("CopyMarkdownResources", Configuration,false);
+                MarkdownTemplate = Configuration["MarkdownTemplate"] ?? MarkdownTemplate;
+            }
+
 
             if (UseLiveReload)
             {
@@ -63,52 +81,70 @@ namespace LiveReloadServer
                 });
             }
 
-            if (UseMarkdown)
-            {
-                services.AddMarkdown(config =>
-                {
-                    var folderConfig = config.AddMarkdownProcessingFolder("/","~/__MarkdownPageTemplate.cshtml");
-                    
-                    // Optional configuration settings
-                    folderConfig.ProcessExtensionlessUrls = true;  // default
-                    folderConfig.ProcessMdFiles = true; // default
-
-                });
-                
-                // we have to force MVC in order for the controller routing to work                    
-                services
-                    .AddMvc()
-                    .AddApplicationPart(typeof(MarkdownPageProcessorMiddleware).Assembly)
-                    .AddRazorRuntimeCompilation(
-                        opt =>
-                        {
-                            opt.FileProviders.Add(new PhysicalFileProvider(WebRoot));
-                        });
-
-
-
-            }
-
+            IMvcBuilder mvcBuilder = null;
 
 #if USE_RAZORPAGES
             if (UseRazor)
             {
-                var mvcBuilder = services.AddRazorPages(opt =>
-                    {
-                        opt.RootDirectory = "/";
-                    })
-                    .AddRazorRuntimeCompilation(
-                        opt =>
-                        {
-                            opt.FileProviders.Add(new PhysicalFileProvider(WebRoot));
-                        });
+                mvcBuilder = services.AddRazorPages(opt =>
+                {
+                    opt.RootDirectory = "/";
+                });
+                
+                
+            }
+#endif
 
+            if (UseMarkdown)
+            {
+                services.AddMarkdown(config =>
+                {
+                    
+
+                    //var templatePath = Path.Combine(WebRoot, "markdown-themes/__MarkdownPageTemplate.cshtml");
+                    //if (!File.Exists(templatePath))
+                    //    templatePath = Path.Combine(Environment.CurrentDirectory,"markdown-themes/__MarkdownPageTemplate.cshtml");
+                    //else
+                    var templatePath = MarkdownTemplate;
+                    templatePath = templatePath.Replace("\\", "/");
+                    
+                    var folderConfig = config.AddMarkdownProcessingFolder("/",templatePath);
+                    
+                    // Optional configuration settings
+                    folderConfig.ProcessExtensionlessUrls = true;  // default
+                    folderConfig.ProcessMdFiles = true; // default
+                });
+                
+                // we have to force MVC in order for the controller routing to work                    
+                mvcBuilder = services
+                    .AddMvc();
+
+                // copy Markdown Template and resources if it doesn't exist
+                if (CopyMarkdownResources)
+                    CopyMarkdownTemplateResources();
+
+                //services.Configure<RazorViewEngineOptions>(options =>
+                //{
+                //    var p = Path.Combine(WebRoot, "markdown-templates", "{0}.cshtml").Replace("\\", "/");
+                //    options.ViewLocationExpanders.Add(new MarkdownViewLocationExpander(new string[] {p}));
+                //});
+            }
+
+            // If Razor or Markdown are enabled we need custom folders
+            if (mvcBuilder != null)
+            {
+                mvcBuilder.AddRazorRuntimeCompilation(
+                    opt =>
+                    {
+                        opt.FileProviders.Clear();
+                        opt.FileProviders.Add(new PhysicalFileProvider(WebRoot));
+                        opt.FileProviders.Add(new PhysicalFileProvider(Path.Combine(Startup.StartupPath,"templates")));
+                    });
 
                 LoadPrivateBinAssemblies(mvcBuilder);
             }
-#endif
         }
-
+        
 
         private static object consoleLock = new object();
 
@@ -142,6 +178,8 @@ namespace LiveReloadServer
 
                 app.Use(async (context, next) =>
                 {
+                    var originalPath = context.Request.Path.Value;
+
                     Stopwatch sw = new Stopwatch();
                     sw.Start();
 
@@ -155,12 +193,13 @@ namespace LiveReloadServer
                     // write intermixed console output on simultaneous requests
                     lock (consoleLock)
                     {
-                        WriteConsoleLogDisplay(context, sw);
+                        WriteConsoleLogDisplay(context, sw, originalPath);
                     }
                 });
             }
 
-            app.UseMarkdown();
+            if (UseMarkdown)
+                app.UseMarkdown();
 
             app.UseDefaultFiles(new DefaultFilesOptions
             {
@@ -168,21 +207,28 @@ namespace LiveReloadServer
                 DefaultFileNames = new List<string>(defaultFiles.Split(',', ';'))
             });
 
+            // add static files to WebRoot and our templates folder which provides markdown templates
+            // and potentially other library resources in the future
+            var wrProvider = new PhysicalFileProvider(WebRoot);
+            var tpProvider= new PhysicalFileProvider(Path.Combine(Startup.StartupPath,"templates"));
+            var compositeProvider = new CompositeFileProvider(wrProvider, tpProvider);
             app.UseStaticFiles(new StaticFileOptions
             {
-                FileProvider = new PhysicalFileProvider(WebRoot), RequestPath = new PathString("")
+                FileProvider = compositeProvider, //new PhysicalFileProvider(WebRoot),
+                RequestPath = new PathString("")
             });
+
+            if (UseRazor || UseMarkdown)
+                app.UseRouting();
 
 #if USE_RAZORPAGES
             if (UseRazor)
             {
-                app.UseRouting();
                 app.UseEndpoints(endpoints => { endpoints.MapRazorPages(); });
             }
 #endif
             if (UseMarkdown)
             {
-                app.UseRouting();
                 app.UseEndpoints(endpoints =>
                 {
                     endpoints.MapDefaultControllerRoute();
@@ -210,8 +256,13 @@ namespace LiveReloadServer
 #if USE_RAZORPAGES
             Console.WriteLine($"Use Razor    : {UseRazor}");
 #endif
+
+            Console.WriteLine($"Use Markdown : {UseMarkdown}");
             if (UseMarkdown)
-                Console.WriteLine($"Use Markdown: {UseMarkdown}");
+            {
+            Console.WriteLine($"   Resources : {CopyMarkdownResources}");
+            Console.WriteLine($"   Template  : {MarkdownTemplate}");
+            }
             Console.WriteLine($"Show Urls    : {showUrls}");
             Console.WriteLine($"Open Browser : {openBrowser}");
             Console.WriteLine($"Default Pages: {defaultFiles}");
@@ -244,10 +295,10 @@ namespace LiveReloadServer
                 Helpers.OpenUrl(url);
         }
 
-        private void WriteConsoleLogDisplay(HttpContext context, Stopwatch sw)
+        private void WriteConsoleLogDisplay(HttpContext context, Stopwatch sw, string originalPath)
         {
             var url =
-                $"{context.Request.Method}  {context.Request.Scheme}://{context.Request.Host}  {context.Request.Path}{context.Request.QueryString}";
+                $"{context.Request.Method}  {context.Request.Scheme}://{context.Request.Host}  {originalPath}{context.Request.QueryString}";
 
             url = url.PadRight(80, ' ');
 
@@ -339,5 +390,53 @@ namespace LiveReloadServer
 
         }
 
+        /// <summary>
+        /// Copies the Markdown Template resources into the WebRoot if it doesn't exist already.
+        ///
+        /// If you want to get a new set of template, delete the `markdown-themes` folder in hte
+        /// WebRoot output folder.
+        /// </summary>
+        /// <returns>false if already exists and no files were copied. True if path doesn't exist and files were copied</returns>
+        private bool CopyMarkdownTemplateResources()
+        {
+            // explicitly don't want to copy resources
+            if (!CopyMarkdownResources)
+                return false;
+
+            var templatePath = Path.Combine(WebRoot,"markdown-themes");
+            if (Directory.Exists(templatePath))
+                return false;
+
+            FileUtils.CopyDirectory(Path.Combine(Startup.StartupPath,"templates", "markdown-themes"),
+                templatePath,
+                deepCopy: true);
+
+            return true;
+        }
     }
+
+    //public class MarkdownViewLocationExpander: IViewLocationExpander {
+
+    //    private readonly IEnumerable<string> _paths;
+
+    //    public MarkdownViewLocationExpander(IEnumerable<string> paths)
+    //    {
+    //        _paths = paths;
+    //    }
+
+    //    /// <summary>
+    //    /// Used to specify the locations that the view engine should search to 
+    //    /// locate views.
+    //    /// </summary>
+    //    /// <param name="context"></param>
+    //    /// <param name="viewLocations"></param>
+    //    /// <returns></returns>
+    //    public IEnumerable<string> ExpandViewLocations(ViewLocationExpanderContext context, IEnumerable<string> viewLocations) {
+    //        return viewLocations.Union(_paths);
+    //    }
+
+    //    public void PopulateValues(ViewLocationExpanderContext context) {
+    //        context.Values["customviewlocation"] = nameof(MarkdownViewLocationExpander);
+    //    }
+    //}
 }

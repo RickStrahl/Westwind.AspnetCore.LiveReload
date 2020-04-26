@@ -36,6 +36,7 @@ namespace Westwind.AspNetCore.LiveReload
         /// </summary>
         public string ClientFileExtensions { get; set; } = ".cshtml,.css,.js,.htm,.html,.ts,.razor";
 
+
         /// <summary>
         /// The timeout to wait before refreshing the page when shutting down
         /// </summary>
@@ -49,7 +50,7 @@ namespace Westwind.AspNetCore.LiveReload
 
         /// <summary>
         /// Optional WebSocket host. Use this if you are on an Https2 connection
-        /// to point at a http1 connection. "ws://localhost:5000"
+        /// to point at a http connection. "ws://localhost:5000"
         /// </summary>
         public string WebSocketHost { get; set; }
 
