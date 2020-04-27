@@ -25,9 +25,9 @@
     <Copyright>© Rick Strahl - West Wind Technologies, 2019-2020</Copyright>
 
     <Description>
-      LiveReloadServer provides a generic Web Server with configurable Live Reload functionality for static files and loose Razor files in any local folder. Simply point it at a -- Commandline options let you customize the path, port and a host of other options. Live Reload provides the ability to change static files and Razor files and automatically refresh the active page in the browser.
+      LiveReloadServer provides a generic Web Server with configurable Live Reload functionality for static files, Markdown files and loose, self-contained Razor  Pages in any local folder. Simply point the `--webroot` at a folder or start it out of a Web folder and go. Commandline options let you customize the path, port, add Razor and Markdown support, add extensions to monitor and more. Live Reload provides the ability to change static, Markdown and Razor files and automatically refresh the active page in the browser when changed.
 
-      Works with:
+      LiveReloadServer works with:
 
       * Static HTML, CSS, JavaScript etc. files
       * Loose, single-file Razor Pages including assembly dependencies
