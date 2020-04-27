@@ -120,6 +120,98 @@ You can specify explicit file extensions to monitor using the `--Extensions` swi
 > #### Slow First Time Razor Startup
 > First time Razor Page startup can be slow. Cold start requires the Razor Runtime to load the compiler and related resources so the very first page hit can take a few seconds before the Razor page renders. Subsequent page compilation is faster but still 'laggy' (few hundred ms), and previously compiled pages run very fast at pre-compiled speed.
 
+## Markdown File Rendering
+You can enable Markdown support in this server by using `--UseMarkdown True` which lets you serve HTML content directly off any `.md` or `.mkdown` files in the Web root. The server provides a default set of templates, but you can override the rendering behavior with a custom Razor template that provides the chrome around the rendered Markdown, additional styling and syntax coloring.
+
+Markdown pages are rendered as HTML and like other resources are tracked for changes. If you make a change to the Markdown document, the browser is refreshed and immediately shows that change. If you create a custom Razor template, changes in that are also detected and cause an immediate refresh.
+
+For this feature to work with the default templates all you do is set the `--UseMarkdown True` command line switch. Then access any `.md` in the browser either by the `.md` or simply without an extension.
+  
+To access `README.md` in the WebRoot you would access:
+
+* https://localhost:5200/README.md  
+* https://localhost:5200/README
+
+### Customizing Markdown Templates and Styling
+Default styling for Markdown comes from a Razor template that is provided as part of the distribution in the install folder's `./templates/markdown-themes` directory. This folder is hoisted as `~/markdown-themes` into the Web site, which makes the default CSS and script resources available to the Web site. This folder by default is routed back to the launch (not Web) root and is used for all sites you run through this server.
+
+There are several ways you can customize the Markdown styling and supporting resources:
+
+* Copy the existing `markdown-themes` folder into your Web root and modify
+* Create a custom Razor template
+
+### Copy the Existing `markdown-themes` Folder
+You can copy the `markdown-themes` folder into your Website either manually or more easily via the `--CopyMarkdownResources True` command line flag. When you use this flag, the `markdown-themes` folder will be copied from the launch root into your Web root **if it doesn't exist already**. 
+
+Once moved to the new location in your web root folder, you can modify the `__MarkdownPageTemplate.cshtml` page and customize the rendering. For example, you can add a Layout page (if Razor support is enabled) to add site wide styling or you can modify the page theme and syntax coloring theme.
+
+More on customization below.
+
+### Using a custom Markdown Template
+The template used for Markdown rendering is an MVC View template that is passed a `MarkdownModel` that contains the rendered markdown and a few other useful bits of information like the path, file name and title of the document. 
+
+Here's what the default template looks like:
+
+```html
+@model Westwind.AspNetCore.Markdown.MarkdownModel
+<html>
+<head>
+    @if (!string.IsNullOrEmpty(Model.BasePath))
+    {
+        <base href="@Model.BasePath" />
+    }
+    <title>@Model.Title</title>
+    <!-- *** Markdown Themes: Github, Dharkan, Westwind, Medium, Blackout -->
+    <link rel="stylesheet" href="~/markdown-themes/Dharkan/theme.css" />
+    <link rel="stylesheet" href="~/markdown-themes/scripts/fontawesome/css/font-awesome.min.css" />
+    <style>   
+        pre > code {
+            white-space: pre;
+        }
+    </style>
+</head>
+<body>
+    <div id="MainContent">        
+        @Model.RenderedMarkdown
+    </div>
+
+    <script src="~/markdown-themes/scripts/highlightjs/highlight.pack.js"></script>
+    <script src="~/markdown-themes/scripts/highlightjs-badge.min.js"></script>
+    
+<!-- *** Code Syntax Themes: vs2015, vs, github, monokai, monokai-sublime, twilight -->
+<link href="~/markdown-themes/scripts/highlightjs/styles/vs2015.css" rel="stylesheet" />
+    <script>
+        setTimeout(function () {
+            var pres = document.querySelectorAll("pre>code");
+            for (var i = 0; i < pres.length; i++) {
+                hljs.highlightBlock(pres[i]);
+            }
+        });
+
+    </script>
+</body>
+</html>
+```
+
+The model is passed as `MarkdownModel` and it contains the `.RenderedMarkdown` property which is the rendered HTML output (as an `HtmlString`). There's also the `.Title` which is parsed from the document based on a header if present. The model also contains the original Markdown and a YAML header if it was present.
+
+#### Default Theme Overrides
+If you stick with the default theming you can override:
+
+* The overall render theme 
+    ```html
+    <!-- *** Markdown Themes: Github, Dharkan, Westwind, Medium, Blackout -->
+    <link rel="stylesheet" href="~/markdown-themes/Dharkan/theme.css" />
+    ```    
+* The syntax coloring
+    ```html
+    <!-- *** Code Syntax Themes: vs2015, vs, github, monokai, monokai-sublime, twilight -->
+    <link href="~/markdown-themes/scripts/highlightjs/styles/vs2015.css" rel="stylesheet" />
+    ```
+
+#### Completely Custom CSS Markup
+You can create any HTML and CSS to render your Markdown of course if you prefer. The `markdown-themes` themes can give you a good start of things that you typically have to support in Markdown content so they offer a good starting point for your own themes. Pick a theme and customize, or if you are keen - go ahead and start completely clean.
+
 ## Razor Files
 LiveReloadServer has **basic Razor Pages support**, which means you can create **single file, inline Razor content in Razor pages** as well as use Layout, Partials, ViewStart etc. in the traditional Razor Pages project hierarchy. As long as **all code** is inside of `.cshtml` Razor pages it should work.
 
