@@ -1,7 +1,7 @@
 html, body {
   color: #24292e;
-  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI Emoji", "Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji";
-  font-size: 16px;
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+  font-size: 16.25px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   height: 100%;
@@ -70,7 +70,6 @@ p {
 code {
   font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,Courier,monospace;
   color: #333;
-  background: #f2f2f2;
   font-size: 0.85em;
 }
 
@@ -84,11 +83,10 @@ pre {
   max-width: 98%;
   border: none;
   overflow: auto;
-  border-radius: 3px;
+  border-radius: 4px;
   white-space: pre;
   word-break: normal;
   word-wrap: normal;
-  background: #f2f2f2f2;
 }
 
   pre > code {
@@ -98,7 +96,16 @@ pre {
     background: transparent;
     font-weight: normal;
   }
+  pre>code::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background: #444;
+  }
 
+  pre > code::-webkit-scrollbar-thumb {
+      background: #777;
+  }
+  
 table {
   width: 100%;
   overflow: auto;

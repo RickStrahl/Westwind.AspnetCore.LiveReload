@@ -155,8 +155,8 @@ code {
   font-family: "SFMono-Regular",Consolas,"Liberation Mono",Menlo,Courier,monospace;
   border-radius: 3px;
   font-weight: 600;
-  background: #eee;
-  color: #555;
+  /*background: #eee;
+  color: #555;*/
 }
 
 pre {
@@ -172,17 +172,22 @@ pre {
   white-space: pre;
   word-break: normal;
   word-wrap: normal;
-  background: #252525;
-  color: #eee;
 }
 
   pre > code {
     white-space: pre;
     padding: 0.8em !important;
     display: block;
-    color: #f5f5f5 !important;
     background: transparent;
     font-weight: normal;
+  }
+  pre>code::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;        
+    background: #aaa;    
+  }
+  pre > code::-webkit-scrollbar-thumb {
+    background:#777;
   }
 
 table {

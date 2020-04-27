@@ -75,14 +75,13 @@ pre {
   line-height: 1.40;
   margin: 7px 0;
   padding: 0;
-  border: 1px solid silver;
+  border: 1px solid #ddd;
   border-radius: 5px;
   overflow-x: auto;
   max-width: 98%;
   white-space: pre;
   word-break: normal;
-  word-wrap: normal;
-  background: #f6f6f6;
+  word-wrap: normal;  
 }
 
   pre > code {
@@ -92,6 +91,15 @@ pre {
     background: transparent;
     font-weight: normal;
   }
+  pre>code::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;        
+    background: #aaa;    
+  }
+  pre > code::-webkit-scrollbar-thumb {
+    background:#777;
+  }
+
 
 table {
   width: 100%;

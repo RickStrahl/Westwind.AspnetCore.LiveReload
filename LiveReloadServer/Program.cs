@@ -178,7 +178,9 @@ Markdown Options:
 -----------------
 --UseMarkdown           True|False*  
 --CopyMarkdownResources True|False*  
---MarkdownTemplate      ""~/markdown-themes/__MarkdownTestmplatePage.cshtml""*
+--MarkdownTemplate      ~/markdown-themes/__MarkdownTestmplatePage.cshtml*
+--MarkdownTheme         github*|dharkan|medium|blackout|westwind
+--MarkdownSyntaxTheme   github*|vs2015|vs|monokai|monokai-sublime|twilight
 
 Configuration options can be specified in:
 

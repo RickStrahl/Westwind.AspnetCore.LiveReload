@@ -186,9 +186,7 @@ code {
   padding: 2px 5px;
   font-family: "SFMono-Regular",Consolas,"Liberation Mono",Menlo,Courier,monospace;
   border-radius: 3px;
-  font-weight: 600;
-  background: #eee;
-  color: #555;
+  font-weight: 600;  
 }
 
 pre {
@@ -204,18 +202,24 @@ pre {
   max-width: 98%;
   white-space: pre;
   word-break: normal;
-  word-wrap: normal;
-  background: #252525;
-  color: #eee;
+  word-wrap: normal;  
 }
 
   pre > code {
     white-space: pre;
     padding: 0.8em !important;
-    display: block;
-    color: #f5f5f5 !important;
+    display: block;    
     background: transparent;
     font-weight: normal;
+  }
+  pre>code::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background: #444;
+  }
+
+  pre > code::-webkit-scrollbar-thumb {
+      background: #777;
   }
 
 table {

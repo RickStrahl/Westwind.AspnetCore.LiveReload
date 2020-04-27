@@ -24,9 +24,12 @@ namespace LiveReloadServer
         private int Port = 0;
         public bool UseLiveReload = true;
         private bool UseRazor = false;
+
         public bool UseMarkdown = false;
         private bool CopyMarkdownResources;
         private string MarkdownTemplate = "~/markdown-themes/__MarkdownPageTemplate.cshtml";
+        private string MarkdownTheme = "github";
+        private string MarkdownSyntaxTheme = "github";
 
         public Startup(IConfiguration configuration)
         {
@@ -60,6 +63,8 @@ namespace LiveReloadServer
                 // defaults to true but only if Markdown is enabled!
                 CopyMarkdownResources = Helpers.GetLogicalSetting("CopyMarkdownResources", Configuration,false);
                 MarkdownTemplate = Configuration["MarkdownTemplate"] ?? MarkdownTemplate;
+                MarkdownTheme = Configuration["MarkdownTheme"] ?? "github";
+                MarkdownSyntaxTheme = Configuration["MarkdownSyntaxTheme"] ?? "github";
             }
 
 
@@ -100,7 +105,6 @@ namespace LiveReloadServer
                 services.AddMarkdown(config =>
                 {
                     
-
                     //var templatePath = Path.Combine(WebRoot, "markdown-themes/__MarkdownPageTemplate.cshtml");
                     //if (!File.Exists(templatePath))
                     //    templatePath = Path.Combine(Environment.CurrentDirectory,"markdown-themes/__MarkdownPageTemplate.cshtml");
@@ -113,6 +117,9 @@ namespace LiveReloadServer
                     // Optional configuration settings
                     folderConfig.ProcessExtensionlessUrls = true;  // default
                     folderConfig.ProcessMdFiles = true; // default
+
+                    folderConfig.RenderTheme = MarkdownTheme;
+                    folderConfig.SyntaxTheme = MarkdownSyntaxTheme;
                 });
                 
                 // we have to force MVC in order for the controller routing to work                    
@@ -139,6 +146,8 @@ namespace LiveReloadServer
                         opt.FileProviders.Clear();
                         opt.FileProviders.Add(new PhysicalFileProvider(WebRoot));
                         opt.FileProviders.Add(new PhysicalFileProvider(Path.Combine(Startup.StartupPath,"templates")));
+                        
+                        
                     });
 
                 LoadPrivateBinAssemblies(mvcBuilder);
@@ -260,8 +269,10 @@ namespace LiveReloadServer
             Console.WriteLine($"Use Markdown : {UseMarkdown}");
             if (UseMarkdown)
             {
-            Console.WriteLine($"   Resources : {CopyMarkdownResources}");
-            Console.WriteLine($"   Template  : {MarkdownTemplate}");
+            Console.WriteLine($"  Resources  : {CopyMarkdownResources}");
+            Console.WriteLine($"  Template   : {MarkdownTemplate}");
+            Console.WriteLine($"  Theme      : {MarkdownTheme}");
+            Console.WriteLine($"  SyntaxTheme: {MarkdownSyntaxTheme}");
             }
             Console.WriteLine($"Show Urls    : {showUrls}");
             Console.WriteLine($"Open Browser : {openBrowser}");

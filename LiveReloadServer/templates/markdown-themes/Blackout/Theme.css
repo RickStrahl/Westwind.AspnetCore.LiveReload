@@ -32,39 +32,6 @@ p {
 }
 
 
-code {
-  font-family: menlo,consolas,monospace;
-  color: #eee;
-  background: #555;
-  padding: 2px 5px;
-  font-weight: bold;
-  border-radius: 2px;
-}
-
-pre {
-  font-family: menlo,consolas,monospace;
-  font-weight: normal;
-  font-size: 1em;
-  margin: 7px 10px;
-  padding: 0;
-  border: 1px solid silver;
-  border-radius: 5px;
-  overflow-x: auto;
-  max-width: 98%;
-  white-space: pre;
-  word-break: normal;
-  word-wrap: normal;
-  background: #1E1E1E;
-  color: #DCDCDC;
-}
-
-  pre > code {
-    white-space: pre;
-    padding: 0.8em !important;
-    display: block;
-    background: transparent;
-    font-weight: normal;
-  }
 
 table {
   width: 100%;
@@ -127,17 +94,46 @@ h6 {
   font-size: 1.03em;
 }
 
+
+code {
+  font-family: menlo,consolas,monospace;
+  color: #eee;
+  background: #555;
+  padding: 2px 5px;
+  font-weight: bold;
+  border-radius: 2px;
+}
+
 pre {
   font-family: menlo,consolas,monospace;
-  font-weight: normal;
   font-size: 0.875em;
-  margin: 7px 0;
+  font-weight: normal;
+  margin: 7px 10px;
   padding: 0;
-  border: 1px solid silver;
+  border: 1px solid #555;
   border-radius: 5px;
   overflow-x: auto;
   max-width: 98%;
+  white-space: pre;
+  word-break: normal;
+  word-wrap: normal;
 }
+
+  pre > code {
+    white-space: pre;
+    padding: 0.8em !important;
+    display: block;
+    background: transparent;
+    font-weight: normal;
+  }
+  pre>code::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;        
+    background: #aaa;    
+  }
+  pre > code::-webkit-scrollbar-thumb {
+    background:#777;
+  }
 
 img {
   max-width: 100%;
