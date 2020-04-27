@@ -80,15 +80,25 @@ Syntax:
 -------
 LiveReloadServer  <options>
 
---WebRoot            <path>  (current Path if not provided)
---Port               5200*
---UseSsl             True|False*
---UseRazor           True|False*
---ShowUrls           True|False*
---OpenBrowser        True*|False
---DefaultFiles       "index.html,default.htm"*
---Extensions         ".cshtml,.css,.js,.htm,.html,.ts"*
---Environment        Production*|Development
+--WebRoot               <path>  (current Path if not provided)
+--Port                  5200*
+--UseSsl                True|False*{razorFlag}
+--ShowUrls              True|False*
+--OpenBrowser           True*|False
+--DefaultFiles          ""index.html,default.htm""*
+--Extensions            "".cshtml,.css,.js,.htm,.html,.ts,.md""*
+--Environment           Production*|Development
+
+Razor Pages:
+------------
+--UseRazor              True|False*
+
+Markdown Options:
+-----------------
+--UseMarkdown           True|False*  
+--CopyMarkdownResources True|False*
+--MarkdownTemplate      ""~/markdown-themes/__MarkdownTestmplatePage.cshtml""*
+
 
 Configuration options can be specified in:
 
@@ -113,15 +123,12 @@ $env:LiveReload_Port 5500
 LiveReload
 ```
 ## Static Files
-The Web Server automatically serves all static files and Live Reload is automatically enabled unless explicitly turned off. Making a change to any static file causes the current HTML page loaded in the browser to be reloaded.
+The Web Server automatically serves all static files and Live Reload is automatically enabled unless explicitly turned off. HTML pages, CSS and scripts, and any other specific files with extensions you add are autoamtically reloaded whenever you make a change to the files.
 
-You can specify explicit file extensions to monitor using the `--Extensions` switch. The default is: `".cshtml,.css,.js,.htm,.html,.ts"`.
-
-> #### Slow First Time Razor Startup
-> First time Razor Page startup can be slow. Cold start requires the Razor Runtime to load the compiler and related resources so the very first page hit can take a few seconds before the Razor page renders. Subsequent page compilation is faster but still 'laggy' (few hundred ms), and previously compiled pages run very fast at pre-compiled speed.
+You can specify explicit file extensions to monitor using the `--Extensions` switch. The default is: `".cshtml,.css,.js,.htm,.html,.ts,.md"`.
 
 ## Markdown File Rendering
-You can enable Markdown support in this server by using `--UseMarkdown True` which lets you serve HTML content directly off any `.md` or `.mkdown` files in the Web root. The server provides a default set of templates, but you can override the rendering behavior with a custom Razor template that provides the chrome around the rendered Markdown, additional styling and syntax coloring.
+You can enable Markdown support in this server by setting `--UseMarkdown True`. This serves HTML content directly off any `.md` or `.mkdown` files in the Web root. The server provides default templates for the HTML styling, but you can override the rendering behavior with a **custom Razor template** that provides the chrome around the rendered Markdown, additional styling and syntax coloring.
 
 Markdown pages are rendered as HTML and like other resources are tracked for changes. If you make a change to the Markdown document, the browser is refreshed and immediately shows that change. If you create a custom Razor template, changes in that are also detected and cause an immediate refresh.
 
@@ -150,7 +157,15 @@ More on customization below.
 ### Using a custom Markdown Template
 The template used for Markdown rendering is an MVC View template that is passed a `MarkdownModel` that contains the rendered markdown and a few other useful bits of information like the path, file name and title of the document. 
 
-Here's what the default template looks like:
+You can override the template used by using the `--MarkdownPageTemplate` command line switch:
+
+```ps
+LiveReloadServer --WebRoot ./website/site1 -UseMarkdown --MarkdownPageTemplate ~/MyMarkdownTemplate.cshtml
+```
+
+> Note although you can use a completely separate template, keep in mind that there's a bit of styling and scripts are required in order to render Markdown. For example, code snippets coloring needs a JavaScript library and text styling may require custom CSS. It'll render without but it won't look pretty without a bit of styling.
+
+To give you an idea what a template should look like, here's what the default template looks like:
 
 ```html
 @model Westwind.AspNetCore.Markdown.MarkdownModel
@@ -214,6 +229,9 @@ You can create any HTML and CSS to render your Markdown of course if you prefer.
 
 ## Razor Files
 LiveReloadServer has **basic Razor Pages support**, which means you can create **single file, inline Razor content in Razor pages** as well as use Layout, Partials, ViewStart etc. in the traditional Razor Pages project hierarchy. As long as **all code** is inside of `.cshtml` Razor pages it should work.
+
+> #### Slow First Time Razor Startup
+> First time Razor Page startup can be slow. Cold start requires the Razor Runtime to load the compiler and related resources so the very first page hit can take a few seconds before the Razor page renders. Subsequent page compilation is faster but still 'laggy' (few hundred ms), and previously compiled pages run very fast at pre-compiled speed.
 
 ### No Compiled C# Code
 However, there's **no support for code behind razor models** or  **loose C# .cs compilation** as runtime compilation outside of Razor is not supported. All dynamic compilable code has to live in Razor `.shtml` content.

@@ -155,7 +155,7 @@ namespace LiveReloadServer
 {headerLine}
 (c) Rick Strahl, West Wind Technologies, 2019-2020
 
-Static and Razor File Service with Live Reload for changed content.
+Static, Markdown and Razor Files Web Server with Live Reload for changed content.
 
 Syntax:
 -------
@@ -176,8 +176,8 @@ Razor Pages:
 
 Markdown Options:
 -----------------
---UseMarkdown           True|False*  Renders .md files
---CopyMarkdownResources True*|False  Copies Markdown rendering templates
+--UseMarkdown           True|False*  
+--CopyMarkdownResources True|False*  
 --MarkdownTemplate      ""~/markdown-themes/__MarkdownTestmplatePage.cshtml""*
 
 Configuration options can be specified in:
