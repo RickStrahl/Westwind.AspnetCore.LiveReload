@@ -12,7 +12,8 @@ This is a self-contained Web Server for serving static HTML and loose Razor file
 * Automatic LiveReload functionality for change detection and browser refresh
 * Options to customize location, port, files checked etc.
 * Easily installed and updated with `dotnet tool -g install LiveReloadServer`
-* Also supports Razor Pages that don't have external dependencies
+* Markdown rendering to HTML with basic theming and Page template support
+* Basic Razor Pages support for self-contained Razor Pages
 
 You can grab the compiled tool as:
 
