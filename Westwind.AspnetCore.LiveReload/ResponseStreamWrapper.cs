@@ -107,11 +107,15 @@ namespace Westwind.AspnetCore.LiveReload
                 return _isHtmlResponse.Value;
 
             _isHtmlResponse =
+                _context.Response?.Body != null &&
                 _context.Response.StatusCode == 200 &&
                 _context.Response.ContentType != null &&
                 _context.Response.ContentType.Contains("text/html", StringComparison.OrdinalIgnoreCase) &&
                 (_context.Response.ContentType.Contains("utf-8", StringComparison.OrdinalIgnoreCase) ||
                 !_context.Response.ContentType.Contains("charset=", StringComparison.OrdinalIgnoreCase));
+
+            if (!_isHtmlResponse.Value)
+                return false;
 
             // Make sure we force dynamic content type since we're
             // rewriting the content - static content will set the header explicitly
