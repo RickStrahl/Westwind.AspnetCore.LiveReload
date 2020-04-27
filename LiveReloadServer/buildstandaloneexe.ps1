@@ -18,7 +18,7 @@
 
 if (test-path './LiveReloadWebServer.exe' -PathType Leaf) { remove-item ./LiveReloadWebServer.exe }
 if (test-path './SingleFileExe' -PathType Container) { remove-item ./SingleFileExe -Recurse -Force }
-if (test-path './Hhosted' -PathType Container) { remove-item ./hosted -Recurse -Force }
+if (test-path './hosted' -PathType Container) { remove-item ./hosted -Recurse -Force }
 
 # Single File Exe output
 dotnet publish -c Release /p:PublishSingleFile=true /p:PublishTrimmed=false -r win-x64 --output SingleFileExe

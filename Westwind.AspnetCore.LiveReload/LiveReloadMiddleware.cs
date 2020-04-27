@@ -147,8 +147,17 @@ namespace Westwind.AspNetCore.LiveReload
             ActiveSockets.Remove(webSocket);
             if (webSocket.State != WebSocketState.Closed &&
                 webSocket.State != WebSocketState.Aborted)
-                await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Socket closed",
-                                           CancellationToken.None);
+            {
+                try
+                {
+                    await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Socket closed",
+                        CancellationToken.None);
+                }
+                catch
+                {
+                    // this may throw on shutdown and can be ignored
+                }
+            }
 
         }
 

@@ -16,7 +16,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Version>0.2</Version>
+    <Version>0.2.1</Version>
     <RazorCompileOnPublish>false</RazorCompileOnPublish>
 
     <Authors>Rick Strahl</Authors>
@@ -31,6 +31,7 @@
 
       * Static HTML, CSS, JavaScript etc. files
       * Loose, single-file Razor Pages including assembly dependencies
+      * Markdown Files - .md files rendered to HTML with Theming and Page Template
       * Options to configure extensions to monitor, port, folder and more.
 
     </Description>
