@@ -95,8 +95,6 @@ namespace LiveReloadServer
                 {
                     opt.RootDirectory = "/";
                 });
-                
-                
             }
 #endif
 
@@ -129,12 +127,6 @@ namespace LiveReloadServer
                 // copy Markdown Template and resources if it doesn't exist
                 if (CopyMarkdownResources)
                     CopyMarkdownTemplateResources();
-
-                //services.Configure<RazorViewEngineOptions>(options =>
-                //{
-                //    var p = Path.Combine(WebRoot, "markdown-templates", "{0}.cshtml").Replace("\\", "/");
-                //    options.ViewLocationExpanders.Add(new MarkdownViewLocationExpander(new string[] {p}));
-                //});
             }
 
             // If Razor or Markdown are enabled we need custom folders

@@ -261,6 +261,11 @@ We can only hope Microsoft come up with a built-in solution to trigger the recom
 
 ## Change Log
 
+### Version 0.2.2
+
+* **Add Markdown File Support**  
+Added support for optionally serving Markdown files as HTML from the local site. Markdown files are loaded as `.md`,`.markdown`, `.mkdown` or as extensionless URLs from the Web site and can participate in Live Reload functionality.
+
 ### Version 0.1.17
 
 * **Delay load injected WebSocket Script Code**   

@@ -371,3 +371,22 @@ More features like dynamic compilation of loose C# code files at runtime might b
 But that won't stop some from asking or trying to hook it up anyway I bet :smile:
 
 If that's of interest to you or you want to contribute, please file an issue to discuss and explore the use cases and what might be possible.
+
+## Version History
+
+### Version 0.2.2
+
+* **Add Markdown File Support**  
+Added support for optionally serving Markdown files as HTML from the local site. Markdown files are loaded as `.md`,`.markdown`, `.mkdown` or as extensionless URLs from the Web site and can participate in Live Reload functionality.
+
+* **Add Console Application Icon** 
+Added Console Application icon so application is easier to identify in the Task list and when running on the Desktop. 
+
+* **Update the Sample Application**  
+Updated the .NET Core 3.1 Sample application to properly display reference links. Add Markdown Example.
+
+* **Fix: Server Timeout not respected**   
+The server timeout was not respected previously and has been fixed to properly wait for the configured period before refreshing the browser instance.
+
+* **Fix: Command Line Parsing for Logical Switches**  
+Fix issue with logical switches like `-UseSSL` which were not properly working when configuration was present in the configuration file. Settings of the command line now properly override configuration setting in the config file.
