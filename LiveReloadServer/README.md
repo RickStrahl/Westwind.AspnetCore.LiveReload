@@ -15,6 +15,8 @@ This is a self-contained Web Server for serving static HTML and loose Razor file
 * Markdown Page rendering to HTML with theming, Page template and Live Reload Support
 * Self-contained Razor Pages support with Live Reload Support
 
+![](ScreenShot.png)
+
 You can grab the compiled tool as:
 
 * [Dotnet Tool](https://www.nuget.org/packages/LiveReloadServer/)   
@@ -97,8 +99,8 @@ Razor Pages:
 Markdown Options:
 -----------------
 --UseMarkdown           True|False*  
---CopyMarkdownResources True|False*
 --MarkdownTemplate      ""~/markdown-themes/__MarkdownTestmplatePage.cshtml""*
+--CopyMarkdownResources True|False*
 
 
 Configuration options can be specified in:
@@ -114,7 +116,7 @@ LiveReloadServer --WebRoot "c:\temp\My Site" --port 5500 -useSsl -useRazor --ope
 
 $env:LiveReloadServer_Port 5500
 $env:LiveReloadServer_WebRoot c:\mySites\Site1\Web
-LiveReloadServer
+LiveReloadServer -UseMarkdown -UseRazor
 ```
 
 You can also use Environment variables to set these save options by using a `LiveReloadServer_` prefix:
