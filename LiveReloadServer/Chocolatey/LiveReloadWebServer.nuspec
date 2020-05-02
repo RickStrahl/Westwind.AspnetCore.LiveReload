@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>LiveReloadWebServer</id>
-        <version>0.2.1</version>
+        <version>0.2.2</version>
         <title>Live Reload Local Web Server for Windows</title>
         <authors>Rick Strahl,West Wind Technologies</authors>
         <owners>West Wind Technologies</owners>
