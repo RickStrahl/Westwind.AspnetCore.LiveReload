@@ -16,11 +16,15 @@ Live Reload Web Server is a small, local, static file Web Server that has built-
 
 * Run a Web site out of any local folder
 * Built-in Web Browser Live Reload for static resource changes
+* Support for Markdown Rendering to HTML
+* Self-contained Razor Pages for C# based scripting support
 * Supports HTTPS
 * Self-contained single file Server
 * Customize extensions to monitor
 * Auto-launch browser
 * Configurable ports, TLS usage, extensions and more
+
+![](https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/raw/master/LiveReloadServer/ScreenShot.png)
         </description>
         <iconUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/raw/master/icon.png</iconUrl>
         <summary>A self-contained local static Web Server for Windows that includes Live Reload functionality for automatic browser refresh on changes of static resources.</summary>
