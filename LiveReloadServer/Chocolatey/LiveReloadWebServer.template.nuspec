@@ -12,15 +12,19 @@
         <docsUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/tree/master/LiveReloadServer</docsUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>
-Live Reload Web Server is a small, local, static file Web Server that has built-in Live Reload functionality. It's great quick access development server you can use to fire up a Web server in an arbitrary folder on your machine. For development Live Reload detects changes to static files like HTML, CSS, JavaScript etc. and automatically reloads the Web browser's currently active page without running a full build process like WebPack, Browserify etc. Just point at a folder and shoot!
+Live Reload Web Server is a local, static file Web Server that has built-in Live Reload functionality for static Web content, Markdown rendering support and can dynamically execute self-contained C# based Razor templates. It's great quick access development server you can use to fire up a Web server in an arbitrary folder on your machine. For development Live Reload detects changes to static files like HTML, CSS, JavaScript etc. and automatically reloads the Web browser's currently active page without running a full build process like WebPack, Browserify etc. Just point at a folder and shoot!
 
 * Run a Web site out of any local folder
-* Built-in Web Browser Live Reload for static resource changes
-* Supports HTTPS
-* Self-contained single file Server
+* Built-in Live Reload for refreshing content on resource changes
+* Built-in Markdown rendering to HTML
+* C# based scripting support using self-contained Razor pages
+* HTTPS support
+* 100% self-contained
 * Customize extensions to monitor
 * Auto-launch browser
 * Configurable ports, TLS usage, extensions and more
+
+![](https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/raw/master/LiveReloadServer/ScreenShot.png)
         </description>
         <iconUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/raw/master/icon.png</iconUrl>
         <summary>A self-contained local static Web Server for Windows that includes Live Reload functionality for automatic browser refresh on changes of static resources.</summary>

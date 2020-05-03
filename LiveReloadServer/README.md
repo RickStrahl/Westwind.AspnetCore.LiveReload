@@ -23,7 +23,7 @@ You can grab the compiled tool as:
   `dotnet tool install -g LiveReloadServer`
 * [Chocolatey Package](https://chocolatey.org/packages/LiveReloadWebServer)   
  `choco install LiveReloadWebServer`
-* [Direct Single File Download (zipped)](https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/raw/master/LiveReloadServer/LiveReloadWebServer.zip)
+* [Direct Single File Download Windows Executable (zipped)](https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/raw/master/LiveReloadServer/LiveReloadWebServer.zip)
 
 > All three versions have the same features and interface, just the delivery mechanism and the executable name is different. The EXE uses `LiveReloadWebServer` while the Dotnet Tool uses `LiveReloadServer`.
   
