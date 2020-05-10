@@ -5,9 +5,14 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
 using Westwind.AspnetCore.LiveReload;
+
+#if !NETCORE2
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.Hosting;
+#endif
 
 namespace Westwind.AspNetCore.LiveReload
 {
@@ -21,11 +26,22 @@ namespace Westwind.AspNetCore.LiveReload
         private readonly RequestDelegate _next;
         internal static HashSet<WebSocket> ActiveSockets = new HashSet<WebSocket>();
 
+        #if !NETCORE2
+            private IHostApplicationLifetime applicationLifetime;
 
-        public LiveReloadMiddleware(RequestDelegate next)
-        {
-            _next = next;
-        }
+            public LiveReloadMiddleware(RequestDelegate next,IHostApplicationLifetime lifeTime)
+            {
+                applicationLifetime = lifeTime;
+                _next = next;
+            }
+        #else
+            private IApplicationLifetime applicationLifetime;
+
+            public LiveReloadMiddleware(RequestDelegate next, IApplicationLifetime lifeTime)
+            {
+                _next = next;
+            }
+        #endif
 
 
         /// <summary>
@@ -106,7 +122,7 @@ namespace Westwind.AspNetCore.LiveReload
                         if (!ActiveSockets.Contains(webSocket))
                             ActiveSockets.Add(webSocket);
 
-                        await WebSocketWaitLoop(webSocket); // this waits until done
+                        await WebSocketWaitLoop(webSocket, context); // this waits until done
                     }
                 }
                 else
@@ -128,7 +144,7 @@ namespace Westwind.AspNetCore.LiveReload
         /// </summary>
         /// <param name="webSocket"></param>
         /// <returns></returns>
-        private async Task WebSocketWaitLoop(WebSocket webSocket)
+        private async Task WebSocketWaitLoop(WebSocket webSocket, HttpContext context)
         {
             // File Watcher was started by Middleware extensions
             var buffer = new byte[1024];
@@ -136,9 +152,9 @@ namespace Westwind.AspNetCore.LiveReload
             {
                 try
                 {
-                    var received = await webSocket.ReceiveAsync(buffer, CancellationToken.None);
+                    var received = await webSocket.ReceiveAsync(buffer, applicationLifetime.ApplicationStopping);
                 }
-                catch
+                catch(Exception ex)
                 {
                     break;
                 }

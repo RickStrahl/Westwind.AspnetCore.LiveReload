@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Westwind.AspNetCore.LiveReload
@@ -53,6 +54,15 @@ namespace Westwind.AspNetCore.LiveReload
         /// to point at a http connection. "ws://localhost:5000"
         /// </summary>
         public string WebSocketHost { get; set; }
+
+        /// <summary>
+        /// Optionally passed in token to cancel out of pending Web Socket
+        /// wait operations in order to allow for a controlled shutdown.
+        ///
+        /// Provide a cancellation token from Shutdown services or a hosted
+        /// service.
+        /// </summary>
+        public CancellationToken ShutdownCancellationToken {get; set;}
 
     }
 }

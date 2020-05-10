@@ -82,7 +82,7 @@
             <param name="context"></param>
             <returns></returns>
         </member>
-        <member name="M:Westwind.AspNetCore.LiveReload.LiveReloadMiddleware.WebSocketWaitLoop(System.Net.WebSockets.WebSocket)">
+        <member name="M:Westwind.AspNetCore.LiveReload.LiveReloadMiddleware.WebSocketWaitLoop(System.Net.WebSockets.WebSocket,Microsoft.AspNetCore.Http.HttpContext)">
             <summary>
              Web Socket event loop. Just sits and waits
             for disconnection or error to break.

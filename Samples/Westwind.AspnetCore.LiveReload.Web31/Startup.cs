@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,7 +43,7 @@ namespace Westwind.AspnetCore.LiveReload.Web30
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime lifetime)
         {
             if (env.IsDevelopment())
             {
@@ -56,8 +57,6 @@ namespace Westwind.AspnetCore.LiveReload.Web30
                 app.UseHsts();
             }
 
-            
-
             //app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -67,6 +66,8 @@ namespace Westwind.AspnetCore.LiveReload.Web30
 
             app.UseAuthorization();
 
+        
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
@@ -74,6 +75,18 @@ namespace Westwind.AspnetCore.LiveReload.Web30
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
+
+
+            // Check for lifetime shutdown working with WebSocket active
+            lifetime.ApplicationStopping.Register(() =>
+            {
+                Console.WriteLine("*** Application is shutting down...");
+            }, true);
+
+            lifetime.ApplicationStopped.Register(() =>
+            {
+                Console.WriteLine("*** Application is shut down...");
+            }, true);
         }
     }
 }
