@@ -152,7 +152,8 @@ namespace Westwind.AspNetCore.LiveReload
             {
                 try
                 {
-                    var received = await webSocket.ReceiveAsync(buffer, applicationLifetime.ApplicationStopping);
+                    var received =
+                        await webSocket.ReceiveAsync(buffer, applicationLifetime.ApplicationStopping);
                 }
                 catch(Exception ex)
                 {
@@ -161,6 +162,7 @@ namespace Westwind.AspNetCore.LiveReload
             }
 
             ActiveSockets.Remove(webSocket);
+
             if (webSocket.State != WebSocketState.Closed &&
                 webSocket.State != WebSocketState.Aborted)
             {

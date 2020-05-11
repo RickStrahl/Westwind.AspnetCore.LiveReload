@@ -261,6 +261,13 @@ We can only hope Microsoft come up with a built-in solution to trigger the recom
 
 ## Change Log
 
+### Version 0.2.3
+
+* **Add Lifecycle Management CancellationToken to Web Socket Read**  
+Added the cancellation token to the `WebSocket.Receive()` operation so the socket can safely abort when the application is shut down. Previously this was causing problems in some application that used ASP.NET Core Lifecycle operations to not fire those event due to the still active WebSocket timing out before the app would shut down.
+
+* **Fix: Rendering Errors when Live Reload Enabled**  
+Fix issue where rendering was failing due to a missing `await` on output generation which would intermittently cause pages to fail. Fixed.
 
 ### Version 0.1.17
 
