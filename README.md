@@ -261,7 +261,10 @@ We can only hope Microsoft come up with a built-in solution to trigger the recom
 
 ## Change Log
 
-### Version 0.2.3
+### Version 0.2.4
+
+* **Better preservation of scroll position in Refresh script**  
+Changed the client script to use `location.reload()` instead of a force refresh with `location.reload(true)`. The forced refresh also forces the top of the page to be displayed, while reload preserves scroll position in most browsers (Edge Chromium not for some reason)
 
 * **Add Lifecycle Management CancellationToken to Web Socket Read**  
 Added the cancellation token to the `WebSocket.Receive()` operation so the socket can safely abort when the application is shut down. Previously this was causing problems in some application that used ASP.NET Core Lifecycle operations to not fire those event due to the still active WebSocket timing out before the app would shut down.

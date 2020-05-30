@@ -142,11 +142,11 @@ function tryConnect(retryOnFail){{
             console.log('Live Reload Delayed Reload.');
             setTimeout( 
                 function() {{ 
-                    location.reload(true); 
+                    location.reload(); 
                 }},{config.ServerRefreshTimeout});
         }}
         if (message.data == 'Refresh') 
-          location.reload(true); 
+          location.reload(); 
     }}    
     connection.onerror = function(event)  {{
         console.log('Live Reload Socket error.', event);

@@ -168,8 +168,9 @@ namespace Westwind.AspNetCore.LiveReload
             {
                 try
                 {
-                    await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Socket closed",
-                        CancellationToken.None);
+                    await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure,
+                        "Socket closed",
+                        applicationLifetime.ApplicationStopping);
                 }
                 catch
                 {
