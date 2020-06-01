@@ -67,12 +67,20 @@ namespace Westwind.AspNetCore.LiveReload
 
         private static void DisposeFilesWatcher()
         {
+            FileWatcher.Changed -= FileWatcher_Changed;
+            FileWatcher.Created -= FileWatcher_Changed;
+            FileWatcher.Renamed -= FileWatcher_Renamed;
+            FileWatcher.EnableRaisingEvents = false;
             FileWatcher?.Dispose();
             FileWatcher = null;
         }
 
         private static void DisposeFolderWatcher()
         {
+            FolderWatcher.Created -= FolderWatcher_Created;
+            FolderWatcher.Deleted -= FolderWatcher_Deleted;
+            FolderWatcher.Renamed -= FolderWatcher_Renamed;
+            FolderWatcher.EnableRaisingEvents = false;
             FolderWatcher?.Dispose();
             FolderWatcher = null;
         }
