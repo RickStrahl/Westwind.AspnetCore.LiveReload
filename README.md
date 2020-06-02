@@ -111,7 +111,7 @@ And you can use these configuration settings:
     "ClientFileExtensions": ".cshtml,.css,.js,.htm,.html,.ts,.razor,.custom",
     "ServerRefreshTimeout": 3000,
     "WebSocketUrl": "/__livereload",
-    "WebSocketHost": "ws://localhost:5000",
+    "WebSocketHost":null, 
     "FolderToMonitor": "~/"
   }
 }
@@ -271,6 +271,9 @@ Added the cancellation token to the `WebSocket.Receive()` operation so the socke
 
 * **Fix: Rendering Errors when Live Reload Enabled**  
 Fix issue where rendering was failing due to a missing `await` on output generation which would intermittently cause pages to fail. Fixed.
+
+* **Fix: Errors with Concurrency for WebSocket Storage**   
+Switched to ConcurrentDictionary for the Web Socket list storage.
 
 ### Version 0.1.17
 

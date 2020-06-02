@@ -13,7 +13,7 @@ namespace Westwind.AspnetCore.LiveReload.Web30
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-        }
+          }
 
         public IConfiguration Configuration { get; }
 
@@ -31,6 +31,7 @@ namespace Westwind.AspnetCore.LiveReload.Web30
                 // optional - use config instead
                 //config.LiveReloadEnabled = true;
                 //config.FolderToMonitor = Env.ContentRootPath;
+                //config.WebSocketHost = "wss://localhost:44365";  // explicitly provide the WebSocket Host if proxying 
             });
 
 
