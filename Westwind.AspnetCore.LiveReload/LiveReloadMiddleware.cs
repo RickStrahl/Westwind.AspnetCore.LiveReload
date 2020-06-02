@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.WebSockets;
@@ -24,7 +25,11 @@ namespace Westwind.AspNetCore.LiveReload
     public class LiveReloadMiddleware
     {
         private readonly RequestDelegate _next;
-        internal static HashSet<WebSocket> ActiveSockets = new HashSet<WebSocket>();
+
+        /// <summary>
+        /// Concurrent dictionary as a Hashset. The byte is just a throwaway value
+        /// </summary>
+        internal static ConcurrentDictionary<WebSocket,byte> ActiveSockets { get; }= new ConcurrentDictionary<WebSocket,byte>();
 
         #if !NETCORE2
             private IHostApplicationLifetime applicationLifetime;
@@ -119,8 +124,9 @@ namespace Westwind.AspNetCore.LiveReload
                 {
                     using (var webSocket = await context.WebSockets.AcceptWebSocketAsync())
                     {
-                        if (!ActiveSockets.Contains(webSocket))
-                            ActiveSockets.Add(webSocket);
+
+                        if (!ActiveSockets.ContainsKey(webSocket))
+                            ActiveSockets.TryAdd(webSocket, 0);
 
                         await WebSocketWaitLoop(webSocket, context); // this waits until done
                     }
@@ -161,7 +167,7 @@ namespace Westwind.AspNetCore.LiveReload
                 }
             }
 
-            ActiveSockets.Remove(webSocket);
+            ActiveSockets.TryRemove(webSocket,out byte throwAway);
 
             if (webSocket.State != WebSocketState.Closed &&
                 webSocket.State != WebSocketState.Aborted)
@@ -196,9 +202,10 @@ namespace Westwind.AspNetCore.LiveReload
                 msg = "DelayRefresh";
 
             byte[] refresh = Encoding.UTF8.GetBytes(msg);
-            foreach (var sock in ActiveSockets)
+            foreach (var kv in ActiveSockets)
             {
-                await sock.SendAsync(new ArraySegment<byte>(refresh, 0, refresh.Length),
+                // key is the webSocket
+                await kv.Key.SendAsync(new ArraySegment<byte>(refresh, 0, refresh.Length),
                     WebSocketMessageType.Text,
                     true,
                     CancellationToken.None);
