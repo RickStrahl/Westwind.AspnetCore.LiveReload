@@ -37,6 +37,12 @@ namespace Westwind.AspNetCore.LiveReload
         /// </summary>
         public string ClientFileExtensions { get; set; } = ".cshtml,.css,.js,.htm,.html,.ts,.razor";
 
+        /// <summary>
+        /// Optional filter for the given paths. If used, it should return true if the file
+        // should be watched, false otherwise.
+        /// </summary>
+        public Func<string, bool>? IncludeFilter = null;
+
 
         /// <summary>
         /// The timeout to wait before refreshing the page when shutting down
