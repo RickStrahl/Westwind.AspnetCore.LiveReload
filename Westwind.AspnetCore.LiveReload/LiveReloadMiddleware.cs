@@ -128,7 +128,7 @@ namespace Westwind.AspNetCore.LiveReload
                         if (!ActiveSockets.ContainsKey(webSocket))
                             ActiveSockets.TryAdd(webSocket, 0);
 
-                        await WebSocketWaitLoop(webSocket, context); // this waits until done
+                        await WebSocketWaitLoop(webSocket); // this waits until done
                     }
                 }
                 else
@@ -143,14 +143,13 @@ namespace Westwind.AspNetCore.LiveReload
         }
 
 
-
         /// <summary>
         ///  Web Socket event loop. Just sits and waits
         /// for disconnection or error to break.
         /// </summary>
-        /// <param name="webSocket"></param>
+        /// <param name="webSocket">The Web Socekt to wait on</param>
         /// <returns></returns>
-        private async Task WebSocketWaitLoop(WebSocket webSocket, HttpContext context)
+        private async Task WebSocketWaitLoop(WebSocket webSocket)
         {
             // File Watcher was started by Middleware extensions
             var buffer = new byte[1024];
@@ -161,7 +160,7 @@ namespace Westwind.AspNetCore.LiveReload
                     var received =
                         await webSocket.ReceiveAsync(buffer, applicationLifetime.ApplicationStopping);
                 }
-                catch(Exception ex)
+                catch
                 {
                     break;
                 }
