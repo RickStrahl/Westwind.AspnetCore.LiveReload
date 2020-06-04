@@ -53,8 +53,8 @@ namespace Westwind.AspNetCore.LiveReload
             if (string.IsNullOrEmpty(ext))
                 return;
 
-            if (LiveReloadConfiguration.Current.IncludeFilter is Func<string, bool> filter
-            && !filter.Invoke(filename))
+            if (LiveReloadConfiguration.Current.FileIncludeFilter is Func<string, bool> filter &&
+                !filter.Invoke(filename))
                 return;
 
             if (_extensionList == null)

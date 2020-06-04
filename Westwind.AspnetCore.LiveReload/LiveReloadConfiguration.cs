@@ -41,7 +41,7 @@ namespace Westwind.AspNetCore.LiveReload
         /// Optional filter for the given paths. If used, it should return true if the file
         // should be watched, false otherwise.
         /// </summary>
-        public Func<string, bool>? IncludeFilter = null;
+        public Func<string, bool> FileIncludeFilter = null;
 
 
         /// <summary>
