@@ -14,6 +14,7 @@ This is a self-contained Web Server for serving static HTML and loose Razor file
 * Easily installed and updated with `dotnet tool -g install LiveReloadServer`
 * Markdown Page rendering to HTML with theming, Page template and Live Reload Support
 * Self-contained Razor Pages support with Live Reload Support
+* Running Blazor Applications (without Live Reload)
 
 ![](ScreenShot.png)
 
@@ -365,6 +366,25 @@ All these things use intrinsic built-in features of .NET or ASP.NET which, while
 
 Also keep in mind this is meant as a generic **local** server and although you can in theory host this generic server on a Web site, the primary use case for this library is local hosting either for testing or for integration into local (desktop) applications that might require visual HTML content and a Web server to serve local Web content.
 
+### Blazor WASM Support
+It is possible to run client side Blazor applications with this Web server, but there will be no live-reload functionality since a live Blazor application is pre-compiled. It is however possible to run Blazor with a couple of configuration settings.
+
+Set the following two settings in the server's `LiveReloadWebServer.json` file to enable Blazor:
+
+```json
+"LiveReload": {
+    ...
+    "AdditionalMimeMappings": {
+      ".dll": "application/octet-stream"
+    },
+    "FolderNotFoundFallbackPath":  "/index.html"
+}
+```
+
+The first setting ensures that `.dll` files for .NET assemblies can be served by the LiveReload server. By default these are not enabled.
+
+The second setting ensures that you can **refresh a client side page** which forces a server refresh. The page will rewrite the current 404 request by accessing the specified URL which typically will be `/index.html`. Since the URL stays the same the Blazor page should then navigate then to the desired client side URL on refresh.
+
 ### More Features?
 The primary goal of LiveReload server is as a local server, not a hosted do-it-all solution. Other features may be explored but at the moment the feature set is well suited to the stated usage scenario I intended it for.
 
@@ -375,6 +395,11 @@ But that won't stop some from asking or trying to hook it up anyway I bet :smile
 If that's of interest to you or you want to contribute, please file an issue to discuss and explore the use cases and what might be possible.
 
 ## Version History
+
+### Version 0.2.3
+
+* **Add Blazor Viewing Support**  
+Added support for reading custom extensions like the required `.dll` extension for .NET assemblies in Blazor applications. Also added Refresh Fallback support for client side navigation URLs by allowing to redirect to the `/index.html` page on the client for server side refreshes.
 
 ### Version 0.2.2
 

@@ -10,6 +10,10 @@
     "LiveReloadEnabled": true,
     "ClientFileExtensions": ".cshtml,.css,.js,.htm,.html,.ts,.razor",
     "ServerRefreshTimeout": 300,
-    "WebSocketUrl": "/__livereload"
+    "WebSocketUrl": "/__livereload",
+    "AdditionalMimeMappings": {
+      ".dll": "application/octet-stream"
+    },
+    "FolderNotFoundFallbackPath":  "/index.html"
   }
 }

@@ -6,13 +6,15 @@ using System.Reflection;
 using System.Runtime.Loader;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Westwind.AspNetCore.LiveReload;
 using Westwind.AspNetCore.Markdown;
 using Westwind.Utilities;
-
+using Microsoft.Extensions.Configuration.UserSecrets;
+using Microsoft.Extensions.FileProviders.Physical;
 
 namespace LiveReloadServer
 {
@@ -156,7 +158,7 @@ namespace LiveReloadServer
             bool useSsl = Helpers.GetLogicalSetting("useSsl", Configuration, false);
             bool showUrls = Helpers.GetLogicalSetting("ShowUrls", Configuration, true);
             bool openBrowser = Helpers.GetLogicalSetting("OpenBrowser", Configuration, true);
-
+            
             string defaultFiles = Configuration["DefaultFiles"];
             if (string.IsNullOrEmpty(defaultFiles))
                 defaultFiles = "index.html,default.htm,default.html";
@@ -210,13 +212,25 @@ namespace LiveReloadServer
 
             // add static files to WebRoot and our templates folder which provides markdown templates
             // and potentially other library resources in the future
+            
             var wrProvider = new PhysicalFileProvider(WebRoot);
             var tpProvider= new PhysicalFileProvider(Path.Combine(Startup.StartupPath,"templates"));
+
+            var extensionProvider = new FileExtensionContentTypeProvider();
+            extensionProvider.Mappings.Add(".dll", "application/octet-stream");
+            if (LiveReloadConfiguration.Current.AdditionalMimeMappings != null)
+            {
+                foreach (var map in LiveReloadConfiguration.Current.AdditionalMimeMappings)
+                    extensionProvider.Mappings[map.Key] = map.Value;
+            }
+
             var compositeProvider = new CompositeFileProvider(wrProvider, tpProvider);
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = compositeProvider, //new PhysicalFileProvider(WebRoot),
-                RequestPath = new PathString("")
+                RequestPath = new PathString(""),
+                ContentTypeProvider = extensionProvider,
+                ServeUnknownFileTypes = true
             });
 
             if (UseRazor || UseMarkdown)
@@ -236,6 +250,21 @@ namespace LiveReloadServer
                 });
             }
 
+            // 404  - fall through middleware
+            if (!string.IsNullOrEmpty(LiveReloadConfiguration.Current.FolderNotFoundFallbackPath))
+            {
+                app.Use(async (context, next) =>
+                {
+                    var path = context.Request.Path;
+                    if (string.IsNullOrEmpty(Path.GetExtension(path)))
+                    {
+                        var fi = new FileInfo(Path.Combine(WebRoot,  LiveReloadConfiguration.Current.FolderNotFoundFallbackPath.Trim('/','\\')));
+                        await context.Response.SendFileAsync(new PhysicalFileInfo(fi));
+                        await context.Response.CompleteAsync();
+                    }
+
+                });
+            }
 
             var url = $"http{(useSsl ? "s" : "")}://localhost:{Port}";
             var extensions = Configuration["Extensions"];

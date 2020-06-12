@@ -17,7 +17,7 @@
     },
     "LiveReloadServer": {
       "commandName": "Project",
-      "commandLineArgs": "--WebRoot ..\\..\\..\\..\\Samples\\StandaloneFiles -useSSL --useRazor True --CopyMarkdownResources False --useMarkdown True --MarkdownTheme Dharkan  --MarkdownSyntaxTheme vs --ShowUrls True",
+      "commandLineArgs": "--WebRoot  C:\\clients\\PRA\\Blazor\\PraMobile\\bin\\Release\\netstandard2.1\\publish\\wwwroot -useSSL  --CopyMarkdownResources False --useMarkdown True --MarkdownTheme Dharkan  --MarkdownSyntaxTheme vs --ShowUrls True",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
