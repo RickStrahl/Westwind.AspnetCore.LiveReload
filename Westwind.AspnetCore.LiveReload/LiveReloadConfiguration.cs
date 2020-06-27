@@ -70,28 +70,7 @@ namespace Westwind.AspNetCore.LiveReload
         /// </summary>
         public CancellationToken ShutdownCancellationToken {get; set;}
 
-        #region Server Settings
-
-        /// <summary>
-        /// Allows you to set additional Mime mappings for use in the LiveReload Server
-        /// Console application. Format:
-        /// .dll    - application/octet-stream 
-        /// .custom - text/plain
-        /// </summary>
-        public Dictionary<string,string> AdditionalMimeMappings {get; set; }
-
-
-        /// <summary>
-        /// An optional fallback path that's used in the LiveReloadServer
-        /// to redirect to antoehr URL if a folder isn't found on the server.
-        /// Used for SPA application that have client navigation URLS and
-        /// need to redirect back a starting page.
-        /// </summary>
-        public string FolderNotFoundFallbackPath { get; set; } = "/index.html";
-
-
-
-        #endregion
+        
 
     }
 }

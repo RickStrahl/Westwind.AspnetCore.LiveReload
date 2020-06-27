@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Net.Sockets;
 using System.Reflection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -41,18 +42,32 @@ namespace LiveReloadServer
                     return;
 
                 WebHost = builder.Build();
+                
                 WebHost.Run();
             }
             catch (IOException ex)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("\r\nUnable to start the Web Server");
+                Console.WriteLine("\r\nUnable to start the Web Server.");
                 Console.ResetColor();
                 Console.WriteLine("------------------------------");
-                
-                
+
+
                 Console.WriteLine("The server port is already in use by another application.");
                 Console.WriteLine("Please try and choose another port with the `--port` switch. And try again.");
+                Console.WriteLine("\r\n\r\nException Info:");
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("---------------------------------------------------------------------------");
+            }
+            catch (SocketException ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("\r\nUnable to start the Web Server.");
+                Console.ResetColor();
+                Console.WriteLine("------------------------------");
+
+                Console.WriteLine("The server Host IP address is invalid.");
+                Console.WriteLine("Please try and choose another host IP address with the `--host` switch. And try again.");
                 Console.WriteLine("\r\n\r\nException Info:");
                 Console.WriteLine(ex.Message);
                 Console.WriteLine("---------------------------------------------------------------------------");
@@ -63,26 +78,10 @@ namespace LiveReloadServer
                 if (ex.StackTrace.Contains("ThrowOperationCanceledException"))
                     return;
 
-                string headerLine = new string('-', Helpers.AppHeader.Length);
-                Console.WriteLine(headerLine);
-                Console.WriteLine(Helpers.AppHeader);
-                Console.WriteLine(headerLine);
-
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("\r\nYikes. That wasn't supposed to happen. Something went wrong!");
-                Console.WriteLine();
-                Console.ResetColor();
-
-                Console.WriteLine("The Live Reload Server has run into a problem and has stopped working.");
-                Console.WriteLine("Here's some more information...");
-                Console.WriteLine("\r\n\r\nException Info:");
-                Console.WriteLine(ex.Message);
-                Console.WriteLine("---");
-                Console.WriteLine(ex.StackTrace);
-                Console.WriteLine(ex.Source);
-                Console.WriteLine("---------------------------------------------------------------------------");
+                WriteStartupErrorMessage(ex.Message, ex.StackTrace, ex.Source);
             }
         }
+
 
 
         public static IHostBuilder CreateHostBuilder(string[] args)
@@ -103,10 +102,8 @@ namespace LiveReloadServer
                         .AddCommandLine(args)
                         .Build();
 
-
-                    var environment = config["Environment"];
-                    if (environment == null)
-                        environment = "Production";
+                    var serverConfig = new LiveReloadServerConfiguration();
+                    serverConfig.LoadFromConfiguration(config);
 
                     // Custom Logging
                     webBuilder
@@ -118,23 +115,43 @@ namespace LiveReloadServer
                         })
                         .UseConfiguration(config);
 
-                    
-
-                    var webRoot = config["WebRoot"];
+                    var webRoot = serverConfig.WebRoot;
                     if (!string.IsNullOrEmpty(webRoot))
                         webBuilder.UseWebRoot(webRoot);
-                    
-                    string sport = config["Port"];
-                    int.TryParse(sport, out int port);
-                    if (port == 0)
-                        port = 5200;
-
-                    bool useSsl = Helpers.GetLogicalSetting("UseSsl", config);
-                    webBuilder.UseUrls($"http{(useSsl ? "s" : "")}://0.0.0.0:{port}");
+                  
+                    webBuilder.UseUrls($"http{(serverConfig.UseSsl ? "s" : "")}://{serverConfig.Host}:{serverConfig.Port}");
 
                     webBuilder
                         .UseStartup<Startup>();
                 });
+        }
+
+
+        
+        public static void WriteStartupErrorMessage(string message, string stackTrace = null, string source = null)
+        {
+            string headerLine = new string('-', Helpers.AppHeader.Length);
+            Console.WriteLine(headerLine);
+            Console.WriteLine(Helpers.AppHeader);
+            Console.WriteLine(headerLine);
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("\r\nYikes. That wasn't supposed to happen. Something went wrong!");
+            Console.WriteLine();
+            Console.ResetColor();
+
+            Console.WriteLine("The Live Reload Server has run into a problem and has stopped working.");
+            Console.WriteLine("Here's some more information...");
+            Console.WriteLine("\r\n\r\nException Info:");
+            Console.WriteLine(message);
+
+            if (!string.IsNullOrEmpty(stackTrace))
+            {
+                Console.WriteLine("---");
+                Console.WriteLine(stackTrace);
+                Console.WriteLine(source);
+                Console.WriteLine("---------------------------------------------------------------------------");
+            }
         }
 
         static void ShowHelp()
@@ -163,11 +180,15 @@ Syntax:
 
 --WebRoot                <path>  (current Path if not provided)
 --Port                   5200*
+--Host                   0.0.0.0*|localhost|custom Ip - 0.0.0.0 allows external access
 --UseSsl                 True|False*{razorFlag}
+
+--UseLiveReload          True*|False
+--Extensions             ""{(useRazor ? ".cshtml," : "")}.css,.js,.htm,.html,.ts""*
+--DefaultFiles           ""index.html,default.htm""*
+
 --ShowUrls               True|False*
 --OpenBrowser            True*|False
---DefaultFiles           ""index.html,default.htm""*
---Extensions             ""{(useRazor ? ".cshtml," : "")}.css,.js,.htm,.html,.ts""*
 --Environment            Production*|Development
 
 Razor Pages:

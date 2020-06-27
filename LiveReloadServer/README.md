@@ -8,6 +8,7 @@
 This is a self-contained Web Server for serving static HTML and loose Razor files that automatically includes Live Reload functionality. 
 
 * Generic Static File Web Server you can launch in any folder
+* Support for serving HTTPS content when using Dotnet Tool
 * Just start `LiveReloadServer` in a folder or specify `--webroot` folder
 * Automatic LiveReload functionality for change detection and browser refresh
 * Options to customize location, port, files checked etc.
@@ -143,7 +144,7 @@ To access `README.md` in the WebRoot you would access:
 * https://localhost:5200/README.md  
 * https://localhost:5200/README
 
-### Customizing Markdown Templates and Styling
+## Customizing Markdown Templates and Styling
 Default styling for Markdown comes from a Razor template that is provided as part of the distribution in the install folder's `./templates/markdown-themes` directory. This folder is hoisted as `~/markdown-themes` into the Web site, which makes the default CSS and script resources available to the Web site. This folder by default is routed back to the launch (not Web) root and is used for all sites you run through this server.
 
 There are several ways you can customize the Markdown styling and supporting resources:
@@ -214,7 +215,7 @@ To give you an idea what a template should look like, here's what the default te
 
 The model is passed as `MarkdownModel` and it contains the `.RenderedMarkdown` property which is the rendered HTML output (as an `HtmlString`). There's also the `.Title` which is parsed from the document based on a header if present. The model also contains the original Markdown and a YAML header if it was present.
 
-#### Default Theme Overrides
+### Default Theme Overrides
 If you stick with the default theming you can override:
 
 * The overall render theme 
@@ -228,7 +229,7 @@ If you stick with the default theming you can override:
     <link href="~/markdown-themes/scripts/highlightjs/styles/vs2015.css" rel="stylesheet" />
     ```
 
-#### Completely Custom CSS Markup
+### Completely Custom CSS Markup
 You can create any HTML and CSS to render your Markdown of course if you prefer. The `markdown-themes` themes can give you a good start of things that you typically have to support in Markdown content so they offer a good starting point for your own themes. Pick a theme and customize, or if you are keen - go ahead and start completely clean.
 
 ## Razor Files
@@ -385,6 +386,30 @@ The first setting ensures that `.dll` files for .NET assemblies can be served by
 
 The second setting ensures that you can **refresh a client side page** which forces a server refresh. The page will rewrite the current 404 request by accessing the specified URL which typically will be `/index.html`. Since the URL stays the same the Blazor page should then navigate then to the desired client side URL on refresh.
 
+### SPA Client Side Routing Fallback: FolderNotFoundFallbackPath
+If you're using this server against a SPA application that uses **client side routing**, you need to enable server side route  fallback so that client side routes not handled by the server serve the SPA home page - typically `index.html`. This is done via the `--FolderNotFoundFallbackPath` configuration switch which points to the SPA start URL. 
+
+When this setting is enabled any extensionless URL fired against the server that isn't handled serves up the specified site relative URL which typically is `/index.html`.
+
+You can do this with:
+
+```json
+"LiveReload": {
+    ...
+    "FolderNotFoundFallbackPath":  "/index.html"
+}
+```
+
+or by starting with the `--FolderNotFoundFallbackPath=/index.html` command line switch. With this flag in place a URL like this:
+
+```text
+https://albumviewer.west-wind.com/albums
+```
+
+If fired on the server automatically serves the content of `/index.html`. This allows the client side application to run **and** maintain the original client side path of `/albums` so that it can route to the correct page.
+
+
+
 ### More Features?
 The primary goal of LiveReload server is as a local server, not a hosted do-it-all solution. Other features may be explored but at the moment the feature set is well suited to the stated usage scenario I intended it for.
 
@@ -395,6 +420,11 @@ But that won't stop some from asking or trying to hook it up anyway I bet :smile
 If that's of interest to you or you want to contribute, please file an issue to discuss and explore the use cases and what might be possible.
 
 ## Version History
+
+### Version 0.2.4
+
+* **Add --Host Configuration Value**  
+You can now specify the host IP Address or domain to bind the server to. Previously the server was bound to localhost which didn't allow for external network access. Using `--Host` as a parameter or configuration value you can now specify `0.0.0.0` for example to bind to all IP addresses and allow external access. The default is still `localhost` but you can now explicitly add external access via `--Host 0.0.0.0` or using a specific IP Address to bind to.
 
 ### Version 0.2.3
 

@@ -42,6 +42,43 @@ namespace LiveReloadServer
 
         }
 
+        /// <summary>
+        /// Retrieves a string value from the configuration and optionally sets a default value
+        /// if the value is not set.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="config"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        public static string GetStringSetting(string key, IConfiguration config, string defaultValue = null)
+        {
+            var value = config[key];
+            if (value == null)
+                value = defaultValue;
+
+            return value;
+        }
+
+        /// <summary>
+        /// Retrieves a string value from the configuration and optionally sets a default value
+        /// if the value is not set.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="config"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        public static int GetIntegerSetting(string key, IConfiguration config, int defaultValue = 0)
+        {
+            var value = config[key];
+            if (value == null)
+                return defaultValue;
+
+            if (!int.TryParse(value, out int resultValue))
+                return defaultValue;
+            
+            return resultValue;
+        }
+
         public static bool GetLogicalSetting(string key, IConfiguration config, bool defaultValue = false)
         {
             bool? resultValue = null;
