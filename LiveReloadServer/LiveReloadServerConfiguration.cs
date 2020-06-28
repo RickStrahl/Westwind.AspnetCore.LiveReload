@@ -1,13 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Security.Permissions;
-using System.Text;
-using System.Threading.Tasks;
-using Markdig;
 using Microsoft.Extensions.Configuration;
-using Westwind.AspNetCore.LiveReload;
 
 namespace LiveReloadServer
 {
@@ -175,23 +169,12 @@ namespace LiveReloadServer
             MarkdownTheme = Helpers.GetStringSetting("MarkdownTheme", Configuration, MarkdownTheme);
             MarkdownSyntaxTheme = Helpers.GetStringSetting("MarkdownSyntaxTheme", Configuration, MarkdownSyntaxTheme);
 
-          
-
-
-          
-
-
-           
-          
-
-           
-            
-            
             return true;
         }
 
         /// <summary>
-        /// Returns the Host displayname for a browser URL
+        /// Returns the Host displayname for a browser URL. Fixes up local
+        /// host names of `127.0.0.1` and `0.0.0.0` and `*` as `localhost`
         /// </summary>
         /// <param name="host"></param>
         /// <returns></returns>
@@ -200,7 +183,7 @@ namespace LiveReloadServer
             if(host == null)
                 host = Host;
 
-            if (string.IsNullOrEmpty(host) || host == "0.0.0.0" || host == "127.0.0.1")
+            if (string.IsNullOrEmpty(host) || host == "0.0.0.0" || host == "127.0.0.1" || host == "*")
                 return "localhost";
 
             return host;

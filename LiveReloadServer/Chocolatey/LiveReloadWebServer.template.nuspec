@@ -12,11 +12,15 @@
         <docsUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/tree/master/LiveReloadServer</docsUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>
-Live Reload Web Server is a local, static file Web Server that has built-in Live Reload functionality for static Web content, Markdown rendering support and can dynamically execute self-contained C# based Razor templates. It's great quick access development server you can use to fire up a Web server in an arbitrary folder on your machine. For development Live Reload detects changes to static files like HTML, CSS, JavaScript etc. and automatically reloads the Web browser's currently active page without running a full build process like WebPack, Browserify etc. Just point at a folder and shoot!
+Live Reload Web Server is a local, static file Web Server that has built-in Live Reload functionality for static Web content, Markdown rendering support and can dynamically execute self-contained C# based Razor templates. It's quick access development server you can use to fire up a Web local Web content or run local SPA applications. 
+
+For development the built-in Live Reload makes it quick to modify HTML, CSS and JavaScript code and immediately see changes reflected in the browser as the active page is refreshed when any changes to known file types are made. 
+
+There are no additional dependencies for this server - just point at a folder and go!
 
 * Run a Web site out of any local folder
 * Built-in Live Reload for refreshing content on resource changes
-* Built-in Markdown rendering to HTML
+* Built-in support for themed Markdown page rendering
 * C# based scripting support using self-contained Razor pages
 * HTTPS support
 * 100% self-contained
