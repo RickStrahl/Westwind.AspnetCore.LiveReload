@@ -24,7 +24,7 @@ if (test-path './hosted' -PathType Container) { remove-item ./hosted -Recurse -F
 dotnet publish -c Release /p:PublishSingleFile=true /p:PublishTrimmed=false -r win-x64 --output SingleFileExe
 
 # Hosted Folder Output - Requires .NET Core Runtime and ASP.NET Framework (or Runtime Hosting Bundle on Windows)
-dotnet publish -c Release --output hosted
+dotnet publish -c Release /p:PublishSingleFile=false /p:PublishTrimmed=false --output hosted
 
 Move-Item ./SingleFileExe/LiveReloadServer.exe ./LiveReloadWebServer.exe -force
 remove-item ./SingleFileExe -Recurse -Force

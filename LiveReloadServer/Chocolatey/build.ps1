@@ -6,6 +6,11 @@
 #           Release has been checked in to GitHub Repo
 #   Builds: ChocolateyInstall.ps1 file with download URL and sha256 embedded
 
+
+# *** IMPORTANT! *** 
+# Make sure you ADD A TAG  with the version number when the zip file is pushed! (ie. 0.2.5)
+# or else the zip file will not be found on GitHub
+
 cd "$PSScriptRoot" 
 
 Remove-Item *.nupkg

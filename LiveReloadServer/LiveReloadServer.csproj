@@ -6,14 +6,14 @@
     <!--<DefineConstants>USE_RAZORPAGES</DefineConstants>-->
 
     <!-- Build _PACKAGE or _EXE with Razor Support -->
-    <DefineConstants>USE_RAZORPAGES;BUILD_PACKAGE</DefineConstants>
+    <DefineConstants>USE_RAZORPAGES;BUILD_EXE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;USE_RAZORPAGES</DefineConstants>
   </PropertyGroup>
 
 
-  <PropertyGroup>
+  <PropertyGroup> 
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Version>0.2.4</Version>

@@ -14,9 +14,11 @@ namespace LiveReloadServer
 
         public static void OpenUrl(string url)
         {
+            Process p = null;
             try
             {
-                Process.Start(url);
+                var psi = new ProcessStartInfo(url) {UseShellExecute = true,};
+                p = Process.Start(psi);
             }
             catch
             {
@@ -24,15 +26,15 @@ namespace LiveReloadServer
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
                     url = url.Replace("&", "^&");
-                    Process.Start(new ProcessStartInfo("cmd", $"/c start {url}") { CreateNoWindow = true });
+                    p = Process.Start(new ProcessStartInfo("cmd", $"/c start {url}") { CreateNoWindow = true });
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
-                    Process.Start("xdg-open", url);
+                    p = Process.Start("xdg-open", url);
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                 {
-                    Process.Start("open", url);
+                    p = Process.Start("open", url);
                 }
                 else
                 {
@@ -40,6 +42,7 @@ namespace LiveReloadServer
                 }
             }
 
+            p?.Dispose();
         }
 
         /// <summary>

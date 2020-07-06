@@ -1,21 +1,21 @@
-# Live Reload WebServer Dotnet Tool
+﻿# Live Reload WebServer Dotnet Tool
 
 [![NuGet](https://img.shields.io/nuget/v/LiveReloadServer.svg)](https://www.nuget.org/packages/LiveReloadServer/)
 [![](https://img.shields.io/nuget/dt/LiveReloadServer.svg)](https://www.nuget.org/packages/LiveReloadServer/)
 
 [![NuGet](https://img.shields.io/chocolatey/v/livereloadwebserver.svg)](https://chocolatey.org/packages/livereloadwebserver) [![](https://img.shields.io/chocolatey/dt/livereloadwebserver.svg)](https://chocolatey.org/packages/livereloadwebserver)
 
-This is a self-contained Web Server for serving static HTML and loose Razor files that automatically includes Live Reload functionality. 
+This is a self-contained Web Server for serving static HTML and loose Razor files that automatically includes Live Reload functionality.
 
 * Generic Static File Web Server you can launch in any folder
 * Support for serving HTTPS content when using Dotnet Tool
 * Just start `LiveReloadServer` in a folder or specify `--webroot` folder
-* Automatic LiveReload functionality for change detection and browser refresh
+* Optional LiveReload functionality for change detection and browser refresh
+* Self-contained Razor Pages support with Live Reload Support
+* Themed Markdown page rendering support built in
 * Options to customize location, port, files checked etc.
 * Easily installed and updated with `dotnet tool -g install LiveReloadServer`
-* Markdown Page rendering to HTML with theming, Page template and Live Reload Support
-* Self-contained Razor Pages support with Live Reload Support
-* Running Blazor Applications (without Live Reload)
+* Support for locally running Blazor Applications (without Live Reload support however)
 
 ![](ScreenShot.png)
 

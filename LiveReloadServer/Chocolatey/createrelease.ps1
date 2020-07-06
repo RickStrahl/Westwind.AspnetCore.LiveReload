@@ -11,10 +11,10 @@ $version = $rawVersion.Trim().Replace(".0","")
 $downloadUrl = "https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/raw/$version/LiveReloadServer/LiveReloadWebServer.zip"
 
 # Create Release Zip file
-#7z a -tzip $releaseZip $releaseFile "..\LiveReloadWebServer.json" 
+7z a -tzip $releaseZip $releaseFile "..\LiveReloadWebServer.json" 
 
 # Created Hosted Zip file
-#7z a -tzip $hostedZip "$releaseFolder\hosted\*.*" -r
+7z a -tzip $hostedZip "$releaseFolder\bin\release\netcoreapp3.1\publish\*.*" -r
 
 
 # Write out Verification.txt
