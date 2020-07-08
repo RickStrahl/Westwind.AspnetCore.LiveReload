@@ -118,7 +118,7 @@ namespace LiveReloadServer
         /// need to redirect back a starting page.
         /// Example: "/index.html"
         /// </summary>
-        public string FolderNotFoundFallbackPath { get; set; } = "/index.html";
+        public string FolderNotFoundFallbackPath { get; set; } 
 
         #endregion
 
@@ -156,7 +156,7 @@ namespace LiveReloadServer
             ShowUrls = Helpers.GetLogicalSetting("ShowUrls", Configuration, ShowUrls);
             OpenBrowser = Helpers.GetLogicalSetting("OpenBrowser", Configuration, OpenBrowser);
 
-            FolderNotFoundFallbackPath = Helpers.GetStringSetting("FolderNotFoundFallbackPath",Configuration,FolderNotFoundFallbackPath);
+            FolderNotFoundFallbackPath = Helpers.GetStringSetting("FolderNotFoundFallbackPath",Configuration,null);
 
             // Enables Markdown Middleware and optionally copies Markdown Templates into output folder
             UseMarkdown = Helpers.GetLogicalSetting("UseMarkdown", Configuration, false);

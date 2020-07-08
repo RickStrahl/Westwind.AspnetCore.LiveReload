@@ -33,7 +33,6 @@ namespace Westwind.AspNetCore.LiveReload
 
         #if !NETCORE2
             private IHostApplicationLifetime applicationLifetime;
-
             public LiveReloadMiddleware(RequestDelegate next,IHostApplicationLifetime lifeTime)
             {
                 applicationLifetime = lifeTime;
@@ -41,7 +40,6 @@ namespace Westwind.AspNetCore.LiveReload
             }
         #else
             private IApplicationLifetime applicationLifetime;
-
             public LiveReloadMiddleware(RequestDelegate next, IApplicationLifetime lifeTime)
             {
                 _next = next;
@@ -103,7 +101,7 @@ namespace Westwind.AspNetCore.LiveReload
 
                 await _next(context);
             }
-    
+
         }
 
 

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Loader;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.StaticFiles;
@@ -23,7 +24,7 @@ namespace LiveReloadServer
         /// Binary Startup Location irrespective of the environment path
         /// </summary>
         public static string StartupPath { get; set; }
-        
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -32,15 +33,15 @@ namespace LiveReloadServer
 
         public IConfiguration Configuration { get; }
 
-        public LiveReloadServerConfiguration ServerConfig { get; set; } 
+        public LiveReloadServerConfiguration ServerConfig { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             ServerConfig = new LiveReloadServerConfiguration();
             ServerConfig.LoadFromConfiguration(Configuration);
-            
-            
+
+
 
             if (ServerConfig.UseLiveReload)
             {
@@ -49,7 +50,7 @@ namespace LiveReloadServer
                     opt.FolderToMonitor = ServerConfig.WebRoot;
                     opt.LiveReloadEnabled = ServerConfig.UseLiveReload;
 
-                    
+
                     if (!string.IsNullOrEmpty(ServerConfig.Extensions))
                         opt.ClientFileExtensions = ServerConfig.Extensions;
 
@@ -65,10 +66,7 @@ namespace LiveReloadServer
 #if USE_RAZORPAGES
             if (ServerConfig.UseRazor)
             {
-                mvcBuilder = services.AddRazorPages(opt =>
-                {
-                    opt.RootDirectory = "/";
-                });
+                mvcBuilder = services.AddRazorPages(opt => { opt.RootDirectory = "/"; });
             }
 #endif
 
@@ -76,25 +74,25 @@ namespace LiveReloadServer
             {
                 services.AddMarkdown(config =>
                 {
-                    
+
                     //var templatePath = Path.Combine(WebRoot, "markdown-themes/__MarkdownPageTemplate.cshtml");
                     //if (!File.Exists(templatePath))
                     //    templatePath = Path.Combine(Environment.CurrentDirectory,"markdown-themes/__MarkdownPageTemplate.cshtml");
                     //else
                     var templatePath = ServerConfig.MarkdownTemplate;
                     templatePath = templatePath.Replace("\\", "/");
-                    
-                    var folderConfig = config.AddMarkdownProcessingFolder("/",templatePath);
-                    
+
+                    var folderConfig = config.AddMarkdownProcessingFolder("/", templatePath);
+
                     // Optional configuration settings
-                    folderConfig.ProcessExtensionlessUrls = true;  // default
+                    folderConfig.ProcessExtensionlessUrls = true; // default
                     folderConfig.ProcessMdFiles = true; // default
 
                     folderConfig.RenderTheme = ServerConfig.MarkdownTheme;
                     folderConfig.SyntaxTheme = ServerConfig.MarkdownSyntaxTheme;
                 });
-                
-                // we have to force MVC in order for the controller routing to work                    
+
+                // we have to force MVC in order for the controller routing to work
                 mvcBuilder = services
                     .AddMvc();
 
@@ -111,15 +109,15 @@ namespace LiveReloadServer
                     {
                         opt.FileProviders.Clear();
                         opt.FileProviders.Add(new PhysicalFileProvider(ServerConfig.WebRoot));
-                        opt.FileProviders.Add(new PhysicalFileProvider(Path.Combine(Startup.StartupPath,"templates")));
-                        
-                        
+                        opt.FileProviders.Add(new PhysicalFileProvider(Path.Combine(Startup.StartupPath, "templates")));
+
+
                     });
 
                 LoadPrivateBinAssemblies(mvcBuilder);
             }
         }
-        
+
 
         private static object consoleLock = new object();
 
@@ -149,7 +147,7 @@ namespace LiveReloadServer
                     await next();
 
                     // ignore Web socket requests
-                    if(context.Request.Path.Value == socketUrl)
+                    if (context.Request.Path.Value == socketUrl)
                         return;
 
                     // need to ensure this happens all at once otherwise multiple threads
@@ -172,9 +170,9 @@ namespace LiveReloadServer
 
             // add static files to WebRoot and our templates folder which provides markdown templates
             // and potentially other library resources in the future
-            
+
             var wrProvider = new PhysicalFileProvider(ServerConfig.WebRoot);
-            var tpProvider= new PhysicalFileProvider(Path.Combine(Startup.StartupPath,"templates"));
+            var tpProvider = new PhysicalFileProvider(Path.Combine(Startup.StartupPath, "templates"));
 
             var extensionProvider = new FileExtensionContentTypeProvider();
             extensionProvider.Mappings.Add(".dll", "application/octet-stream");
@@ -193,6 +191,7 @@ namespace LiveReloadServer
             };
             app.UseStaticFiles(staticFileOptions);
 
+
             if (ServerConfig.UseRazor || ServerConfig.UseMarkdown)
                 app.UseRouting();
 
@@ -204,35 +203,19 @@ namespace LiveReloadServer
 #endif
             if (ServerConfig.UseMarkdown)
             {
-                app.UseEndpoints(endpoints =>
-                {
-                    endpoints.MapDefaultControllerRoute();
-                });
+                app.UseEndpoints(endpoints => { endpoints.MapDefaultControllerRoute(); });
             }
 
-            // 404  - SPA fall through middleware - for SPA apps should fallback to index.html
-            if (!string.IsNullOrEmpty(ServerConfig.FolderNotFoundFallbackPath))
-            {
-                app.Use(async (context, next) =>
-                {
-                    var path = context.Request.Path;
-                    if (string.IsNullOrEmpty(Path.GetExtension(path)))
-                    {
-                        var fi = new FileInfo(Path.Combine(ServerConfig.WebRoot,  ServerConfig.FolderNotFoundFallbackPath.Trim('/','\\')));
-                        await context.Response.SendFileAsync(new PhysicalFileInfo(fi));
-                        await context.Response.CompleteAsync();
-                    }
-                });
-            }
-            
+            app.Use(FallbackHandler);
+
             string headerLine = new string('-', Helpers.AppHeader.Length);
             Console.WriteLine(headerLine);
-            ConsoleHelper.WriteLine(Helpers.AppHeader,ConsoleColor.Yellow);
+            ConsoleHelper.WriteLine(Helpers.AppHeader, ConsoleColor.Yellow);
             Console.WriteLine(headerLine);
             Console.WriteLine($"(c) West Wind Technologies, 2019-{DateTime.Now.Year}\r\n");
 
             Console.Write($"Site Url     : ");
-            ConsoleHelper.WriteLine(ServerConfig.GetHttpUrl(true),ConsoleColor.DarkCyan);
+            ConsoleHelper.WriteLine(ServerConfig.GetHttpUrl(true), ConsoleColor.DarkCyan);
             Console.WriteLine($"Web Root     : {ServerConfig.WebRoot}");
             Console.WriteLine($"Executable   : {Assembly.GetExecutingAssembly().Location}");
             Console.WriteLine($"Live Reload  : {ServerConfig.UseLiveReload}");
@@ -248,21 +231,22 @@ namespace LiveReloadServer
             Console.WriteLine($"Use Markdown : {ServerConfig.UseMarkdown}");
             if (ServerConfig.UseMarkdown)
             {
-            Console.WriteLine($"  Resources  : {ServerConfig.CopyMarkdownResources}");
-            Console.WriteLine($"  Template   : {ServerConfig.MarkdownTemplate}");
-            Console.WriteLine($"  Theme      : {ServerConfig.MarkdownTheme}");
-            Console.WriteLine($"  SyntaxTheme: {ServerConfig.MarkdownSyntaxTheme}");
+                Console.WriteLine($"  Resources  : {ServerConfig.CopyMarkdownResources}");
+                Console.WriteLine($"  Template   : {ServerConfig.MarkdownTemplate}");
+                Console.WriteLine($"  Theme      : {ServerConfig.MarkdownTheme}");
+                Console.WriteLine($"  SyntaxTheme: {ServerConfig.MarkdownSyntaxTheme}");
             }
+
             Console.WriteLine($"Show Urls    : {ServerConfig.ShowUrls}");
             Console.WriteLine($"Open Browser : {ServerConfig.OpenBrowser}");
             Console.WriteLine($"Default Pages: {ServerConfig.DefaultFiles}");
             Console.WriteLine($"Environment  : {env.EnvironmentName}");
 
             Console.WriteLine();
-            ConsoleHelper.Write(Helpers.ExeName +  "--help", ConsoleColor.DarkCyan);
+            ConsoleHelper.Write(Helpers.ExeName + "--help", ConsoleColor.DarkCyan);
             Console.WriteLine(" for start options...");
             Console.WriteLine();
-            ConsoleHelper.WriteLine("Ctrl-C or Ctrl-Break to exit...",ConsoleColor.Yellow);
+            ConsoleHelper.WriteLine("Ctrl-C or Ctrl-Break to exit...", ConsoleColor.Yellow);
 
             Console.WriteLine("----------------------------------------------");
 
@@ -270,13 +254,13 @@ namespace LiveReloadServer
             foreach (var assmbly in LoadedPrivateAssemblies)
             {
                 var fname = Path.GetFileName(assmbly);
-                ConsoleHelper.WriteLine("Additional Assembly: " + fname,ConsoleColor.DarkGreen);
+                ConsoleHelper.WriteLine("Additional Assembly: " + fname, ConsoleColor.DarkGreen);
             }
 
             foreach (var assmbly in FailedPrivateAssemblies)
             {
                 var fname = Path.GetFileName(assmbly);
-                ConsoleHelper.WriteLine("Failed Additional Assembly: " + fname,ConsoleColor.DarkGreen);
+                ConsoleHelper.WriteLine("Failed Additional Assembly: " + fname, ConsoleColor.DarkGreen);
             }
 
             Console.ForegroundColor = oldColor;
@@ -287,7 +271,7 @@ namespace LiveReloadServer
             }
         }
 
-        
+
 
         private void WriteConsoleLogDisplay(HttpContext context, Stopwatch sw, string originalPath)
         {
@@ -397,15 +381,50 @@ namespace LiveReloadServer
             if (!ServerConfig.CopyMarkdownResources)
                 return false;
 
-            var templatePath = Path.Combine(ServerConfig.WebRoot,"markdown-themes");
+            var templatePath = Path.Combine(ServerConfig.WebRoot, "markdown-themes");
             if (Directory.Exists(templatePath))
                 return false;
 
-            FileUtils.CopyDirectory(Path.Combine(Startup.StartupPath,"templates", "markdown-themes"),
+            FileUtils.CopyDirectory(Path.Combine(Startup.StartupPath, "templates", "markdown-themes"),
                 templatePath,
                 deepCopy: true);
 
             return true;
         }
+
+        private async Task FallbackHandler(HttpContext context, Func<Task> next)
+        {
+            // 404 - no match
+            if (string.IsNullOrEmpty(ServerConfig.FolderNotFoundFallbackPath))
+            {
+                context.Response.StatusCode = 404;
+                await context.Response.WriteAsync("<h1>Not Found</h1>");
+                return;
+            }
+
+            // 404  - SPA fall through middleware - for SPA apps should fallback to index.html
+            var path = context.Request.Path;
+            if (string.IsNullOrEmpty(Path.GetExtension(path)))
+            {
+                var file = Path.Combine(ServerConfig.WebRoot,
+                    ServerConfig.FolderNotFoundFallbackPath.Trim('/', '\\'));
+                var fi = new FileInfo(file);
+                if (fi.Exists)
+                {
+                    await context.Response.SendFileAsync(new PhysicalFileInfo(fi));
+                    await context.Response.CompleteAsync();
+                }
+                else
+                {
+                    await context.Response.WriteAsync(@$"
+<h1>Invalid Folder Not Found Fallback Path</h1>
+<p>Fallback path: <b>{ServerConfig.FolderNotFoundFallbackPath}</b> </p>
+<p>The file referenced in this path could not be found and the fallback route failed to load.</p>
+<p>Please create the page or remove the FolderNotFoundFallbackPath setting.</p>");
+                }
+
+            }
+        }
     }
 }
+

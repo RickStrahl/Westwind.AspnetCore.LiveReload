@@ -25,7 +25,7 @@ namespace Westwind.AspNetCore.LiveReload
         /// Optional - the folder to monitor for file changes. By default
         /// this value is set to the Web application root folder (ContentRootPath)
         /// </summary>
-        public string FolderToMonitor { get; set; } 
+        public string FolderToMonitor { get; set; }
 
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace Westwind.AspNetCore.LiveReload
 
         /// <summary>
         /// Optional filter for the given paths. If used, it should return true if the file
-        // should be watched, false otherwise.
+        /// should be watched, false otherwise.
         /// </summary>
         public Func<string, bool> FileIncludeFilter = null;
 
@@ -49,7 +49,7 @@ namespace Westwind.AspNetCore.LiveReload
         /// </summary>
         public int ServerRefreshTimeout { get; set; } = 3000;
 
-        
+
         /// <summary>
         /// The URL used for the Web Socket connection on the page to refresh
         /// </summary>
@@ -70,7 +70,7 @@ namespace Westwind.AspNetCore.LiveReload
         /// </summary>
         public CancellationToken ShutdownCancellationToken {get; set;}
 
-        
+
 
     }
 }
