@@ -243,7 +243,7 @@ namespace LiveReloadServer
             Console.WriteLine($"Environment  : {env.EnvironmentName}");
 
             Console.WriteLine();
-            ConsoleHelper.Write(Helpers.ExeName + "--help", ConsoleColor.DarkCyan);
+            ConsoleHelper.Write(Helpers.ExeName + " --help", ConsoleColor.DarkCyan);
             Console.WriteLine(" for start options...");
             Console.WriteLine();
             ConsoleHelper.WriteLine("Ctrl-C or Ctrl-Break to exit...", ConsoleColor.Yellow);
