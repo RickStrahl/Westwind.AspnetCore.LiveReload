@@ -42,4 +42,3 @@ The default template adds Font Awesome:
 > You can add font-awesome icons using standard html markup or the **&#64; icon-icon-name**
 
 <i class="fa fa-spinner fa-spin fa-2x"></i>
-
