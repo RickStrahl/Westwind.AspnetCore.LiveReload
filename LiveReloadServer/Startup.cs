@@ -125,38 +125,19 @@ namespace LiveReloadServer
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, Microsoft.AspNetCore.Hosting.IWebHostEnvironment env)
         {
+
             if (ServerConfig.UseLiveReload)
                 app.UseLiveReload();
 
             ////if (env.IsDevelopment())
             ////    app.UseDeveloperExceptionPage();
             ////else
+
             app.UseExceptionHandler("/Error");
 
             if (ServerConfig.ShowUrls)
             {
-                var socketUrl = Configuration["LiveReload:WebSocketUrl"];
-
-                app.Use(async (context, next) =>
-                {
-                    var originalPath = context.Request.Path.Value;
-
-                    Stopwatch sw = new Stopwatch();
-                    sw.Start();
-
-                    await next();
-
-                    // ignore Web socket requests
-                    if (context.Request.Path.Value == socketUrl)
-                        return;
-
-                    // need to ensure this happens all at once otherwise multiple threads
-                    // write intermixed console output on simultaneous requests
-                    lock (consoleLock)
-                    {
-                        WriteConsoleLogDisplay(context, sw, originalPath);
-                    }
-                });
+                app.Use(DisplayRequestInfoMiddlewareHandler);
             }
 
             if (ServerConfig.UseMarkdown)
@@ -185,9 +166,12 @@ namespace LiveReloadServer
             var compositeProvider = new CompositeFileProvider(wrProvider, tpProvider);
             var staticFileOptions = new StaticFileOptions
             {
-                FileProvider = compositeProvider, //new PhysicalFileProvider(WebRoot),
+                //FileProvider = compositeProvider, //new PhysicalFileProvider(WebRoot),
+
+                FileProvider = new PhysicalFileProvider(ServerConfig.WebRoot),
                 RequestPath = new PathString(""),
-                ContentTypeProvider = extensionProvider
+                ContentTypeProvider = extensionProvider,
+                DefaultContentType = "application/octet-stream"
             };
             app.UseStaticFiles(staticFileOptions);
 
@@ -206,7 +190,8 @@ namespace LiveReloadServer
                 app.UseEndpoints(endpoints => { endpoints.MapDefaultControllerRoute(); });
             }
 
-            app.Use(FallbackHandler);
+            app.Use(FallbackMiddlewareHandler);
+
 
             string headerLine = new string('-', Helpers.AppHeader.Length);
             Console.WriteLine(headerLine);
@@ -214,8 +199,17 @@ namespace LiveReloadServer
             Console.WriteLine(headerLine);
             Console.WriteLine($"(c) West Wind Technologies, 2019-{DateTime.Now.Year}\r\n");
 
-            Console.Write($"Site Url     : ");
-            ConsoleHelper.WriteLine(ServerConfig.GetHttpUrl(true), ConsoleColor.DarkCyan);
+            string displayUrl = ServerConfig.GetHttpUrl();
+            string hostUrl = ServerConfig.GetHttpUrl(true);
+            if (hostUrl == displayUrl || hostUrl.Contains("127.0.0.1"))
+                hostUrl = null;
+            else
+            {
+                hostUrl = $"  [darkgray](binding: {hostUrl})[/darkgray]";
+            }
+
+            ConsoleHelper.WriteEmbeddedColorLine($"Site Url     : [darkcyan]{ServerConfig.GetHttpUrl()}[/darkcyan] {hostUrl}");
+            //ConsoleHelper.WriteLine(, ConsoleColor.DarkCyan);
             Console.WriteLine($"Web Root     : {ServerConfig.WebRoot}");
             Console.WriteLine($"Executable   : {Assembly.GetExecutingAssembly().Location}");
             Console.WriteLine($"Live Reload  : {ServerConfig.UseLiveReload}");
@@ -254,7 +248,7 @@ namespace LiveReloadServer
             foreach (var assmbly in LoadedPrivateAssemblies)
             {
                 var fname = Path.GetFileName(assmbly);
-                ConsoleHelper.WriteLine("Additional Assembly: " + fname, ConsoleColor.DarkGreen);
+                ConsoleHelper.WriteEmbeddedColorLine("Additional Assembly: [green]" + fname + "[/green]" );
             }
 
             foreach (var assmbly in FailedPrivateAssemblies)
@@ -273,49 +267,6 @@ namespace LiveReloadServer
 
 
 
-        private void WriteConsoleLogDisplay(HttpContext context, Stopwatch sw, string originalPath)
-        {
-            var url =
-                $"{context.Request.Method}  {context.Request.Scheme}://{context.Request.Host}  {originalPath}{context.Request.QueryString}";
-
-            url = url.PadRight(80, ' ');
-
-            var ct = context.Response.ContentType;
-            bool isPrimary = ct != null &&
-                             (ct.StartsWith("text/html") ||
-                              ct.StartsWith("text/plain") ||
-                              ct.StartsWith("application/json") ||
-                              ct.StartsWith("text/xml"));
-
-
-            var saveColor = Console.ForegroundColor;
-
-            if (ct == null) // no response
-            {
-                ConsoleHelper.Write(url + " ", ConsoleColor.Red);
-                isPrimary = true;
-            }
-            else if (isPrimary)
-                ConsoleHelper.Write(url + " ", ConsoleColor.Gray);
-            else
-                ConsoleHelper.Write(url + " ", ConsoleColor.DarkGray);
-
-            var status = context.Response.StatusCode;
-            if (status >= 200 && status < 400)
-                ConsoleHelper.Write(status.ToString(),
-                    isPrimary ? ConsoleColor.Green : ConsoleColor.DarkGreen);
-            else if (status == 401)
-                ConsoleHelper.Write(status.ToString(),
-                    isPrimary ? ConsoleColor.Yellow : ConsoleColor.DarkYellow);
-            else if (status >= 400)
-                ConsoleHelper.Write(status.ToString(), isPrimary ? ConsoleColor.Red : ConsoleColor.DarkRed);
-
-            sw.Stop();
-            ConsoleHelper.WriteLine($" {sw.ElapsedMilliseconds:n0}ms".PadLeft(8), ConsoleColor.DarkGray);
-
-
-            Console.ForegroundColor = saveColor;
-        }
 
         public static Type GetTypeFromName(string TypeName)
         {
@@ -392,13 +343,102 @@ namespace LiveReloadServer
             return true;
         }
 
-        private async Task FallbackHandler(HttpContext context, Func<Task> next)
+
+        /// <summary>
+        /// This middle ware handler intercepts every request captures the time
+        /// and then logs out to the screen (when that feature is enabled) the active
+        /// request path, the status, processing time.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="next"></param>
+        /// <returns></returns>
+        async Task DisplayRequestInfoMiddlewareHandler(HttpContext context, Func<Task> next)
+        {
+            var originalPath = context.Request.Path.Value;
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
+            await next();
+
+            // ignore Web socket requests
+            if (context.Request.Path.Value == LiveReloadConfiguration.Current.WebSocketUrl)
+                return;
+
+            // need to ensure this happens all at once otherwise multiple threads
+            // write intermixed console output on simultaneous requests
+            lock (consoleLock)
+            {
+                WriteConsoleLogDisplay(context, sw, originalPath);
+            }
+        }
+
+
+        /// <summary>
+        /// Responsible for writing the actual request display out to the console.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="sw"></param>
+        /// <param name="originalPath"></param>
+        private void WriteConsoleLogDisplay(HttpContext context, Stopwatch sw, string originalPath)
+        {
+            var url =
+                $"{context.Request.Method}  {context.Request.Scheme}://{context.Request.Host}  {originalPath}{context.Request.QueryString}";
+
+            url = url.PadRight(80, ' ');
+
+            var ct = context.Response.ContentType;
+            bool isPrimary = ct != null &&
+                             (ct.StartsWith("text/html") ||
+                              ct.StartsWith("text/plain") ||
+                              ct.StartsWith("application/json") ||
+                              ct.StartsWith("text/xml"));
+
+
+            var saveColor = Console.ForegroundColor;
+
+            var status = context.Response.StatusCode;
+
+            if (ct == null) // no response
+            {
+                ConsoleHelper.Write(url + " ", ConsoleColor.Red);
+                isPrimary = true;
+            }
+            else if (isPrimary)
+                ConsoleHelper.Write(url + " ", ConsoleColor.Gray);
+            else
+                ConsoleHelper.Write(url + " ", ConsoleColor.DarkGray);
+
+
+            if (status >= 200 && status < 400)
+                ConsoleHelper.Write(status.ToString(),
+                    isPrimary ? ConsoleColor.Green : ConsoleColor.DarkGreen);
+            else if (status == 401)
+                ConsoleHelper.Write(status.ToString(),
+                    isPrimary ? ConsoleColor.Yellow : ConsoleColor.DarkYellow);
+            else if (status >= 400)
+                ConsoleHelper.Write(status.ToString(), isPrimary ? ConsoleColor.Red : ConsoleColor.DarkRed);
+
+            sw.Stop();
+            ConsoleHelper.WriteLine($" {sw.ElapsedMilliseconds:n0}ms".PadLeft(8), ConsoleColor.DarkGray);
+
+
+            Console.ForegroundColor = saveColor;
+        }
+
+        /// <summary>
+        /// Fallback handler middleware that is fired for any requests that aren't processed.
+        /// This ends up being either a 404 result or
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="next"></param>
+        /// <returns></returns>
+        private async Task FallbackMiddlewareHandler(HttpContext context, Func<Task> next)
         {
             // 404 - no match
             if (string.IsNullOrEmpty(ServerConfig.FolderNotFoundFallbackPath))
             {
-                context.Response.StatusCode = 404;
-                await context.Response.WriteAsync("<h1>Not Found</h1>");
+                await Status404Page(context);
                 return;
             }
 
@@ -411,19 +451,60 @@ namespace LiveReloadServer
                 var fi = new FileInfo(file);
                 if (fi.Exists)
                 {
+                    if (!context.Response.HasStarted)
+                    {
+                        context.Response.ContentType = "text/html";
+                        context.Response.StatusCode = 200;
+                    }
+
                     await context.Response.SendFileAsync(new PhysicalFileInfo(fi));
                     await context.Response.CompleteAsync();
                 }
                 else
                 {
-                    await context.Response.WriteAsync(@$"
-<h1>Invalid Folder Not Found Fallback Path</h1>
-<p>Fallback path: <b>{ServerConfig.FolderNotFoundFallbackPath}</b> </p>
-<p>The file referenced in this path could not be found and the fallback route failed to load.</p>
-<p>Please create the page or remove the FolderNotFoundFallbackPath setting.</p>");
+                    await Status404Page(context,isFallback: true);
                 }
-
             }
+
+
+        }
+
+        /// <summary>
+        /// Writes out a 404 error page with 404 error status
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        private async Task Status404Page(HttpContext context, string additionalHtml = null, bool isFallback = false)
+        {
+            if (string.IsNullOrEmpty(additionalHtml) && isFallback)
+            {
+                additionalHtml = @"
+<p>A fallback URL is configured but was not found: <b>{ServerConfig.FolderNotFoundFallbackPath}</b></p>
+
+<p>The fallback URL can be used for SPA application to handle server side redirection to the initial
+client side startup URL - typically <code>/index.html</code>. This URL is loaded if
+a URL cannot otherwise be handled. This error page is displayed because the specified fallback
+page or resource also does not exist.</p>
+";
+            }
+
+            if (!context.Response.HasStarted)
+            {
+                context.Response.StatusCode = 404;
+                context.Response.ContentType = "text/html";
+            }
+
+            await context.Response.WriteAsync(@$"
+<html>
+<body style='font-family: sans-serif; margin:2em 5%; max-width: 978px;'>
+<h1>Not Found</h1>
+<hr/>
+<p>The page or resource you are accessing is not available on this site.<p>
+
+{additionalHtml}
+
+</body></html>");
+            await context.Response.CompleteAsync();
         }
     }
 }

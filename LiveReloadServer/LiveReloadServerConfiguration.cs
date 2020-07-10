@@ -24,7 +24,7 @@ namespace LiveReloadServer
 
         /// <summary>
         /// The IP or Host address to bind the server to. By default uses localhost
-        /// which is **local only**. To bind to a publically exposed IP address
+        /// which is **local only**. To bind to a publicly exposed IP address
         /// use an explicit IP address or `0.0.0.0`
         /// </summary>
         public string Host { get; set; } = "localhost";
@@ -78,7 +78,7 @@ namespace LiveReloadServer
         public bool UseMarkdown { get; set; } = false;
 
         /// <summary>
-        /// When set copies the Markdown Resources into the 
+        /// When set copies the Markdown Resources into the
         /// </summary>
         public bool CopyMarkdownResources { get; set; } = false;
 
@@ -88,7 +88,7 @@ namespace LiveReloadServer
         /// Page theme used by the provide Markdown page wrapper themes:
         /// github*|dharkan|medium|blackout|westwind
         ///
-        /// Themes can be customized by creating a new folder in the 
+        /// Themes can be customized by creating a new folder in the
         /// </summary>
         public string MarkdownTheme { get; set; } = "github";
 
@@ -118,7 +118,7 @@ namespace LiveReloadServer
         /// need to redirect back a starting page.
         /// Example: "/index.html"
         /// </summary>
-        public string FolderNotFoundFallbackPath { get; set; } 
+        public string FolderNotFoundFallbackPath { get; set; }
 
         #endregion
 
@@ -150,7 +150,7 @@ namespace LiveReloadServer
             DefaultFiles = Helpers.GetStringSetting("DefaultFiles", Configuration, DefaultFiles);
             Extensions = Helpers.GetStringSetting("Extensions", Configuration, Extensions);
 
-            
+
             UseLiveReload = Helpers.GetLogicalSetting("UseLiveReload", Configuration, UseLiveReload);
             UseRazor = Helpers.GetLogicalSetting("UseRazor", Configuration);
             ShowUrls = Helpers.GetLogicalSetting("ShowUrls", Configuration, ShowUrls);
@@ -203,8 +203,8 @@ namespace LiveReloadServer
             return $"http{(UseSsl ? "s" : "")}://{hostName}:{Port}";
         }
 
-        
 
-        
+
+
     }
 }

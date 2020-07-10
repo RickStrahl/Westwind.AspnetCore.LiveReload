@@ -16,7 +16,7 @@
   <PropertyGroup> 
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Version>0.2.4.2</Version>
+    <Version>0.2.5</Version>
     <RazorCompileOnPublish>false</RazorCompileOnPublish>
 
     <Authors>Rick Strahl</Authors>
@@ -88,4 +88,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
       </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="nupkg" />
+  </ItemGroup>
 </Project>

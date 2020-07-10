@@ -7,13 +7,24 @@
     }
   },
   "LiveReload": {
-    "LiveReloadEnabled": true,
-    "ClientFileExtensions": ".cshtml,.css,.js,.htm,.html,.ts,.razor",
-    "ServerRefreshTimeout": 300,
     "WebSocketUrl": "/__livereload",
     "AdditionalMimeMappings": {
       ".dll": "application/octet-stream"
-    },
-    "FolderNotFoundFallbackPath":  null
-  }
+    }
+  },
+  "Port": 5200,
+  "UseSsl": false,
+  "Host": "localhost",
+  "DefaultFiles": "index.html,default.htm",
+  "Extensions": ".cshtml,.css,.js,.htm,.html,.ts,.razor",
+  "UseLiveReload": true,
+  "ShowUrls": true,
+  "OpenBrowser": true,
+  "FolderNotFoundFallbackPath":  "/index.html",
+  "UseRazor": false,
+  "UseMarkdown": false,
+  "CopyMarkdownResources": false,
+  "MarkdownTemplate": "",
+  "MarkdownTheme": "github",
+  "MarkdownSyntaxTheme": "github"
 }

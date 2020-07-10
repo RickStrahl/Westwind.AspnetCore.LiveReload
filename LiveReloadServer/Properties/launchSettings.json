@@ -15,9 +15,17 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "LiveReloadServer": {
+    "LiveReloadServer - SampleSite": {
       "commandName": "Project",
       "commandLineArgs":  "--WebRoot ..\\..\\..\\..\\Samples\\StandaloneFiles --Host 0.0.0.0 --UseRazor --CopyMarkdownResources False --useMarkdown True --MarkdownTheme Dharkan  --MarkdownSyntaxTheme vs --ShowUrls True",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "LiveReloadServer - PRA": {
+      "commandName": "Project",
+      "commandLineArgs":  "--webroot C:/clients/PRA/PraMobile/PraMobileAngular_Published --Host 0.0.0.0 --UseRazor --CopyMarkdownResources False --useMarkdown True --MarkdownTheme Dharkan  --MarkdownSyntaxTheme vs --ShowUrls True",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
