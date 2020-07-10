@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Text;
 using Microsoft.Extensions.Configuration;
 
 namespace LiveReloadServer
@@ -17,16 +16,24 @@ namespace LiveReloadServer
             Process p = null;
             try
             {
-                var psi = new ProcessStartInfo(url) {UseShellExecute = true,};
+                var psi = new ProcessStartInfo(url);
                 p = Process.Start(psi);
             }
             catch
             {
                 // hack because of this: https://github.com/dotnet/corefx/issues/10361
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ||
+                    RuntimeInformation.OSDescription.Contains("microsoft-standard"))  // wsl
                 {
                     url = url.Replace("&", "^&");
-                    p = Process.Start(new ProcessStartInfo("cmd", $"/c start {url}") { CreateNoWindow = true });
+                    try
+                    {
+                        Process.Start(new ProcessStartInfo("cmd.exe", $"/c start {url}") {CreateNoWindow = true});
+                    }
+                    catch
+                    {
+                        ConsoleHelper.WriteEmbeddedColorLine($"Open your browser at: [darkcyan]{url}[/darkcyan]");
+                    }
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
@@ -38,7 +45,7 @@ namespace LiveReloadServer
                 }
                 else
                 {
-                    throw;
+                    ConsoleHelper.WriteEmbeddedColorLine($"Open your browser at: [darkcyan]{url}[/darkcyan]");
                 }
             }
 
@@ -78,7 +85,7 @@ namespace LiveReloadServer
 
             if (!int.TryParse(value, out int resultValue))
                 return defaultValue;
-            
+
             return resultValue;
         }
 
@@ -106,87 +113,4 @@ namespace LiveReloadServer
             return resultValue.Value;
         }
     }
-
-    
-    /// <summary>
-    /// Console Helper class that provides coloring to individual commeands
-    /// </summary>
-    public static class ConsoleHelper
-    {
-
-        /// <summary>
-        /// WriteLine with color
-        /// </summary>
-        /// <param name="text"></param>
-        /// <param name="color"></param>
-        public static void WriteLine(string text, ConsoleColor color = ConsoleColor.White)
-        {
-            var oldColor = Console.ForegroundColor;
-            Console.ForegroundColor = color;
-            Console.WriteLine(text);
-            Console.ForegroundColor = oldColor;
-        }
-
-        /// <summary>
-        /// Write with color
-        /// </summary>
-        /// <param name="text"></param>
-        /// <param name="color"></param>
-        public static void Write(string text, ConsoleColor color = ConsoleColor.White)
-        {
-            var oldColor = Console.ForegroundColor;
-            Console.ForegroundColor = color;
-            Console.Write(text);
-            Console.ForegroundColor = oldColor;
-        }
-
-
-        /// <summary>
-        /// Write a Success Line - green
-        /// </summary>
-        /// <param name="text"></param>
-        public static void WriteSuccess(string text)
-        {
-            WriteLine(text, ConsoleColor.Green);
-        }
-
-        
-        /// <summary>
-        /// Write a Error Line - Red
-        /// </summary>
-        /// <param name="text"></param>
-        public static void WriteError(string text)
-        {
-            WriteLine(text, ConsoleColor.Red);
-        }
-
-
-        /// <summary>
-        /// Write a Info Line - dark cyan
-        /// </summary>
-        /// <param name="text"></param>
-        public static void WriteInfo(string text)
-        {
-            WriteLine(text, ConsoleColor.DarkCyan);
-        }
-
-        /// <summary>
-        /// Write a Warning Line - Yellow
-        /// </summary>
-        /// <param name="text"></param>
-        public static void WriteWarning(string text)
-        {
-            WriteLine(text, ConsoleColor.Yellow);
-        }
-
-        public static void WriteWrappedHeader(string headerText, char wrapperChar = '-', ConsoleColor headerColor = ConsoleColor.Yellow)
-        {
-            string line = new StringBuilder().Insert(0, wrapperChar.ToString(), headerText.Length).ToString();    
-
-           Console.WriteLine(line);
-            WriteLine(headerText,headerColor);
-            Console.WriteLine(line);
-        }
-    }
-
 }
