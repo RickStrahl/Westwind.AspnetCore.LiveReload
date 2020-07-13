@@ -5,19 +5,11 @@ VisualStudioVersion = 16.0.28922.388
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Westwind.AspnetCore.LiveReload.Web", "Samples\Westwind.AspnetCore.LiveReload.Web\Westwind.AspnetCore.LiveReload.Web.csproj", "{1B33B943-2DC6-4CD7-90D4-6BE6B2AE6C25}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Westwind.AspNetCore.LiveReload", "Westwind.AspNetCore.LiveReload\Westwind.AspNetCore.LiveReload.csproj", "{7CF17333-3898-478A-BA98-8543D26ACE46}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Support Files", "Support Files", "{339FFCCA-9943-4CCA-91FD-E45B12A97021}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-		README.md = README.md
-	EndProjectSection
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Westwind.AspnetCore.LiveReload", "Westwind.AspnetCore.LiveReload\Westwind.AspnetCore.LiveReload.csproj", "{7CF17333-3898-478A-BA98-8543D26ACE46}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Westwind.AspnetCore.LiveReload.Web31", "Samples\Westwind.AspnetCore.LiveReload.Web31\Westwind.AspnetCore.LiveReload.Web31.csproj", "{2D8F61A3-8CB3-4AA2-9AB1-578C85428ED0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample Web Sites", "Sample Web Sites", "{2B5B0811-4169-4B72-891C-6D0563703332}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LiveReloadServer", "LiveReloadServer\LiveReloadServer.csproj", "{3409CB5D-77AE-4867-9135-A3DE2A134C4D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{50CAE1F5-AD9C-4A57-A729-4A4F9B8A8F97}"
 	ProjectSection(SolutionItems) = preProject
@@ -44,10 +36,6 @@ Global
 		{2D8F61A3-8CB3-4AA2-9AB1-578C85428ED0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D8F61A3-8CB3-4AA2-9AB1-578C85428ED0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D8F61A3-8CB3-4AA2-9AB1-578C85428ED0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3409CB5D-77AE-4867-9135-A3DE2A134C4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3409CB5D-77AE-4867-9135-A3DE2A134C4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3409CB5D-77AE-4867-9135-A3DE2A134C4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3409CB5D-77AE-4867-9135-A3DE2A134C4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
