@@ -37,6 +37,7 @@ The Middleware is self-contained and has no external dependencies - there's noth
 #### Minimum Requirements:
 
 * ASP.NET Core 2.1
+* Works with .NET Core 2.1, 3.x, .NET 5 Preview
 
 Here's a short video that demonstrates some of the functionality:
 

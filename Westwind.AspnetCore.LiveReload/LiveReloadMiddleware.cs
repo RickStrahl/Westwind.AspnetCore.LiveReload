@@ -32,14 +32,15 @@ namespace Westwind.AspNetCore.LiveReload
         internal static ConcurrentDictionary<WebSocket,byte> ActiveSockets { get; }= new ConcurrentDictionary<WebSocket,byte>();
 
         #if !NETCORE2
-            private IHostApplicationLifetime applicationLifetime;
+            private IHostApplicationLifetime applicationLifetime = null;
             public LiveReloadMiddleware(RequestDelegate next,IHostApplicationLifetime lifeTime)
             {
                 applicationLifetime = lifeTime;
                 _next = next;
             }
         #else
-            private IApplicationLifetime applicationLifetime;
+            private IApplicationLifetime applicationLifetime = null;
+
             public LiveReloadMiddleware(RequestDelegate next, IApplicationLifetime lifeTime)
             {
                 _next = next;
