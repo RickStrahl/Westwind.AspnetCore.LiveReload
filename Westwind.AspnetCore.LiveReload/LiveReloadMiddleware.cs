@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Westwind.AspnetCore.LiveReload;
+using Microsoft.Extensions.Logging;
 
 #if !NETCORE2
 using Microsoft.AspNetCore.Http.Features;
@@ -30,22 +28,22 @@ namespace Westwind.AspNetCore.LiveReload
         /// Concurrent dictionary as a Hashset. The byte is just a throwaway value
         /// </summary>
         internal static ConcurrentDictionary<WebSocket,byte> ActiveSockets { get; }= new ConcurrentDictionary<WebSocket,byte>();
-
-        #if !NETCORE2
-            private IHostApplicationLifetime applicationLifetime = null;
+        
+#if !NETCORE2
+        private IHostApplicationLifetime applicationLifetime = null;
             public LiveReloadMiddleware(RequestDelegate next,IHostApplicationLifetime lifeTime)
             {
                 applicationLifetime = lifeTime;
                 _next = next;
             }
-        #else
+#else
             private IApplicationLifetime applicationLifetime = null;
 
             public LiveReloadMiddleware(RequestDelegate next, IApplicationLifetime lifeTime)
             {
                 _next = next;
             }
-        #endif
+#endif
 
 
         /// <summary>
@@ -193,7 +191,7 @@ namespace Westwind.AspNetCore.LiveReload
         /// </summary>
         /// <param name="delayed"></param>
         /// <returns></returns>
-        public static async Task RefreshWebSocketRequest(bool delayed = false)
+        public static async Task RefreshWebSocketRequest(bool delayed = false, ILogger logger = null)
         {
             string msg = "Refresh";
             if (delayed)
@@ -202,11 +200,18 @@ namespace Westwind.AspNetCore.LiveReload
             byte[] refresh = Encoding.UTF8.GetBytes(msg);
             foreach (var kv in ActiveSockets)
             {
-                // key is the webSocket
-                await kv.Key.SendAsync(new ArraySegment<byte>(refresh, 0, refresh.Length),
-                    WebSocketMessageType.Text,
-                    true,
-                    CancellationToken.None);
+                try
+                {
+                    // key is the webSocket
+                    await kv.Key.SendAsync(new ArraySegment<byte>(refresh, 0, refresh.Length),
+                        WebSocketMessageType.Text,
+                        true,
+                        CancellationToken.None);
+                }
+                catch(Exception ex)
+                {
+                    logger?.LogWarning($"LiveReload refresh failed: {ex.Message}");
+                }
             }
         }
 

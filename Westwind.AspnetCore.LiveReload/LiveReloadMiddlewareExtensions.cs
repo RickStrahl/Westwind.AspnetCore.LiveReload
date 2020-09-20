@@ -78,8 +78,7 @@ namespace Westwind.AspNetCore.LiveReload
             {
                 var webSocketOptions = new WebSocketOptions()
                 {
-                    KeepAliveInterval = TimeSpan.FromSeconds(240),
-                    ReceiveBufferSize = 256
+                    KeepAliveInterval = TimeSpan.FromSeconds(240),                    
                 };
                 builder.UseWebSockets(webSocketOptions);
 

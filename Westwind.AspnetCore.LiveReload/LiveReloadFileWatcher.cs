@@ -86,29 +86,44 @@ namespace Westwind.AspNetCore.LiveReload
         }
 
         private static List<string> _extensionList;
+        private static object _loadLock = new object();
+
         private static void FileChanged(string filename)
         {
-            if (filename.Contains("\\node_modules\\"))
+            // this should really never happen - but just in case
+            if (!LiveReloadConfiguration.Current.LiveReloadEnabled)
                 return;
 
-            if (string.IsNullOrEmpty(filename) ||
-                !LiveReloadConfiguration.Current.LiveReloadEnabled)
+            if (string.IsNullOrEmpty(filename) || filename.Contains("\\node_modules\\"))
                 return;
 
             var ext = Path.GetExtension(filename);
             if (string.IsNullOrEmpty(ext))
-                return;
+                return;  // we don't care about extensionless files
 
-            if (LiveReloadConfiguration.Current.FileIncludeFilter is Func<string, bool> filter &&
-                !filter.Invoke(filename))
-                return;
+            FileInclusionModes inclusionMode = FileInclusionModes.ContinueProcessing;
+            if (LiveReloadConfiguration.Current.FileInclusionFilter is Func<string, FileInclusionModes> filter)
+            {
+                inclusionMode = filter.Invoke(filename);
+                if (inclusionMode == FileInclusionModes.DontRefresh)
+                    return;
+            }
 
             if (_extensionList == null)
-                _extensionList = LiveReloadConfiguration.Current.ClientFileExtensions
-                    .Split(',', System.StringSplitOptions.RemoveEmptyEntries)
-                    .ToList();
+            {
+                lock (_loadLock)
+                {
+                    if (_extensionList == null)
+                    {
+                        _extensionList = LiveReloadConfiguration.Current.ClientFileExtensions
+                            .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                            .ToList();
+                    }
+                }
+            }
 
-            if (_extensionList.Contains(ext,StringComparer.OrdinalIgnoreCase))
+            if (inclusionMode == FileInclusionModes.ForceRefresh ||
+                _extensionList.Contains(ext,StringComparer.OrdinalIgnoreCase))
             {
                 if (_isFolderCreated)
                 {
@@ -134,7 +149,7 @@ namespace Westwind.AspNetCore.LiveReload
             FileChanged(e.FullPath);
         }
 
-        private static void FileWatcher_Changed(object sender, System.IO.FileSystemEventArgs e)
+        private static void FileWatcher_Changed(object sender, FileSystemEventArgs e)
         {
             FileChanged(e.FullPath);
         }
