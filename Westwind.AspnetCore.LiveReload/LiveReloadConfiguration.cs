@@ -38,15 +38,23 @@ namespace Westwind.AspNetCore.LiveReload
         public string ClientFileExtensions { get; set; } = ".cshtml,.css,.js,.htm,.html,.ts,.razor";
 
         /// <summary>
-        /// Optional filter for the given request path. 
-        /// Return true to cause the file to **not** be re-reloaded.
-        /// Return false to continue the Reload() logic based on the
-        /// standard extensions configured for file monitoring.
+        /// Optional filter that allows you to examine each file that has been changed
+        /// and decide whether you want to refresh the browser. Options to not refresh,
+        /// force refresh or continue with config rules.
         ///
-        /// Note: Returing true continues processing and still requires that the
-        /// file matches the extensions.
+        /// The path passed in as a string is an OS Path.
         /// </summary>
         public Func<string, FileInclusionModes> FileInclusionFilter { get; set; }= null;
+
+
+        /// <summary>
+        /// Optional filter that lets you examine each HTML request and decide whether you
+        /// want to allow browser refresh to occur or not. If not, the WebSocket script
+        /// to refresh the browser is not injected into the HTML page.
+        /// 
+        /// The path passed in as a string is a Root Relative Web Path.
+        /// </summary>
+        public Func<string, RefreshInclusionModes> RefreshInclusionFilter { get; set; } = null;
 
 
         /// <summary>
@@ -98,7 +106,15 @@ namespace Westwind.AspNetCore.LiveReload
         ForceRefresh,
 
         // Explicitly lets you specify to **not** refresh the browser on this changed file.
-        DontRefresh        
-        
+        DontRefresh                
+    }
+
+    public enum RefreshInclusionModes
+    {
+        // (default) changed file continues down the list of configuration rules to determine on whether the browser refreshes
+        ContinueProcessing,
+
+        // Explicitly lets you specify to **not** refresh the browser on this changed file.
+        DontRefresh
     }
 }

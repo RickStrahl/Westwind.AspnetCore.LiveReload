@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Westwind.AspNetCore.LiveReload;
 
 namespace Westwind.AspnetCore.LiveReload
 {
@@ -117,6 +118,16 @@ namespace Westwind.AspnetCore.LiveReload
             if (!_isHtmlResponse.Value)
                 return false;
 
+            // Check for refresh exlusion rules
+            RefreshInclusionModes refreshFile = RefreshInclusionModes.ContinueProcessing;
+            if(LiveReloadConfiguration.Current.RefreshInclusionFilter != null)
+            {
+                refreshFile = LiveReloadConfiguration.Current.RefreshInclusionFilter.Invoke(_context.Request.Path.Value);
+                if (refreshFile == RefreshInclusionModes.DontRefresh)
+                    return false; // don't embed refresh script
+            }
+
+            
             // Make sure we force dynamic content type since we're
             // rewriting the content - static content will set the header explicitly
             // and fail when it doesn't matchif (_isHtmlResponse.Value)

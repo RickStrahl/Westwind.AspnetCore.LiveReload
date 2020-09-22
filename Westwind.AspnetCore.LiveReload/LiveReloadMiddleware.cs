@@ -4,6 +4,7 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Westwind.AspnetCore.LiveReload;
 using Microsoft.Extensions.Logging;
@@ -28,7 +29,7 @@ namespace Westwind.AspNetCore.LiveReload
         /// Concurrent dictionary as a Hashset. The byte is just a throwaway value
         /// </summary>
         internal static ConcurrentDictionary<WebSocket,byte> ActiveSockets { get; }= new ConcurrentDictionary<WebSocket,byte>();
-        
+
 #if !NETCORE2
         private IHostApplicationLifetime applicationLifetime = null;
             public LiveReloadMiddleware(RequestDelegate next,IHostApplicationLifetime lifeTime)
