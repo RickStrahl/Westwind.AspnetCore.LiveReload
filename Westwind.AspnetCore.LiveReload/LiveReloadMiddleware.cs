@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Westwind.AspnetCore.LiveReload;
+using Westwind.AspNetCore.LiveReload;
 using Microsoft.Extensions.Logging;
 
 #if !NETCORE2

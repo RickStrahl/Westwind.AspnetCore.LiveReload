@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Westwind.AspnetCore.LiveReload.Web.Models;
+using Westwind.AspNetCore.LiveReload.Web.Models;
 
-namespace Westwind.AspnetCore.LiveReload.Web.Controllers
+namespace Westwind.AspNetCore.LiveReload.Web.Controllers
 {
     public class HomeController : Controller
     {

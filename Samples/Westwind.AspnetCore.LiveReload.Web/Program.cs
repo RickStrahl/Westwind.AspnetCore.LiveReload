@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Westwind.AspnetCore.LiveReload.Web
+namespace Westwind.AspNetCore.LiveReload.Web
 {
     public class Program
     {

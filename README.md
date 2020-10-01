@@ -7,50 +7,66 @@
 Add the middleware to an existing Web UI Project to provide Live Reload functionality that causes the active page to reload if a file is changed.
 
 * **[Generic local Web Server as a Dotnet Tool](https://github.com/RickStrahl/LiveReloadServer)**  
-There's also a standalone, self-contained local Web Server using this Live Reload functionality available as [Dotnet Tool](https://www.nuget.org/packages/LiveReloadServer/) and [Chocolatey Package](https://chocolatey.org/packages/LiveReloadWebServer). The server optionally also support loose Razor Pages and rendering of Markdown documents. Simply run `LiveReloadServer --WebRoot <folder>` to locally serve a Web site.
+There's also a standalone, self-contained local Web Server using this Live Reload functionality available as [Dotnet Tool](https://www.nuget.org/packages/LiveReloadServer/) and [Chocolatey Package](https://chocolatey.org/packages/LiveReloadWebServer). The server optionally also supports loose Razor Pages and rendering of Markdown documents. Simply run `LiveReloadServer --WebRoot <folder>` to locally serve a Web site.
+
+This middleware automatically reloads content on any active HTML page in the project, when monitored source files are changed. The middleware by default monitors and detects changes in:
+
+* Razor Pages/Views
+* Clientnt source files (.html, .css, .js, .ts etc.)
+* Server files like (.cs, .json) using `dotnet watch`
+* Limited Blazor Support ([see below](#blazor-support))
+
+The middleware is configurable so you can fine tune what triggers updates and which requests are automatically live reloaded. The middle can configure:
+
+* Which file extensions to monitor for changes
+* An optional handler to determine whether a changed file should reload the browser
+* An optional handler to decide whether a Web request url should live reload on change
+
+Using these configuration options allows precise control over what triggers a refresh, and which requests can be auto-refreshed.
+
+> #### Partial Integration in .NET 5.0's `dotnet watch`
+> Parts of the functionality from this middleware have been integrated into the `dotnet watch run` tooling in .NET 5.0 and later. The big advantage of the built-in tooling is that it's external, and doesn't require any code changes or libraries to add as this middleware does. 
+>
+> However, this middleware offers a bit more functionality and has much more control over what content is monitored and which requests should auto-refresh, which is not possible with the built-in tooling. This library is also useful if you need to build your own custom servers that include live reload functionality like our generic static file [Live Reload Web Server](https://github.com/RickStrahl/LiveReloadServer).
 
 ## Install the Live Reload Middleware
 You can install the Live Reload middleware [from NuGet](https://www.nuget.org/packages/Westwind.AspNetCore.LiveReload):
 
 ```ps
-PS> Install-Package WestWind.AspnetCore.LiveReload
+PS> Install-Package Westwind.AspNetCore.LiveReload
 ```
 
 or via the .NET Core CLI:
 
 ```bash
-dotnet add package Westwind.AspnetCore.LiveReload
+dotnet add package Westwind.AspNetCore.LiveReload
 ```
 
-It works with:
-
-* Client side static files  (HTML, CSS, JavaScript etc.)
-* ASP.NET Core Views/Pages (.cshtml)
-* Server Side compiled code updates (combined w/ `dotnet watch`)
-* Limited Blazor Support ([see below](#blazor-support))
-
-The Middleware is self-contained and has no external dependencies - there's nothing else to install or run. You should run `dotnet watch run` to automatically reload server side code to reload the server.  The middleware can then automatically refresh the browser. The extensions monitored for are configurable.
+The Middleware is self-contained and has no external dependencies - there's nothing else to install or run. The best running environment for this middleware is to run with `dotnet watch run` to automatically reload server side code to reload the server. The middleware can then automatically refresh the browser for both client side, Razor and server side files. You can also run the application in debug mode and get all but the server side change detection/live reload.
 
 * [Detailed blog post with Implementation Details](https://weblog.west-wind.com/posts/2019/Jun/03/Building-Live-Reload-Middleware-for-ASPNET-Core)
 * [NuGet Package](https://www.nuget.org/packages/Westwind.AspNetCore.LiveReload)
 
 #### Minimum Requirements:
 
-* ASP.NET Core 2.1
-* Works with .NET Core 2.1, 3.x, .NET 5 Preview
+* Works with ASP.NET Core 2.1+, 3.x, .NET 5 Preview
 
 Here's a short video that demonstrates some of the functionality:
 
 ![](https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/blob/master/Westwind.AspNetCore.LiveReload.gif?raw=true)
 
-This demonstrates updating Razor Views/Pages, static CSS and HTML content, and making a source code change in a controller that affects the UI. The only thing 'running' is `dotnet.watch.run` and there are no manual updates.
+This demonstrates updating Razor Views/Pages, static CSS and HTML content, and making a source code change in a controller that affects the UI. The only thing 'running' in this demo is `dotnet watch run` and all page refreshes occur automatically when a change is made.
 
 ## What does it do?
-This middleware monitors for file changes in your project and tries to automatically refresh your browser when a change is detected. It uses a `FileWatcher` to monitor for file changes, and a `WebSocket` 'server' that client pages connect to refresh the page. The middleware intercepts all HTML page requests and injects a block of JavaScript code that hooks up the client WebSocket interface to support the 'remote' refresh operation. When file changes are detected the server pushes the refresh requests to the pages that are listening on the WebSocket. 
+This middleware monitors for file changes in your project and tries to automatically refresh your browser when a change is detected. It uses a `FileWatcher` to monitor for file client file changes, and a `WebSocket` 'server' that client pages connect to refresh the page. The file watcher monitors client side files, while `dotnet watch run` is used for handling server side code change detection and server restart. The middleware automatically refreshes any active pages when the server is restarted.
 
-This tool uses raw WebSockets, so it's very light weight with no additional library dependencies. You can also turn off Live Reload with a configuration setting in which case the middleware is not hooked up at all.
+The middleware intercepts all `Content-Type: text/html` page requests and injects a block of JavaScript code that hooks up the client WebSocket interface to support the 'remote' refresh operation. This includes both static pages as well as server generated pages and views. When file changes are detected, the server pushes a request to refresh the page to the WebSocket running in any HTML page rendered on the server, which causes the browser page to refresh. If you have 5 different pages open in your site, all 5 will refresh even if they are in different browsers.
 
-In order to restart the server for server code changes you need to run your application with `dotnet watch run`. This built-in tool automatically restarts your .NET Core application anytime a code change is made. `dotnet watch run` is optional, but without it server side code changes require you to manually restart the server. Razor Views/Pages don't require `dotnet watch run` to refresh since they are dynamically compiled in development.
+This tool uses raw WebSockets, so it's very light weight with no additional library dependencies. 
+
+Live Reload can be turned off with a single configuration switch either in `applicationConfiguration.json` or via a single `config.LiveReloadEnabled` flag. When disabled the middleware is not hooked up and the entire code base is bypassed so there's no overhead when disabled. Any overhead for HTML injection and response buffering is only incurred if Live Reload is active.
+
+In order to detect server side code changes and restart the server, you need to run your application with `dotnet watch run`. This built-in tool automatically restarts your .NET Core application any time a code change is made. `dotnet watch run` is optional, but without it server side code changes require you to manually restart the server. Razor Views/Pages don't require `dotnet watch run` to refresh since they are dynamically compiled at runtime (as long as `AddRazorRuntimeCompilation()` is added).
 
 ### Configuration
 The full configuration and run process looks like this:
@@ -76,32 +92,33 @@ services.AddLiveReload(config =>
     //config.FolderToMonitor = Path.GetFullname(Path.Combine(Env.ContentRootPath,"..")) ;
 });
 
-// for ASP.NET Core 3.0 add Runtime Razor Compilation
-// services.AddRazorPages().AddRazorRuntimeCompilation();
-// services.AddMvc().AddRazorRuntimeCompilation();
+// for ASP.NET Core 3.x and later, add Runtime Razor Compilation if using anything Razor
+services.AddRazorPages().AddRazorRuntimeCompilation();
+services.AddMvc().AddRazorRuntimeCompilation();
 ```
 
 The `config` parameter is optional and it's actually recommended you set any values via configuration (see below). 
 
-> #### Enable ASP.NET Core 3.0 Runtime Razor View Compilation
-> **ASP.NET Core 3.0 by default doesn't compile Razor views at runtime**, so any changes to Razor Views and Pages will not auto-reload in 3.0. You need to add the `Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation` package, and explicitly enable runtime compilation in `ConfigureServices()`:
+> #### Enable Runtime Razor View Compilation in ASP.NET Core 3.x and later
+> **ASP.NET Core 3 and later by default doesn't compile Razor views at runtime**, so any changes to Razor Views and Pages will not auto-reload unless you add the `Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation` package, and explicitly enable runtime compilation in `ConfigureServices()`:
 > ```cs
 > services.AddRazorPages().AddRazorRuntimeCompilation();
 > services.AddMvc().AddRazorRuntimeCompilation();
 > ```
+> You can add this option conditionally, perhaps only when `env.IsDevelopment()`.
 
 #### Startup.Configure()
 In `Startup.Configure()` add: 
  
 ```cs
-// Before any other output generating middleware handlers including error handlers
+// Before **any other output generating middleware** handlers including error handlers
 app.UseLiveReload();
 
 app.UseStaticFiles();
 app.UseMvcWithDefaultRoute();
 ```
 
-anywhere before the MVC route. I recommend you add this early in the middleware pipeline before any other output generating middleware runs as it needs to intercept any HTML content and inject the Live Reload script into it.
+anywhere before the MVC route. I recommend you add this early in the middleware pipeline **before any other output generating middleware** runs as it needs to intercept any HTML content and inject the Live Reload script into it.
 
 And you can use these configuration settings:
 
@@ -130,7 +147,7 @@ If this flag is false live reload has no impact as it simply passes through requ
 * **ClientFileExtensions**  
 File extensions that the file watcher watches for in the Web project. These are files that can refresh without a server recompile, so don't include source code files here. Source code changes are handled via restarts with `dotnet watch run`.
 
-* **FileInclusionFilter**
+* **FileInclusionFilter** (code only)
 This filter allows to control whether a file change should cause the browser to refresh. This is useful to explicitly exclude files or files in entire sub-folders that shouldn't cause the browser to refresh, even though they are included in the file extension list for refreshes. 
 
 The `path` passed in is a full OS path.
@@ -154,7 +171,7 @@ services.AddLiveReload(config => {
 })
 ```
 
-* **RefreshInclusionFilter**  
+* **RefreshInclusionFilter**  (code only)
 This filter lets you control whether a URL should refresh or not. This setting is useful for excluding individual files or folders from auto-refreshing in the browser. 
 
 The `path` passed in is a Root Relative Web Path.
@@ -204,6 +221,9 @@ So to check out this functionality you can run the simple stock ASP.NET Core sam
 
 You should see the change reflected immediately. Sometime you may have to refresh once to get the cache to reset for CSS changes to show, but subsequent refreshes should show immediately.
 
+> ##### CSS Refresh may require one Hard Browser Refresh first
+> When updating CSS files, changes may not cause the browser to refresh autoamtically in some cases, due to the caching rules that browsers use. However, you can hard refresh the page (ctrl-shift-r) once, and any subsequent requests should show any changes you make to the CSS file.
+
 
 ### Update Razor Views
 
@@ -215,10 +235,12 @@ You should see the change reflected immediately. Sometime you may have to refres
 
 You should see the change reflected immediately.
 
+> ##### First Time Razor Refresh can be slow
+> The first time you refresh a Razor Page or View can be very slow as the Razor runtime and compiler are loaded for the first time. It can take a few seconds before this first request is refreshed. Subsequent requests however, will be very quick.
 
 ### Server Changes
 
-* Start the application with `dotnet watch run` (required or you need to manually restart)
+* Start the application with `dotnet watch run` (required or otherwise you have to manually restart app)
 * Open the Index Page
 * Open `Controllers/HomeController.cs`
 * Make a change in `ViewBag.Message`

@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Westwind.AspNetCore.LiveReload;
 
-namespace Westwind.AspnetCore.LiveReload.Web30
+namespace Westwind.AspNetCore.LiveReload.Web30
 {
     public class Startup
     {

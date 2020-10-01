@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Westwind.AspnetCore.LiveReload.Web": {
+    "Westwind.AspNetCore.LiveReload.Web": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

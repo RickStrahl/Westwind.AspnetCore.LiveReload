@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Westwind.AspnetCore.LiveReload.Web30.Models;
+using Westwind.AspNetCore.LiveReload.Web30.Models;
 
-namespace Westwind.AspnetCore.LiveReload.Web30.Controllers
+namespace Westwind.AspNetCore.LiveReload.Web30.Controllers
 {
     public class HomeController : Controller
     {

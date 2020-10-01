@@ -1,6 +1,6 @@
-using System;
+﻿using System;
 
-namespace Westwind.AspnetCore.LiveReload.Web30.Models
+namespace Westwind.AspNetCore.LiveReload.Web30.Models
 {
     public class ErrorViewModel
     {

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Westwind.AspNetCore.LiveReload;
 
-namespace Westwind.AspnetCore.LiveReload
+namespace Westwind.AspNetCore.LiveReload
 {
 
     /// <summary>

@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Westwind.AspNetCore.LiveReload;
 
-namespace Westwind.AspnetCore.LiveReload.Web
+namespace Westwind.AspNetCore.LiveReload.Web
 {
     public class Startup
     {

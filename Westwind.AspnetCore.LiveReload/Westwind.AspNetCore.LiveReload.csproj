@@ -2,16 +2,16 @@
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.1;netcoreapp2.1</TargetFrameworks>
-    <Version>0.2.10</Version>
+    <Version>0.2.11</Version>
 
     <Authors>Rick Strahl, West Wind Technologies</Authors>
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
     <Language>en-US</Language>
-    <AssemblyName>Westwind.AspnetCore.LiveReload</AssemblyName>
-    <AssemblyTitle>Westwind.AspnetCore.LiveReload</AssemblyTitle>
+    <AssemblyName>Westwind.AspNetCore.LiveReload</AssemblyName>
+    <AssemblyTitle>Westwind.AspNetCore.LiveReload</AssemblyTitle>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <PackageId>Westwind.AspnetCore.LiveReload</PackageId>
-    <RootNamespace>Westwind.AspnetCore.LiveReload</RootNamespace>
+    <PackageId>Westwind.AspNetCore.LiveReload</PackageId>
+    <RootNamespace>Westwind.AspNetCore.LiveReload</RootNamespace>
     <Title>West Wind ASP.NET Core Live Reload Middleware</Title>
     <Description>ASP.NET Core Live Reload Middleware that monitors for file changes in your project at development time and automatically reloads the browser's active page. It can monitor for client side static files, Razor Views and Pages and can also reload server changes when combined with `dotnet watch run`. This middleware is light-weight and self-contained without external dependencies, and can be completely turned on and off via configuration.
 
@@ -47,7 +47,7 @@ There are also a standalone 'LiveReloadServer' Dotnet Tool and Chocolatey packag
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp3.1|AnyCPU'">
-    <DocumentationFile>./Westwind.AspnetCore.LiveReload.xml</DocumentationFile>
+    <DocumentationFile>./Westwind.AspNetCore.LiveReload.xml</DocumentationFile>
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
