@@ -145,8 +145,8 @@ function tryConnect(retryOnFail){{
                     location.reload(); 
                 }},{config.ServerRefreshTimeout});
         }}
-        if (message.data == 'Refresh') 
-          location.reload(); 
+        if (message.data == 'Refresh')           
+          setTimeout(function()  {{ location.reload(); }}, 10);
     }}    
     connection.onerror = function(event)  {{
         console.log('Live Reload Socket error.', event);
@@ -161,7 +161,7 @@ function tryConnect(retryOnFail){{
     connection.onopen = function(event) {{
         console.log('Live Reload socket connected.');
     }}
-    return connection;  
+    return connection;
 }}
 function retryConnection() {{   
       setInterval(function() {{ 
