@@ -125,20 +125,21 @@ namespace Westwind.AspNetCore.LiveReload
             if (inclusionMode == FileInclusionModes.ForceRefresh ||
                 _extensionList.Contains(ext,StringComparer.OrdinalIgnoreCase))
             {
+                // Razor Pages don't restart the server, so we need a slight delay
+                bool delayed = LiveReloadConfiguration.Current.ServerRefreshTimeout > 0 &&
+                               (ext == ".cshtml" || ext == ".razor");
+
                 if (_isFolderCreated)
                 {
-
                     _throttler.Debounce(2000, param =>
                     {
-                        _ = LiveReloadMiddleware.RefreshWebSocketRequest();
+                        _ = LiveReloadMiddleware.RefreshWebSocketRequest(delayed);
                         _isFolderCreated = false;
                     });
                 }
                 else
                 {
-                    // delayed - no longer needed as server restarts automatically refresh on restart
-                    //bool delayed = ext == ".cshtml" || ext == ".cs" || ext == ".json"  || ext == ".xml";
-                    _ = LiveReloadMiddleware.RefreshWebSocketRequest(); // delayed
+                    _ = LiveReloadMiddleware.RefreshWebSocketRequest(delayed);
                 }
             }
 

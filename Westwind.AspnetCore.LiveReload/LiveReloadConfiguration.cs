@@ -58,9 +58,19 @@ namespace Westwind.AspNetCore.LiveReload
 
 
         /// <summary>
-        /// The timeout to wait before refreshing the page when shutting down
+        /// The timeout to wait before refreshing the page in the browser
+        /// for Razor page re-compilation requests that don't restart the server
+        ///
+        /// This shouldn't be necessary as Razor server recompilation should block
+        /// the page from being served while it's being recompiled. You'll see the
+        /// browser 'waiting to connect' until the page is ready to load
+        ///
+        /// Only bump this value if you have problems with Razor page refreshes
+        /// and it's suggested you bump this value up slowly to find your sweet
+        /// spot - it should only have to be long enough for ASP.NET to get to the
+        /// file to recompile before the page refreshes.
         /// </summary>
-        public int ServerRefreshTimeout { get; set; } = 3000;
+        public int ServerRefreshTimeout { get; set; } = 0;
 
 
         /// <summary>
