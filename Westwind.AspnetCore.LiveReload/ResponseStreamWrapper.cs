@@ -82,7 +82,9 @@ namespace Westwind.AspnetCore.LiveReload
                                               .GetResult();
             }
             else
-                _baseStream.Write(buffer, offset, count);
+            {
+                _baseStream?.Write(buffer, offset, count);
+            }
         }
 
         public override async Task WriteAsync(byte[] buffer, int offset, int count,
@@ -95,7 +97,10 @@ namespace Westwind.AspnetCore.LiveReload
                     _context, _baseStream);
             }
             else
-                await _baseStream.WriteAsync(buffer, offset, count, cancellationToken);
+            {
+                if (_baseStream != null)
+                    await _baseStream.WriteAsync(buffer, offset, count, cancellationToken);
+            }
         }
 
 
@@ -107,9 +112,15 @@ namespace Westwind.AspnetCore.LiveReload
             if (!forceReCheck && _isHtmlResponse != null)
                 return _isHtmlResponse.Value;
 
+            // we need to check if the active request is still valid
+            // this can fail if we're in the middle of an error response
+            // or url rewrite in which case we can't intercept
+            if (_context?.Response == null)
+                return false;
+
             _isHtmlResponse =
                 _context.Response?.Body != null &&
-                _context.Response.StatusCode == 200 &&
+                (_context.Response.StatusCode == 200 || _context.Response.StatusCode == 500) &&
                 _context.Response.ContentType != null &&
                 _context.Response.ContentType.Contains("text/html", StringComparison.OrdinalIgnoreCase) &&
                 (_context.Response.ContentType.Contains("utf-8", StringComparison.OrdinalIgnoreCase) ||

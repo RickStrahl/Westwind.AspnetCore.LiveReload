@@ -1,4 +1,4 @@
-﻿# Live Reload Middleware for ASP.NET Core
+# Live Reload Middleware for ASP.NET Core
 
 [![NuGet](https://img.shields.io/nuget/v/Westwind.AspnetCore.LiveReload.svg)](https://www.nuget.org/packages/Westwind.AspnetCore.LiveReload/)
 [![](https://img.shields.io/nuget/dt/Westwind.AspnetCore.LiveReload.svg)](https://www.nuget.org/packages/Westwind.AspnetCore.LiveReload/)
@@ -56,7 +56,7 @@ In order to restart the server for server code changes you need to run your appl
 The full configuration and run process looks like this:
 
 * Add `services.AddLiveReload()` in `Startup.ConfigureServices()`
-* Add `app.UseLiveReload()` in `Startup.Configure()`
+* Add `app.UseLiveReload()` in `Startup.Configure()` before any output generating middleware
 * Run `dotnet watch run` to run your application
 
 Add the namespace in `Startup.cs`:
@@ -94,7 +94,7 @@ The `config` parameter is optional and it's actually recommended you set any val
 In `Startup.Configure()` add: 
  
 ```cs
-// Before any other output generating middleware handlers
+// Before any other output generating middleware handlers including error handlers
 app.UseLiveReload();
 
 app.UseStaticFiles();
@@ -305,6 +305,11 @@ We can only hope Microsoft come up with a built-in solution to trigger the recom
 
 
 ## Change Log
+
+### Version 0.2.11
+
+* **Fix: Now refreshes Developer Error Page**  
+When an error page using `app.UseDeveloperExceptionPage();` is displayed, the page is now refreshed when you make any changes to fix your error. The error page refreshes using the original URL that caused the error and should display the fixed page - or not if you mucked it up  :smile:.
 
 ### Version 0.2.10
 
