@@ -2,13 +2,12 @@
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.1;netcoreapp2.1</TargetFrameworks>
-    <Version>0.2.11</Version>
+    <Version>0.2.14</Version>
 
     <Authors>Rick Strahl, West Wind Technologies</Authors>
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
     <Language>en-US</Language>
     <AssemblyName>Westwind.AspNetCore.LiveReload</AssemblyName>
-    <AssemblyTitle>Westwind.AspNetCore.LiveReload</AssemblyTitle>
     <NeutralLanguage>en-US</NeutralLanguage>
     <PackageId>Westwind.AspNetCore.LiveReload</PackageId>
     <RootNamespace>Westwind.AspNetCore.LiveReload</RootNamespace>

@@ -31,7 +31,8 @@ namespace Westwind.AspNetCore.LiveReload
         internal static ConcurrentDictionary<WebSocket,byte> ActiveSockets { get; }= new ConcurrentDictionary<WebSocket,byte>();
 
 #if !NETCORE2
-        private IHostApplicationLifetime applicationLifetime = null;
+            private IHostApplicationLifetime applicationLifetime = null;
+
             public LiveReloadMiddleware(RequestDelegate next,IHostApplicationLifetime lifeTime)
             {
                 applicationLifetime = lifeTime;
@@ -42,6 +43,7 @@ namespace Westwind.AspNetCore.LiveReload
 
             public LiveReloadMiddleware(RequestDelegate next, IApplicationLifetime lifeTime)
             {
+                applicationLifetime = lifeTime;
                 _next = next;
             }
 #endif
@@ -186,11 +188,12 @@ namespace Westwind.AspNetCore.LiveReload
         /// <summary>
         /// Static method that can be called from code to force
         /// the browser to refresh itself.
-        ///
+        /// 
         /// Use Delayed refresh for server code refreshes that
         /// are slow to refresh due to restart
         /// </summary>
-        /// <param name="delayed"></param>
+        /// <param name="delayed">If true will use the configuration delay configured to refresh the browser</param>
+        /// <param name="logger">Logger instance so we can track socket send errors</param>
         /// <returns></returns>
         public static async Task RefreshWebSocketRequest(bool delayed = false, ILogger logger = null)
         {

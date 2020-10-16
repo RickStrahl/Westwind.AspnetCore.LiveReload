@@ -127,7 +127,7 @@ And you can use these configuration settings:
   "LiveReload": {
     "LiveReloadEnabled": true,
     "ClientFileExtensions": ".cshtml,.css,.js,.htm,.html,.ts,.razor,.custom",
-    "ServerRefreshTimeout": 3000,
+    "ServerRefreshTimeout": 1000,
     "WebSocketUrl": "/__livereload",
     "WebSocketHost":null, 
     "FolderToMonitor": "~/"
@@ -135,7 +135,9 @@ And you can use these configuration settings:
 }
 ```
 
-All of these settings are optional.
+There are also two event handlers that have to be set in code.
+
+Here are the available settings:
 
 * **LiveReloadEnabled**  
 If this flag is false live reload has no impact as it simply passes through requests.  
@@ -150,7 +152,7 @@ File extensions that the file watcher watches for in the Web project. These are 
 * **FileInclusionFilter** (code only)
 This filter allows to control whether a file change should cause the browser to refresh. This is useful to explicitly exclude files or files in entire sub-folders that shouldn't cause the browser to refresh, even though they are included in the file extension list for refreshes. 
 
-The `path` passed in is a full OS path.
+  The `path` passed in is a full OS path.
 
 ```csharp
 services.AddLiveReload(config => {
@@ -174,7 +176,7 @@ services.AddLiveReload(config => {
 * **RefreshInclusionFilter**  (code only)
 This filter lets you control whether a URL should refresh or not. This setting is useful for excluding individual files or folders from auto-refreshing in the browser. 
 
-The `path` passed in is a Root Relative Web Path.
+  The `path` passed in is a Root Relative Web Path.
 
 ```cs
 services.AddLiveReload(config =>
@@ -192,13 +194,19 @@ services.AddLiveReload(config =>
 ```
 
 * **ServerRefreshTimeout**
-Set this value to get a close approximation how long it takes your server to restart when `dotnet watch run` reloads your application. This minimizes how frequently the client page monitors for the Web socket to become available again after disconnecting.
+This value affects whether there's a timeout used for `.cshtml` and `.razor` pages when refreshing. This is to avoid refreshing the page before recompilation has started which might cause the page to refresh the unchanged view/page.
+
+  In most cases this shouldn't be necessary so leave this value at 0 unless you run into problems with refreshing Razor views/pages, then bump that value by small increments. 
 
 * **WebSocketUrl**  
-The site relative URL to the Web socket handler.
+The site relative URL to the Web socket handler. The default is `/__livereload` and there should be little reason to change this.
 
 * **WebSocketHost**  
-An explicit WebSocket host URL. Useful if you are running on HTTP2 which doesn't support WebSockets (yet) and you can point at another exposed host URL in your server that serves HTTP1.1. Don't set this unless you have to - the default uses the current host of the request. Example: `wss://localhost:5200`
+An explicit WebSocket host URL. Useful if you are running on HTTP2 which doesn't support WebSockets (yet), so you can  point at another exposed host URL in your server that serves HTTP1.1.   
+
+  Don't set this value unless you have to - the default uses the current request's host and protocol handler (`$"{prefix}://{host.Host}:{host.Port}"`).   Example: `wss://localhost:5200`.  
+  
+  **Note:** Ideally set up your applications to support both HTTP 1.1 and 2.0. [More info here](#http2-support).
 
 * **FolderToMonitor**  
 This is the folder that's monitored. By default it's `~/` which is the Web Project's content root (not the Web root). Other common options are: `~/wwwroot` for Web only, `~/../` for **the entire solution**, or `~/../OtherProject/` for **another project** (which works well for client side Razor).
