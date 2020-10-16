@@ -158,7 +158,7 @@ namespace Westwind.AspNetCore.LiveReload
 
         protected override void Dispose(bool disposing)
         {
-            _baseStream?.Dispose();
+            //_baseStream?.Dispose();
             _baseStream = null;
             _context = null;
 
