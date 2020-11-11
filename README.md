@@ -25,9 +25,9 @@ The middleware is configurable so you can fine tune what triggers updates and wh
 Using these configuration options allows precise control over what triggers a refresh, and which requests can be auto-refreshed.
 
 > #### Partial Integration in .NET 5.0's `dotnet watch`
-> Parts of the functionality from this middleware have been integrated into the `dotnet watch run` tooling in .NET 5.0 and later. The big advantage of the built-in tooling is that it's external, and doesn't require any code changes or libraries to add as this middleware does. 
+> .NET Core 5.0 and later integrates similar behavior based on this middleware directly in `dotnet watch run`. The advantage of built-in tooling is that it's external, and doesn't require any of the small code changes or additional library as this middleware does. 
 >
-> However, this middleware offers a bit more functionality and has much more control over what content is monitored and which requests should auto-refresh, which is not possible with the built-in tooling. This library is also useful if you need to build your own custom servers that include live reload functionality like our generic static file [Live Reload Web Server](https://github.com/RickStrahl/LiveReloadServer).
+> Unfortunately, it seems this functionality is half-baked in .NET 5.0. I've never gotten it to work on any working projects, so it may take .NET 6.0 to get this actually working reliably.This middleware offers a bit more functionality and has much more control over what content is monitored and which requests should auto-refresh, which is not possible with the built-in tooling. This library is also useful if you need to build your own custom servers that include live reload functionality like our generic static file [Live Reload Web Server](https://github.com/RickStrahl/LiveReloadServer).
 
 ## Install the Live Reload Middleware
 You can install the Live Reload middleware [from NuGet](https://www.nuget.org/packages/Westwind.AspNetCore.LiveReload):
@@ -41,7 +41,6 @@ or via the .NET Core CLI:
 ```bash
 dotnet add package Westwind.AspNetCore.LiveReload
 ```
-
 The Middleware is self-contained and has no external dependencies - there's nothing else to install or run. The best running environment for this middleware is to run with `dotnet watch run` to automatically reload server side code to reload the server. The middleware can then automatically refresh the browser for both client side, Razor and server side files. You can also run the application in debug mode and get all but the server side change detection/live reload.
 
 * [Detailed blog post with Implementation Details](https://weblog.west-wind.com/posts/2019/Jun/03/Building-Live-Reload-Middleware-for-ASPNET-Core)
@@ -49,7 +48,7 @@ The Middleware is self-contained and has no external dependencies - there's noth
 
 #### Minimum Requirements:
 
-* Works with ASP.NET Core 2.1+, 3.x, .NET 5 Preview
+* Works with ASP.NET Core 3.1, .NET 5.0
 
 Here's a short video that demonstrates some of the functionality:
 
@@ -97,30 +96,41 @@ services.AddRazorPages().AddRazorRuntimeCompilation();
 services.AddMvc().AddRazorRuntimeCompilation();
 ```
 
-The `config` parameter is optional and it's actually recommended you set any values via configuration (see below). 
-
-> #### Enable Runtime Razor View Compilation in ASP.NET Core 3.x and later
-> **ASP.NET Core 3 and later by default doesn't compile Razor views at runtime**, so any changes to Razor Views and Pages will not auto-reload unless you add the `Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation` package, and explicitly enable runtime compilation in `ConfigureServices()`:
-> ```cs
-> services.AddRazorPages().AddRazorRuntimeCompilation();
-> services.AddMvc().AddRazorRuntimeCompilation();
-> ```
-> You can add this option conditionally, perhaps only when `env.IsDevelopment()`.
+The `config` parameter is optional and it's actually recommended you set any values via standard .NET configuration (see below). 
 
 #### Startup.Configure()
 In `Startup.Configure()` add: 
  
 ```cs
-// Before **any other output generating middleware** handlers including error handlers
+// IMPORTANT: Before **any other output generating middleware** handlers including error handlers
 app.UseLiveReload();
 
 app.UseStaticFiles();
 app.UseMvcWithDefaultRoute();
 ```
 
-anywhere before the MVC route. I recommend you add this early in the middleware pipeline **before any other output generating middleware** runs as it needs to intercept any HTML content and inject the Live Reload script into it.
+I recommend you add this early in the middleware pipeline **before any other output generating middleware** runs as it needs to intercept any HTML content and inject the Live Reload script into it.
 
-And you can use these configuration settings:
+### Start your application 
+There are a couple of different ways to run your application:
+
+* **Start as normal (via Dev IDE, or dotnet run)**  
+In this scenario Live Reload works for static files and Razor files (assuming Razor Compilation was added to the project), but not for .NET source files in the Web project (ie. controllers or codebehind Razor Page files, Models etc.)
+
+* **Start with `dotnet watch run`**  
+Using this approach runs the application and it can detect changes to .NET Project files. Changes in .NET project files causes the server to be restarted.
+
+When using `dotnet watch run` you'll want to disable to built-in browser refresh functionality so the recommended startup is:
+
+```ps
+$env:DOTNET_WATCH_SUPPRESS_BROWSER_REFRESH=1
+dotnet watch run
+```
+
+### Configuration Settings
+LiveReload middleware has a number of configuration options, and you can use the standard .NET Core configuration paths - AppSettings.json, environment vars, command line - to add configuration settings.
+
+Here's a typical AppSettings.json file:
 
 ```json
 {
@@ -131,13 +141,14 @@ And you can use these configuration settings:
     "WebSocketUrl": "/__livereload",
     "WebSocketHost":null, 
     "FolderToMonitor": "~/"
+    // ... more options 
   }
 }
 ```
 
-There are also two event handlers that have to be set in code.
+There are two event handlers that have to be set in the `Startup.cs` initialization code.
 
-Here are the available settings:
+Here are the available configuration settings:
 
 * **LiveReloadEnabled**  
 If this flag is false live reload has no impact as it simply passes through requests.  
@@ -172,21 +183,39 @@ services.AddLiveReload(config => {
     };
 })
 ```
+* **FileInclusionFilter Delegate** (code only)  
+This filer lets you intercept files that have been changed and optionally decide whether you want to check the file for changes as it comes in. 
 
-* **RefreshInclusionFilter**  (code only)
+The `path` passed in as a physical OS path.
+
+```cs
+services.AddLiveReload(config =>
+{                
+    config.FileInclusionFilter = osPath =>
+    {
+        // don't check /LocalizationAdmin subfolder
+        if (osPath.Contains("LocalizationAdmin", StringComparison.OrdinalIgnoreCase))
+            return FileInclusionModes.DontRefresh;
+
+        return FileInclusionModes.ContinueProcessing;
+    };
+});    
+```
+
+* **RefreshInclusionFilter Delegate**  (code only)
 This filter lets you control whether a URL should refresh or not. This setting is useful for excluding individual files or folders from auto-refreshing in the browser. 
 
-  The `path` passed in is a Root Relative Web Path.
+The `path` passed in is a Root Relative Web Path.
 
 ```cs
 services.AddLiveReload(config =>
 {                
     // config.LiveReloadEnabled = true;   ideally set this in appsettings.json
-    config.RefreshInclusionFilter = path =>
+    config.RefreshInclusionFilter = webPath =>
     {
         // don't refresh files on the client in the /LocalizationAdmin folder
-        if (path.Contains("/LocalizationAdmin", StringComparison.OrdinalIgnoreCase))
-            return RefreshInclusionModes.DontRefresh;
+        if (webPath.Contains("/LocalizationAdmin", StringComparison.OrdinalIgnoreCase))
+            return FileInclusionModes.DontRefresh;
     
         return RefreshInclusionModes.ContinueProcessing;
     };

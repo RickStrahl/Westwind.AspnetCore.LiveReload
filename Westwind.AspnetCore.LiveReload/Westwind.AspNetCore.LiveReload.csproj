@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;netcoreapp2.1</TargetFrameworks>
-    <Version>0.2.14</Version>
+    <TargetFrameworks>net5.0;netcoreapp3.1</TargetFrameworks>
+    <Version>0.3</Version>
 
     <Authors>Rick Strahl, West Wind Technologies</Authors>
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
@@ -41,20 +41,14 @@ There are also a standalone 'LiveReloadServer' Dotnet Tool and Chocolatey packag
     <PackageLicense>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/LICSENSE.md</PackageLicense>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">
-    <DefineConstants>NETCORE2</DefineConstants>
-  </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp3.1|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <DocumentationFile>./Westwind.AspNetCore.LiveReload.xml</DocumentationFile>
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.1' ">
-    <PackageReference Include="Microsoft.AspNetCore.App" />
-  </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
+ <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 

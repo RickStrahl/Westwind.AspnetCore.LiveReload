@@ -32,11 +32,7 @@ namespace Westwind.AspNetCore.LiveReload
 
             if (config.LiveReloadEnabled)
             {
-#if NETCORE2
-                var env = provider.GetService<IHostingEnvironment>();
-#else
                 var env = provider.GetService<IWebHostEnvironment>();
-#endif
                 if (string.IsNullOrEmpty(config.FolderToMonitor))
                 {
                     config.FolderToMonitor = env.ContentRootPath;

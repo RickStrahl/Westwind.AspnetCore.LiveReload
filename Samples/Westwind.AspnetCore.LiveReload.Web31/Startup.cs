@@ -29,9 +29,27 @@ namespace Westwind.AspNetCore.LiveReload.Web30
             services.AddLiveReload(config =>
             {
                 // optional - use config instead
-                //config.LiveReloadEnabled = true;
+                //config.LiveReloadEnabled = false;
                 //config.FolderToMonitor = Env.ContentRootPath;
-                //config.WebSocketHost = "wss://localhost:44365";  // explicitly provide the WebSocket Host if proxying 
+                //config.WebSocketHost = "wss://localhost:44365";  // explicitly provide the WebSocket Host if proxying
+
+                // ignore certain files or folder
+                config.FileInclusionFilter = (path)=>
+                {
+                    if (path.Contains("/LocalizationAdmin", StringComparison.OrdinalIgnoreCase))
+                        return FileInclusionModes.DontRefresh;
+    
+                    return FileInclusionModes.ContinueProcessing;
+                };
+                // config.LiveReloadEnabled = true;   ideally set this in appsettings.json
+                config.RefreshInclusionFilter = path =>
+                {
+                    // don't refresh files on the client in the /LocalizationAdmin folder
+                    if (path.Contains("/LocalizationAdmin", StringComparison.OrdinalIgnoreCase))
+                        return RefreshInclusionModes.DontRefresh;
+    
+                    return RefreshInclusionModes.ContinueProcessing;
+                };
             });
 
 
