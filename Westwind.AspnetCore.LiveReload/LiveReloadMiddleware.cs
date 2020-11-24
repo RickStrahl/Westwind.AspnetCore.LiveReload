@@ -9,10 +9,8 @@ using Microsoft.AspNetCore.Http;
 using Westwind.AspNetCore.LiveReload;
 using Microsoft.Extensions.Logging;
 
-#if !NETCORE2
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Hosting;
-#endif
 
 namespace Westwind.AspNetCore.LiveReload
 {
@@ -30,24 +28,13 @@ namespace Westwind.AspNetCore.LiveReload
         /// </summary>
         internal static ConcurrentDictionary<WebSocket,byte> ActiveSockets { get; }= new ConcurrentDictionary<WebSocket,byte>();
 
-#if !NETCORE2
-            private IHostApplicationLifetime applicationLifetime = null;
+        private IHostApplicationLifetime applicationLifetime = null;
 
-            public LiveReloadMiddleware(RequestDelegate next,IHostApplicationLifetime lifeTime)
-            {
-                applicationLifetime = lifeTime;
-                _next = next;
-            }
-#else
-            private IApplicationLifetime applicationLifetime = null;
-
-            public LiveReloadMiddleware(RequestDelegate next, IApplicationLifetime lifeTime)
-            {
-                applicationLifetime = lifeTime;
-                _next = next;
-            }
-#endif
-
+        public LiveReloadMiddleware(RequestDelegate next,IHostApplicationLifetime lifeTime)
+        {
+            applicationLifetime = lifeTime;
+            _next = next;
+        }
 
         /// <summary>
         /// Routes to WebSocket handler and injects javascript into
@@ -93,13 +80,9 @@ namespace Westwind.AspNetCore.LiveReload
             // Use a custom StreamWrapper to rewrite output on Write/WriteAsync
             using (var filteredResponse = new ResponseStreamWrapper(context.Response.Body, context))
             {
-#if !NETCORE2
                 // Use new IHttpResponseBodyFeature for abstractions of pilelines/streams etc.
                 // For 3.x this works reliably while direct Response.Body was causing random HTTP failures
                 context.Features.Set<IHttpResponseBodyFeature>(new StreamResponseBodyFeature(filteredResponse));
-#else
-                context.Response.Body = filteredResponse;
-#endif
 
                 await _next(context);
             }

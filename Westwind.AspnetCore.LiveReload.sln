@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.28922.388
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Westwind.AspNetCore.LiveReload", "Westwind.AspnetCore.LiveReload\Westwind.AspNetCore.LiveReload.csproj", "{7CF17333-3898-478A-BA98-8543D26ACE46}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Westwind.AspnetCore.LiveReload.Web50", "Samples\Westwind.AspnetCore.LiveReload.Web31\Westwind.AspnetCore.LiveReload.Web50.csproj", "{2D8F61A3-8CB3-4AA2-9AB1-578C85428ED0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Westwind.AspnetCore.LiveReload.Web50", "Samples\Westwind.AspnetCore.LiveReload.Web50\Westwind.AspnetCore.LiveReload.Web50.csproj", "{2D8F61A3-8CB3-4AA2-9AB1-578C85428ED0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample Web Sites", "Sample Web Sites", "{2B5B0811-4169-4B72-891C-6D0563703332}"
 EndProject
