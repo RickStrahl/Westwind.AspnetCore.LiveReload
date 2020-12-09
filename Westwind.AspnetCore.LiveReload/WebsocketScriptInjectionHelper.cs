@@ -96,7 +96,7 @@ namespace Westwind.AspNetCore.LiveReload
         static int LastIndexOf<T>(this T[] array, T[] sought) where T : IEquatable<T> =>
             array.AsSpan().LastIndexOf(sought);
 
-        
+
 
 
         public static string GetWebSocketClientJavaScript(HttpContext context)
@@ -124,10 +124,10 @@ var connection = tryConnect(true);
 function tryConnect(retryOnFail){{
     try{{
         var host = '{hostString}';
-        connection = new WebSocket(host); 
+        connection = new WebSocket(host);
     }}
-    catch(ex) {{ 
-        console.log(ex);  
+    catch(ex) {{
+        console.log(ex);
         if(retryOnFail)
             retryConnection();
     }}
@@ -136,18 +136,18 @@ function tryConnect(retryOnFail){{
        return null;
 
 
-    connection.onmessage = function(message) 
-    {{ 
+    connection.onmessage = function(message)
+    {{
         if (message.data == 'DelayRefresh') {{
             console.log('Live Reload Delayed Reload.');
-            setTimeout( 
-                function() {{ 
-                    location.reload(); 
+            setTimeout(
+                function() {{
+                    location.reload();
                 }},{config.ServerRefreshTimeout});
         }}
-        if (message.data == 'Refresh')           
+        if (message.data == 'Refresh')
           setTimeout(function()  {{ location.reload(); }}, 10);
-    }}    
+    }}
     connection.onerror = function(event)  {{
         console.log('Live Reload Socket error.', event);
         if(retryOnFail)
@@ -163,21 +163,24 @@ function tryConnect(retryOnFail){{
     }}
     return connection;
 }}
-function retryConnection() {{   
-      setInterval(function() {{ 
-        console.log('Live Reload retrying connection.'); 
+function retryConnection() {{
+    var interval = setInterval(function() {{
+        console.log('Live Reload retrying connection.');
+        connection.onopen = null;
         connection = tryConnect(false);
         if(connection)
         {{
             if(connection.readyState === 1){{
                 location.reload(true);
+                clearInterval(interval);
             }} else {{
                 connection.onopen = function(event) {{
                     console.log('Live Reload socket connected.');
                     location.reload(true);
+                    clearInterval(interval);
                 }}
             }}
-        }}                 
+        }}
     }},{config.ServerRefreshTimeout});
 }}
 
