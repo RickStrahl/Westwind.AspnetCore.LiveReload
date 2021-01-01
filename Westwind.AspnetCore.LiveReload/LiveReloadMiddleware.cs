@@ -60,7 +60,15 @@ namespace Westwind.AspNetCore.LiveReload
             await HandleHtmlInjection(context);
         }
 
+        public async Task HandleServeLiveReloadScript(HttpContext context)
+        {
+            if (context.Request.Path == LiveReloadConfiguration.Current.LiveReloadScriptUrl)
+            {
+                context.Response.ContentType = "text/javascript";
+                context.Response.WriteAsync(WebsocketScriptInjectionHelper.GetWebSocketClientJavaScript(context, true));
+            }
 
+        }
 
         /// <summary>
         /// Inspects all non WebSocket content for HTML documents

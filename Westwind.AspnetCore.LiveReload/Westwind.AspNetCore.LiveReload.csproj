@@ -48,6 +48,17 @@ There are also a standalone 'LiveReloadServer' Dotnet Tool and Chocolatey packag
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
+
+  <ItemGroup>
+    <None Remove="LiveReloadClientScript.js" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <EmbeddedResource Include="LiveReloadClientScript.js" />
+  </ItemGroup>
+
+
  <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
@@ -55,4 +66,6 @@ There are also a standalone 'LiveReloadServer' Dotnet Tool and Chocolatey packag
   <ItemGroup>
     <None Include="icon.png" Pack="true" PackagePath="" />
   </ItemGroup>
+
+
 </Project>

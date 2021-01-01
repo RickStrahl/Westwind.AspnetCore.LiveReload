@@ -72,6 +72,10 @@ namespace Westwind.AspNetCore.LiveReload
         /// </summary>
         public int ServerRefreshTimeout { get; set; } = 0;
 
+        /// <summary>
+        /// Url that loads the live reload script
+        /// </summary>
+        public string LiveReloadScriptUrl { get; set; } = "/_livereloadscript";
 
         /// <summary>
         /// The URL used for the Web Socket connection on the page to refresh
