@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
+using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -96,11 +98,11 @@ namespace Westwind.AspNetCore.LiveReload
         static int LastIndexOf<T>(this T[] array, T[] sought) where T : IEquatable<T> =>
             array.AsSpan().LastIndexOf(sought);
 
+        private static string _ClientScriptString = string.Empty;
 
-
-
-        public static string GetWebSocketClientJavaScript(HttpContext context)
+        public static string GetWebSocketClientJavaScript(HttpContext context, bool returnScriptOnly = false)
         {
+
             var config = LiveReloadConfiguration.Current;
 
             var host = context.Request.Host;
@@ -113,83 +115,45 @@ namespace Westwind.AspNetCore.LiveReload
                 hostString = $"{prefix}://{host.Host}:{host.Port}" + config.WebSocketUrl;
             }
 
-            string script = $@"
+            if (string.IsNullOrEmpty(_ClientScriptString))
+            {
+                // Load `/LiveReloadClientScript.js from resource stream
+                lock (_ClientScriptString)
+                {
+                    if (string.IsNullOrEmpty(_ClientScriptString))
+                    {
+                        using (var scriptStream = Assembly.GetExecutingAssembly()
+                            .GetManifestResourceStream("Westwind.AspNetCore.LiveReload.LiveReloadClientScript.js"))
+                        {
+                            if (scriptStream == null)
+                                throw new InvalidDataException("Unable to load LiveReloadClientScript.js Resource");
+
+                            var buffer = new byte[scriptStream.Length];
+                            scriptStream.Read(buffer, 0, buffer.Length);
+                            _ClientScriptString = System.Text.Encoding.UTF8.GetString(buffer);
+                        }
+                    }
+                }
+            }
+
+            if (returnScriptOnly)
+                return _ClientScriptString.Replace("{0}", hostString);
+
+            // otherwise return the embeddable script block string that replaces the ending </body> tag
+
+            var script = $@"
 <!-- West Wind Live Reload -->
 <script>
-setTimeout( function() {{
-
-var retry = 0;
-var connection = tryConnect(true);
-
-function tryConnect(retryOnFail){{
-    try{{
-        var host = '{hostString}';
-        connection = new WebSocket(host);
-    }}
-    catch(ex) {{
-        console.log(ex);
-        if(retryOnFail)
-            retryConnection();
-    }}
-
-    if (!connection)
-       return null;
-
-
-    connection.onmessage = function(message)
-    {{
-        if (message.data == 'DelayRefresh') {{
-            console.log('Live Reload Delayed Reload.');
-            setTimeout(
-                function() {{
-                    location.reload();
-                }},{config.ServerRefreshTimeout});
-        }}
-        if (message.data == 'Refresh')
-          setTimeout(function()  {{ location.reload(); }}, 10);
-    }}
-    connection.onerror = function(event)  {{
-        console.log('Live Reload Socket error.', event);
-        if(retryOnFail)
-            retryConnection();
-    }}
-    connection.onclose = function(event) {{
-        console.log('Live Reload Socket closed.');
-        if(retryOnFail)
-            retryConnection();
-    }}
-    connection.onopen = function(event) {{
-        console.log('Live Reload socket connected.');
-    }}
-    return connection;
-}}
-function retryConnection() {{
-    var interval = setInterval(function() {{
-        console.log('Live Reload retrying connection.');
-        connection.onopen = null;
-        connection = tryConnect(false);
-        if(connection)
-        {{
-            if(connection.readyState === 1){{
-                location.reload(true);
-                clearInterval(interval);
-            }} else {{
-                connection.onopen = function(event) {{
-                    console.log('Live Reload socket connected.');
-                    location.reload(true);
-                    clearInterval(interval);
-                }}
-            }}
-        }}
-    }},{config.ServerRefreshTimeout});
-}}
-
-}},500);
+{_ClientScriptString.Replace("{0}", hostString)}
 </script>
 <!-- End Live Reload -->
 
 </body>";
+
             return script;
+
+
+
         }
 
     }
