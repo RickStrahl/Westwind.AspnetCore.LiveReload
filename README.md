@@ -12,17 +12,17 @@ There's also a standalone, self-contained local Web Server using this Live Reloa
 This middleware automatically reloads content on any active HTML page in the project, when monitored source files are changed. The middleware by default monitors and detects changes in:
 
 * Razor Pages/Views
-* Clientnt source files (.html, .css, .js, .ts etc.)
-* Server files like (.cs, .json) using `dotnet watch`
+* Client source files (.html, .css, .js, .ts etc.)
+* Server files (.cs, .json) using `dotnet watch`
 * Limited Blazor Support ([see below](#blazor-support))
 
-The middleware is configurable so you can fine tune what triggers updates and which requests are automatically live reloaded. The middle can configure:
+The middleware is configurable so you can fine tune what triggers updates and which requests are automatically live reloaded. It can configure:
 
 * Which file extensions to monitor for changes
 * An optional handler to determine whether a changed file should reload the browser
 * An optional handler to decide whether a Web request url should live reload on change
 
-Using these configuration options allows precise control over what triggers a refresh, and which requests can be auto-refreshed.
+Using these configuration options allow precise control over what triggers a refresh and which requests can be auto-refreshed.
 
 > #### Partial Integration in .NET 5.0's `dotnet watch`
 > .NET Core 5.0 and later integrates similar behavior based on this middleware directly in `dotnet watch run`. The advantage of built-in tooling is that it's external, and doesn't require any of the small code changes or additional library as this middleware does. 
