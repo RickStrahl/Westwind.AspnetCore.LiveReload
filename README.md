@@ -365,6 +365,16 @@ We can only hope Microsoft come up with a built-in solution to trigger the recom
 
 ## Change Log
 
+### Version 0.3.1
+
+* **Fix: WebSocket Reload Logic**
+Updated WebSocket reload logic by clearing the interval to avoid overlapping WebSocket reload requests if a socket is not available. This should cut down on the noise that was created when a connection with the server is lost and then fires many backed up socket requests at once. [PR #46](https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/pull/46)
+
+### Version 0.3.0
+
+* **Add .NET Core 5.0 Target**  
+Added support for .NET Core 5.0 and removed .NET Core 2.1 support which cleans up a bit of code due to core framework interface differences.
+
 ### Version 0.2.11
 
 * **Fix: Now refreshes Developer Error Page**  
