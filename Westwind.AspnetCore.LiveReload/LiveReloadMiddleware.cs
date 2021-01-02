@@ -52,6 +52,10 @@ namespace Westwind.AspNetCore.LiveReload
                 return;
             }
 
+            // serve live reload script
+            if(await HandleServeLiveReloadScript(context))
+                return;
+
             // see if we have a WebSocket request. True means we handled
             if (await HandleWebSocketRequest(context))
                 return;
@@ -60,14 +64,16 @@ namespace Westwind.AspNetCore.LiveReload
             await HandleHtmlInjection(context);
         }
 
-        public async Task HandleServeLiveReloadScript(HttpContext context)
+        public async Task<bool> HandleServeLiveReloadScript(HttpContext context)
         {
             if (context.Request.Path == LiveReloadConfiguration.Current.LiveReloadScriptUrl)
             {
                 context.Response.ContentType = "text/javascript";
-                context.Response.WriteAsync(WebsocketScriptInjectionHelper.GetWebSocketClientJavaScript(context, true));
+                await context.Response.WriteAsync(WebsocketScriptInjectionHelper.GetWebSocketClientJavaScript(context, true));
+                return true;
             }
 
+            return false;
         }
 
         /// <summary>

@@ -143,17 +143,19 @@ namespace Westwind.AspNetCore.LiveReload
 
             var script = $@"
 <!-- West Wind Live Reload -->
-<script>
-{_ClientScriptString.Replace("{0}", hostString)}
-</script>
+";
+
+            if (string.IsNullOrEmpty(config.LiveReloadScriptUrl))
+                script += "<script>\n" + _ClientScriptString.Replace("{0}", hostString) + "\n</script>";
+            else
+                script += $"<script src=\"{config.LiveReloadScriptUrl}\"></script>";
+
+script += @"
 <!-- End Live Reload -->
 
 </body>";
 
             return script;
-
-
-
         }
 
     }
