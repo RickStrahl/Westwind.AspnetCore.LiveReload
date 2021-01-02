@@ -139,6 +139,7 @@ Here's a typical AppSettings.json file:
     "ClientFileExtensions": ".cshtml,.css,.js,.htm,.html,.ts,.razor,.custom",
     "ServerRefreshTimeout": 1000,
     "WebSocketUrl": "/__livereload",
+    "LiveReloadScriptUrl": "/__livereloadscript",
     "WebSocketHost":null, 
     "FolderToMonitor": "~/"
     // ... more options 
@@ -229,6 +230,9 @@ This value affects whether there's a timeout used for `.cshtml` and `.razor` pag
 
 * **WebSocketUrl**  
 The site relative URL to the Web socket handler. The default is `/__livereload` and there should be little reason to change this.
+
+* **LiveReloadScriptUrl**  
+By default this points at the internal `/__livereloadscript` URL which serves the live reload script from a compiled resource, is linked into the page via a `<script>` tag. You can provide a custom URL with a custom script, or set the value to `null` which serves the live reload script **inline** of the original HTML document rather than the `<script>` tag.
 
 * **WebSocketHost**  
 An explicit WebSocket host URL. Useful if you are running on HTTP2 which doesn't support WebSockets (yet), so you can  point at another exposed host URL in your server that serves HTTP1.1.   
@@ -367,8 +371,12 @@ We can only hope Microsoft come up with a built-in solution to trigger the recom
 
 ### Version 0.3.1
 
+* **External Script Request for Reload JavaScript**  
+Added a `LiveReloadScriptUrl` configuration property that when set embeds a script URL to serve the Live reload script externally. This allows customizing how the JavaScript script is loaded for special cases or for easier debugging. If set the script URL is used and the default is `/__livereloadscript` which is internally served from an embedded resource. By setting `LiveReloadScriptUrl` blank or null, the old behavior of loading the script inline in the page is used instead.
+
 * **Fix: WebSocket Reload Logic**
 Updated WebSocket reload logic by clearing the interval to avoid overlapping WebSocket reload requests if a socket is not available. This should cut down on the noise that was created when a connection with the server is lost and then fires many backed up socket requests at once. [PR #46](https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/pull/46)
+
 
 ### Version 0.3.0
 
