@@ -5,6 +5,21 @@
     }
 
     var retry = 0;
+    var isClosing = false;
+    window.addEventListener("beforeunload", function () {
+        // Prevent reload events triggered by closing the connection from interrupting navigation.
+        isClosing = true;
+        console.debug("Live Reload is paused due to beforeunload event.");
+        setTimeout(function () {
+            // Assume that the user clicked Stay on Page if this logic is executing after the timeout.
+            isClosing = false;
+            if (connection) {
+                connection.onopen = null;
+                connection = tryConnect(true);
+                console.debug("Live Reload has resumed after unload was cancelled.");
+            }
+        }, 2500);
+    });
     var connection = tryConnect(true);
 
     function tryConnect(retryOnFail) {
@@ -40,7 +55,7 @@
         }
         connection.onclose = function (event) {
             console.log('Live Reload Socket closed.');
-            if (retryOnFail)
+            if (retryOnFail && !isClosing)
                 retryConnection();
         }
         connection.onopen = function (event) {
