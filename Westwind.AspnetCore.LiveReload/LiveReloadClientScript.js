@@ -13,7 +13,7 @@
             connection = new WebSocket(host);
         }
         catch (ex) {
-            console.log(ex);
+            console.log("Failed Live Reload connection",ex);
             if (retryOnFail)
                 retryConnection();
         }

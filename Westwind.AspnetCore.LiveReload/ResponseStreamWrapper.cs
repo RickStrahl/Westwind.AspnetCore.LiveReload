@@ -118,6 +118,12 @@ namespace Westwind.AspNetCore.LiveReload
             if (_context?.Response == null)
                 return false;
 
+            // Requirements for script injection:
+            // * has to have result body
+            // * 200 or 500 response
+            // * text/html response
+            // * UTF-8 formatted (explicit or no charset)
+            
             _isHtmlResponse =
                 _context.Response?.Body != null &&
                 (_context.Response.StatusCode == 200 || _context.Response.StatusCode == 500) &&

@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Westwind.AspNetCore.LiveReload.Web31": {
+    "Westwind.AspNetCore.LiveReload.Web50": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
