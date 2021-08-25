@@ -6,20 +6,6 @@
 
     var retry = 0;
     var isClosing = false;
-    window.addEventListener("beforeunload", function () {
-        // Prevent reload events triggered by closing the connection from interrupting navigation.
-        isClosing = true;
-        console.debug("Live Reload is paused due to beforeunload event.");
-        setTimeout(function () {
-            // Assume that the user clicked Stay on Page if this logic is executing after the timeout.
-            isClosing = false;
-            if (connection) {
-                connection.onopen = null;
-                connection = tryConnect(true);
-                console.debug("Live Reload has resumed after unload was cancelled.");
-            }
-        }, 2500);
-    });
     var connection = tryConnect(true);
 
     function tryConnect(retryOnFail) {
@@ -43,7 +29,7 @@
                 setTimeout(
                     function () {
                         location.reload();
-                    }, 500);
+                    }, 1000);
             }
             if (message.data == 'Refresh')
                 setTimeout(function () { location.reload(); }, 10);
@@ -83,4 +69,18 @@
         }, 500);
     }
 
+    // Prevent reload events triggered by closing the connection from interrupting navigation.
+    window.addEventListener("beforeunload", function () {
+        isClosing = true;
+        console.log("Live Reload paused for page unload.");
+        setTimeout(function () {
+            // Assume that the user clicked Stay on Page if this logic is executing after the timeout.
+            isClosing = false;
+            if (connection) {
+                connection.onopen = null;
+                connection = tryConnect(true);
+                console.log("Live Reload resumed after unload was cancelled.");
+            }
+        }, 2500);
+    });
 }, 500);
