@@ -27,7 +27,11 @@ namespace Westwind.AspNetCore.LiveReload
             CanWrite = true;
         }
 
-        public override void Flush() => _baseStream.Flush();
+        public override void Flush()
+        {
+            _baseStream.Flush();
+        }
+
 
         public override Task FlushAsync(CancellationToken cancellationToken)
         {
