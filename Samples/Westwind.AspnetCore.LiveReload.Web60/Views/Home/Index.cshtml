@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<div class="text-center">
+    <h1 class="display-4">ASP.NET Core Live Reload Sample</h1>
+
+    <h5 style="color: steelblue">@ViewBag.Message</h5>
+
+    <h2>Time is: @DateTime.Now.ToString("HH:mm:ss")</h2>
+</div>
+
+
+<p class="mt-5">
+            This content comes from the `index.cshtml` MVC View page. Change me
+            to see the View updated.
+        </p>
+
+        <blockquote>
+            <svg class="bi bi-info-circle-fill" width="2em" height="2em" style="margin: 15px 10px 20px 0;" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M8 16A8 8 0 108 0a8 8 0 000 16zm.93-9.412l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM8 5.5a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+            </svg>
+            Note Razor related changes in .NET Core 3.x require that runtime Razor
+            compilation is enabled in your project.
+        </blockquote>
+
+        <div class="mt-4">
+            <a href="~/test.html">Static Test Page (Static HTML)</a>
+        </div>
+        <div class="mt-4">
+            <a href="~/home/privacy">Privacy Page (MVC View)</a>
+        </div>
+        <div class="mt-4">
+            <a href="~/aboutpage">About Page (Razor Page)</a>
+        </div>
+
+<hr />
+
+<small>To demonstrate Live Reloading on this page edit <code>Views/Home/Index.cshtml</code></small>
+<br />
+<small>You can also edit <code>wwwroot/css/site.css</code> to live reload style changes</small>

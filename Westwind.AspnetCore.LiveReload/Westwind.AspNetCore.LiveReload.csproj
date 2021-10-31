@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0;netcoreapp3.1</TargetFrameworks>
-    <Version>0.3.5</Version>
+    <TargetFrameworks>net6.0;net5.0;netcoreapp3.1</TargetFrameworks>
+    <Version>0.3.5.2</Version>
 
     <Authors>Rick Strahl, West Wind Technologies</Authors>
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
