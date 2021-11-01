@@ -50,11 +50,9 @@ namespace Westwind.AspNetCore.LiveReload
         /// <param name="context"></param>
         /// <param name="baseStream">The raw Response Stream</param>
         /// <returns></returns>
-        public static Task InjectLiveReloadScriptAsync(byte[] buffer, int offset, int count, HttpContext context, Stream baseStream)
+        public static Task InjectLiveReloadScriptAsync(ReadOnlyMemory<byte> buffer, HttpContext context, Stream baseStream)
         {
-            Span<byte> currentBuffer = buffer;
-            var curBuffer = currentBuffer.Slice(offset, count).ToArray();
-            return InjectLiveReloadScriptAsync(curBuffer, context, baseStream);
+            return InjectLiveReloadScriptAsync(buffer.ToArray(), context, baseStream);
         }
 
         /// <summary>
