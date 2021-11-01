@@ -97,6 +97,19 @@ namespace Westwind.AspNetCore.LiveReload
             return WriteAsync(buffer.AsMemory(offset, count), cancellationToken).AsTask();
         }
 
+        public override async ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
+        {
+            if (IsHtmlResponse())
+            {
+                await WebsocketScriptInjectionHelper.InjectLiveReloadScriptAsync(buffer, _context, _baseStream);
+            }
+            else
+            {
+                if (_baseStream != null)
+                    await _baseStream.WriteAsync(buffer, cancellationToken);
+            }
+        }
+
 
         private bool? _isHtmlResponse = null;
 
@@ -149,19 +162,6 @@ namespace Westwind.AspNetCore.LiveReload
             }
 
             return _isHtmlResponse.Value;
-        }
-
-        public override async ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
-        {
-            if (IsHtmlResponse())
-            {
-                await WebsocketScriptInjectionHelper.InjectLiveReloadScriptAsync(buffer, _context, _baseStream);
-            }
-            else
-            {
-                if (_baseStream != null)
-                    await _baseStream.WriteAsync(buffer, cancellationToken);
-            }
         }
 
         protected override void Dispose(bool disposing)

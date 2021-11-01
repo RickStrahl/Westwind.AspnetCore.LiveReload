@@ -378,6 +378,13 @@ Added a `LiveReloadScriptUrl` configuration property that when set embeds a scri
 Updated WebSocket reload logic by clearing the interval to avoid overlapping WebSocket reload requests if a socket is not available. This should cut down on the noise that was created when a connection with the server is lost and then fires many backed up socket requests at once. [PR #46](https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/pull/46)
 
 
+### Version 0.3.6
+
+* **Add explicit .NET 6.0 Target**  
+Add explicit .NET 6 targeting support and sample.
+Thanks to @davidfowler for finding the missing implementation for new `WriteAsync()` behavior in 6.0.
+
+
 ### Version 0.3.0
 
 * **Add .NET Core 5.0 Target**  
