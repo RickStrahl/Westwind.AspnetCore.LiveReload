@@ -81,7 +81,7 @@ namespace Westwind.AspNetCore.LiveReload
         {
             if (IsHtmlResponse())
             {
-                WebsocketScriptInjectionHelper.InjectLiveReloadScriptAsync(buffer, offset, count, _context, _baseStream)
+                WebsocketScriptInjectionHelper.InjectLiveReloadScriptAsync(buffer.AsMemory(offset, count), _context, _baseStream)
                                               .GetAwaiter()
                                               .GetResult();
             }
@@ -91,25 +91,15 @@ namespace Westwind.AspNetCore.LiveReload
             }
         }
 
-        public override async Task WriteAsync(byte[] buffer, int offset, int count,
+        public override Task WriteAsync(byte[] buffer, int offset, int count,
                                               CancellationToken cancellationToken)
         {
-            if (IsHtmlResponse())
-            {
-                await WebsocketScriptInjectionHelper.InjectLiveReloadScriptAsync(
-                    buffer, offset, count,
-                    _context, _baseStream);
-            }
-            else
-            {
-                if (_baseStream != null)
-                    await _baseStream.WriteAsync(buffer, offset, count, cancellationToken);
-            }
+            return WriteAsync(buffer.AsMemory(offset, count), cancellationToken).AsTask();
         }
 
 
         private bool? _isHtmlResponse = null;
-        
+
 
         private bool IsHtmlResponse(bool forceReCheck = false)
         {
@@ -127,7 +117,7 @@ namespace Westwind.AspNetCore.LiveReload
             // * 200 or 500 response
             // * text/html response
             // * UTF-8 formatted (explicit or no charset)
-            
+
             _isHtmlResponse =
                 _context.Response?.Body != null &&
                 (_context.Response.StatusCode == 200 || _context.Response.StatusCode == 500) &&
@@ -141,14 +131,14 @@ namespace Westwind.AspNetCore.LiveReload
 
             // Check for refresh exlusion rules
             RefreshInclusionModes refreshFile = RefreshInclusionModes.ContinueProcessing;
-            if(LiveReloadConfiguration.Current.RefreshInclusionFilter != null)
+            if (LiveReloadConfiguration.Current.RefreshInclusionFilter != null)
             {
                 refreshFile = LiveReloadConfiguration.Current.RefreshInclusionFilter.Invoke(_context.Request.Path.Value);
                 if (refreshFile == RefreshInclusionModes.DontRefresh)
                     return false; // don't embed refresh script
             }
 
-            
+
             // Make sure we force dynamic content type since we're
             // rewriting the content - static content will set the header explicitly
             // and fail when it doesn't matchif (_isHtmlResponse.Value)
@@ -156,14 +146,22 @@ namespace Westwind.AspNetCore.LiveReload
             {
                 _context.Response.Headers.ContentLength = null;
                 _isContentLengthSet = true;
-            } 
-                
+            }
+
             return _isHtmlResponse.Value;
         }
 
-        public override  ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
+        public override async ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
         {
-            return _baseStream.WriteAsync(buffer, cancellationToken);
+            if (IsHtmlResponse())
+            {
+                await WebsocketScriptInjectionHelper.InjectLiveReloadScriptAsync(buffer, _context, _baseStream);
+            }
+            else
+            {
+                if (_baseStream != null)
+                    await _baseStream.WriteAsync(buffer, cancellationToken);
+            }
         }
 
         protected override void Dispose(bool disposing)
