@@ -29,13 +29,9 @@
 </PropertyGroup>
   
   <PropertyGroup>
-    <IncludeSymbols>true</IncludeSymbols>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageOutputPath>./nupkg</PackageOutputPath>    
-
     <PackageCopyright>Rick Strahl, West Wind Technologies 2019-2021</PackageCopyright>
     <PackageTags>Live Reload AspNetCore Middleware Westwind</PackageTags>
-    <PackageReleaseNotes></PackageReleaseNotes>
+    <PackageReleaseNotes>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload#change-log</PackageReleaseNotes>
     <PackageIcon>icon.png</PackageIcon>
     <PackageLicense>LICENSE.MD</PackageLicense>
 
@@ -44,10 +40,10 @@
   </PropertyGroup>
 
 
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <DocumentationFile>./Westwind.AspNetCore.LiveReload.xml</DocumentationFile>
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <DebugType>embedded</DebugType>
-    <DebugSymbols>true</DebugSymbols>
+    <EmbedAllSources>true</EmbedAllSources>
   </PropertyGroup>
 
 
@@ -70,5 +66,8 @@
     <None Include="LICENSE.MD" Pack="true" PackagePath="" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
+  </ItemGroup>
 
 </Project>

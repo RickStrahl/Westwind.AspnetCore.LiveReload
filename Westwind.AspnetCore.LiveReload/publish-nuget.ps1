@@ -1,9 +1,11 @@
 
-if (test-path ./nupkg) {
-    remove-item ./nupkg -Force -Recurse
-}   
+foreach ($path in "./nupkg", "./bin", "./obj") {
+    if (test-path $path) {
+        remove-item $path -Force -Recurse
+    }
+}
 
-dotnet build -c Release
+dotnet pack --configuration Release --output ./nupkg -p:ContinuousIntegrationBuild=true
 
 # $filename = 'LiveReloadServer.0.2.4.nupkg'
 $filename = gci "./nupkg/*.nupkg" | sort LastWriteTime | select -last 1 | select -ExpandProperty "Name"
