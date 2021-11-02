@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net6.0;net5.0;netcoreapp3.1</TargetFrameworks>
     <Version>0.3.6</Version>
 
     <Authors>Rick Strahl, West Wind Technologies</Authors>
@@ -12,9 +12,10 @@
     <PackageId>Westwind.AspNetCore.LiveReload</PackageId>
     <RootNamespace>Westwind.AspNetCore.LiveReload</RootNamespace>
     <Title>West Wind ASP.NET Core Live Reload Middleware</Title>
-    <Description>ASP.NET Core Live Reload Middleware that monitors for file changes in your project at development time and automatically reloads the browser's active page. It can monitor for client side static files, Razor Views and Pages and can also reload server changes when combined with `dotnet watch run`. This middleware is light-weight and self-contained without external dependencies, and can be completely turned on and off via configuration.
+    <Description>
+      ASP.NET Core Live Reload Middleware that monitors for file changes in your project at development time and automatically reloads the browser's active page. It can monitor for client side static files, Razor Views and Pages and can also reload server changes when combined with `dotnet watch run`. This middleware is light-weight and self-contained without external dependencies, and can be completely turned on and off via configuration.
 
-There are also a standalone 'LiveReloadServer' Dotnet Tool and Chocolatey packages that can be used to run a standalone LiveReload Web Server for static content in any folder. The standalone server supports static content, self-contained Razor Pages as well as Markdown content for serving and live reloading. See `LiveReloadServer` NuGet Package for the Dotnet Tool or `LiveReloadWebServer` for Choco package.
+      There are also a standalone 'LiveReloadServer' Dotnet Tool and Chocolatey packages that can be used to run a standalone LiveReload Web Server for static content in any folder. The standalone server supports static content, self-contained Razor Pages as well as Markdown content for serving and live reloading. See `LiveReloadServer` NuGet Package for the Dotnet Tool or `LiveReloadWebServer` for Choco package.
 .</Description>
     <Summary>
       ASP.NET Core Live Reload Middleware that monitors static file, Razor View or Pages and code changes in your project and automatically reloads the browser's active page.</Summary>
@@ -30,13 +31,14 @@ There are also a standalone 'LiveReloadServer' Dotnet Tool and Chocolatey packag
   <PropertyGroup>
     <IncludeSymbols>true</IncludeSymbols>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>    
     <PackageOutputPath>./nupkg</PackageOutputPath>    
 
-    <PackageCopyright>Rick Strahl, West Wind Technologies 2019-2020</PackageCopyright>
-    <PackageTags>Live-Reload AspNetCore Middleware Westwind</PackageTags>
+    <PackageCopyright>Rick Strahl, West Wind Technologies 2019-2021</PackageCopyright>
+    <PackageTags>Live Reload AspNetCore Middleware Westwind</PackageTags>
     <PackageReleaseNotes></PackageReleaseNotes>
     <PackageIcon>icon.png</PackageIcon>
+    <PackageLicense>LICENSE.MD</PackageLicense>
+
     <PackageProjectUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload</PackageProjectUrl>
     <PackageLicense>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/LICSENSE.md</PackageLicense>
   </PropertyGroup>
@@ -65,6 +67,7 @@ There are also a standalone 'LiveReloadServer' Dotnet Tool and Chocolatey packag
 
   <ItemGroup>
     <None Include="icon.png" Pack="true" PackagePath="" />
+    <None Include="LICENSE.MD" Pack="true" PackagePath="" />
   </ItemGroup>
 
 

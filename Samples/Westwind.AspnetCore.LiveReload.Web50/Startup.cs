@@ -53,9 +53,9 @@ namespace Westwind.AspNetCore.LiveReload.Web30
             });
 
 
-            services.AddControllersWithViews()
+            services.AddControllersWithViews();
                 //.AddMvcOptions(opt => { opt.SerializerOptions.PropertyNameCaseInsensitive = true; });
-                .AddNewtonsoftJson();
+                //.AddNewtonsoftJson();
 
            services.AddRazorPages().AddRazorRuntimeCompilation();
            services.AddMvc().AddRazorRuntimeCompilation();
@@ -107,6 +107,16 @@ namespace Westwind.AspNetCore.LiveReload.Web30
             {
                 Console.WriteLine("*** Application is shut down...");
             }, true);
+            
+            Console.WriteLine(
+@"
+-------------------------------------
+Westwind.AspNetCore.LiveReload Sample
+-------------------------------------");
+            Console.WriteLine("Runtime: " + System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription);
+            Console.WriteLine("OS: " + System.Runtime.InteropServices.RuntimeInformation.OSDescription);
+            Console.WriteLine();
+
         }
     }
 }
