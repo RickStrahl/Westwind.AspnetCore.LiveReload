@@ -33,7 +33,7 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageOutputPath>./nupkg</PackageOutputPath>    
 
-    <PackageCopyright>Rick Strahl, West Wind Technologies 2019-2021</PackageCopyright>
+    <PackageCopyright>Rick Strahl, West Wind Technologies 2019-2022</PackageCopyright>
     <PackageTags>Live Reload AspNetCore Middleware Westwind</PackageTags>
     <PackageReleaseNotes></PackageReleaseNotes>
     <PackageIcon>icon.png</PackageIcon>

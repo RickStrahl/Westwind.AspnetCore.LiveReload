@@ -45,8 +45,6 @@ namespace Westwind.AspNetCore.LiveReload
         /// Adds Live Reload WebSocket script into the page before the body tag.
         /// </summary>
         /// <param name="buffer"></param>
-        /// <param name="offset"></param>
-        /// <param name="count"></param>
         /// <param name="context"></param>
         /// <param name="baseStream">The raw Response Stream</param>
         /// <returns></returns>

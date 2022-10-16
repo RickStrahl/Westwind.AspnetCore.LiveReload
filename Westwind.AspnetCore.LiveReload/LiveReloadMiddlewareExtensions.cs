@@ -49,7 +49,7 @@ namespace Westwind.AspNetCore.LiveReload
                     }
                     else
                         config.FolderToMonitor = env.ContentRootPath;
-                }
+               }
 
                 if (configAction != null)
                     configAction.Invoke(config);
