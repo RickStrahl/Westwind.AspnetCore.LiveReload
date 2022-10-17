@@ -369,6 +369,11 @@ We can only hope Microsoft come up with a built-in solution to trigger the recom
 
 ## Change Log
 
+### Version 0.3.7
+
+* **Fix: LiveReload JavaScript code**  
+Cleanup the reload code for consistency. Explicitly set `no-cache` header in HTML pages to force pages to not cache on the client and always reload on a `window.location.reload()`.
+
 ### Version 0.3.6
 
 * **Add explicit .NET 6.0 Target**  

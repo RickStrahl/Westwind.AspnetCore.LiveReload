@@ -26,13 +26,12 @@
         connection.onmessage = function (message) {
             if (message.data == 'DelayRefresh') {
                 console.log('Live Reload Delayed Reload.');
-                setTimeout(
-                    function () {
-                        location.reload();
-                    }, 1000);
+                setTimeout(reloadUrl, 1000);
             }
-            if (message.data == 'Refresh')
-                setTimeout(function () { location.reload(); }, 10);
+            else if (message.data == 'Refresh') {            
+                console.log('Live Reload Page reloading.');
+                setTimeout(reloadUrl, 30);            
+            }
         }
         connection.onerror = function (event) {
             console.log('Live Reload Socket error.', event);
@@ -49,6 +48,9 @@
         }
         return connection;
     }
+    function reloadUrl() {
+        window.location.reload();
+    }
     function retryConnection() {
         var interval = setInterval(function () {
             console.log('Live Reload retrying connection.');
@@ -56,12 +58,12 @@
             connection = tryConnect(false);
             if (connection) {
                 if (connection.readyState === 1) {
-                    location.reload(true);
+                    reloadUrl();
                     clearInterval(interval);
                 } else {
                     connection.onopen = function (event) {
                         console.log('Live Reload socket connected.');
-                        location.reload(true);
+                        reloadUrl();
                         clearInterval(interval);
                     }
                 }

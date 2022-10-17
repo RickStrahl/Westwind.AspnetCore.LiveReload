@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net6.0;net5.0;netcoreapp3.1</TargetFrameworks>
-    <Version>0.3.6</Version>
+    <Version>0.3.7</Version>
 
     <Authors>Rick Strahl, West Wind Technologies</Authors>
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
@@ -34,13 +34,11 @@
     <PackageOutputPath>./nupkg</PackageOutputPath>    
 
     <PackageCopyright>Rick Strahl, West Wind Technologies 2019-2022</PackageCopyright>
-    <PackageTags>Live Reload AspNetCore Middleware Westwind</PackageTags>
+    <PackageTags>Live-Reload AspNetCore Middleware Westwind</PackageTags>
     <PackageReleaseNotes></PackageReleaseNotes>
     <PackageIcon>icon.png</PackageIcon>
     <PackageLicense>LICENSE.MD</PackageLicense>
-
-    <PackageProjectUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload</PackageProjectUrl>
-    <PackageLicense>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload/LICSENSE.md</PackageLicense>
+    <PackageProjectUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload</PackageProjectUrl>    
   </PropertyGroup>
 
 
