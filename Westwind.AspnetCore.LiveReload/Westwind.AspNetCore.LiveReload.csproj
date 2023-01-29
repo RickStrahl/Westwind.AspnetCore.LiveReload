@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net7.0;netcoreapp3.1</TargetFrameworks>
-    <Version>0.4</Version>
+    <TargetFrameworks>net60;net70;netcoreapp3.1</TargetFrameworks>
+    <Version>0.4.2</Version>
 
     <Authors>Rick Strahl, West Wind Technologies</Authors>
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
@@ -29,8 +29,6 @@
 </PropertyGroup>
   
   <PropertyGroup>
-    <IncludeSymbols>true</IncludeSymbols>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageOutputPath>./nupkg</PackageOutputPath>    
 
     <PackageCopyright>Rick Strahl, West Wind Technologies 2019-2022</PackageCopyright>
@@ -44,8 +42,9 @@
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <DocumentationFile>./Westwind.AspNetCore.LiveReload.xml</DocumentationFile>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <DebugType>embedded</DebugType>
-    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
 
@@ -58,8 +57,7 @@
     <EmbeddedResource Include="LiveReloadClientScript.js" />
   </ItemGroup>
 
-
- <ItemGroup>
+  <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 

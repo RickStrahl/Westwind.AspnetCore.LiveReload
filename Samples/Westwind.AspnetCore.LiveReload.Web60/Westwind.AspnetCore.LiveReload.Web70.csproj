@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net70</TargetFramework>
     <RazorCompileOnPublish>false</RazorCompileOnPublish>
   </PropertyGroup>
 

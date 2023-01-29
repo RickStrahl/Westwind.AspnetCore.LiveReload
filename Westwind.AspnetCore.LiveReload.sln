@@ -16,7 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Westwind.AspnetCore.LiveReload.Web60", "Samples\Westwind.AspnetCore.LiveReload.Web60\Westwind.AspnetCore.LiveReload.Web60.csproj", "{B4EDF752-FB19-4CF2-9CE8-3BC906C102F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Westwind.AspnetCore.LiveReload.Web70", "Samples\Westwind.AspnetCore.LiveReload.Web60\Westwind.AspnetCore.LiveReload.Web70.csproj", "{B4EDF752-FB19-4CF2-9CE8-3BC906C102F6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

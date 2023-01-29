@@ -30,7 +30,7 @@
             }
             else if (message.data == 'Refresh') {            
                 console.log('Live Reload Page reloading.');
-                setTimeout(reloadUrl, 30);            
+                setTimeout(reloadUrl, 130);            
             }
         }
         connection.onerror = function (event) {
