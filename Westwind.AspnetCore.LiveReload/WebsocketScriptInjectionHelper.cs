@@ -137,16 +137,15 @@ namespace Westwind.AspNetCore.LiveReload
 
             // otherwise return the embeddable script block string that replaces the ending </body> tag
 
+            string cscript;
+            if (string.IsNullOrEmpty(config.LiveReloadScriptUrl))
+                cscript = $"<script>\n{_ClientScriptString.Replace("{0}", hostString)}\n</script>";
+            else
+                cscript = $"<script src=\"{config.LiveReloadScriptUrl}\"></script>";
+
             var script = $@"
 <!-- West Wind Live Reload -->
-";
-
-            if (string.IsNullOrEmpty(config.LiveReloadScriptUrl))
-                script += "<script>\n" + _ClientScriptString.Replace("{0}", hostString) + "\n</script>";
-            else
-                script += $"<script src=\"{config.LiveReloadScriptUrl}\"></script>";
-
-script += @"
+{cscript}        
 <!-- End Live Reload -->
 
 </body>";
