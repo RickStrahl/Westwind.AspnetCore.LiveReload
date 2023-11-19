@@ -5,8 +5,6 @@ VisualStudioVersion = 17.0.31825.309
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Westwind.AspNetCore.LiveReload", "Westwind.AspnetCore.LiveReload\Westwind.AspNetCore.LiveReload.csproj", "{7CF17333-3898-478A-BA98-8543D26ACE46}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Westwind.AspnetCore.LiveReload.Web50", "Samples\Westwind.AspnetCore.LiveReload.Web50\Westwind.AspnetCore.LiveReload.Web50.csproj", "{2D8F61A3-8CB3-4AA2-9AB1-578C85428ED0}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample Web Sites", "Sample Web Sites", "{2B5B0811-4169-4B72-891C-6D0563703332}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{50CAE1F5-AD9C-4A57-A729-4A4F9B8A8F97}"
@@ -16,7 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Westwind.AspnetCore.LiveReload.Web70", "Samples\Westwind.AspnetCore.LiveReload.Web60\Westwind.AspnetCore.LiveReload.Web70.csproj", "{B4EDF752-FB19-4CF2-9CE8-3BC906C102F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Westwind.AspnetCore.LiveReload.Web80", "Samples\Westwind.AspnetCore.LiveReload.Web80\Westwind.AspnetCore.LiveReload.Web80.csproj", "{B4EDF752-FB19-4CF2-9CE8-3BC906C102F6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,10 +26,6 @@ Global
 		{7CF17333-3898-478A-BA98-8543D26ACE46}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7CF17333-3898-478A-BA98-8543D26ACE46}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7CF17333-3898-478A-BA98-8543D26ACE46}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2D8F61A3-8CB3-4AA2-9AB1-578C85428ED0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2D8F61A3-8CB3-4AA2-9AB1-578C85428ED0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2D8F61A3-8CB3-4AA2-9AB1-578C85428ED0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2D8F61A3-8CB3-4AA2-9AB1-578C85428ED0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B4EDF752-FB19-4CF2-9CE8-3BC906C102F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B4EDF752-FB19-4CF2-9CE8-3BC906C102F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4EDF752-FB19-4CF2-9CE8-3BC906C102F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -41,7 +35,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{2D8F61A3-8CB3-4AA2-9AB1-578C85428ED0} = {2B5B0811-4169-4B72-891C-6D0563703332}
 		{B4EDF752-FB19-4CF2-9CE8-3BC906C102F6} = {2B5B0811-4169-4B72-891C-6D0563703332}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

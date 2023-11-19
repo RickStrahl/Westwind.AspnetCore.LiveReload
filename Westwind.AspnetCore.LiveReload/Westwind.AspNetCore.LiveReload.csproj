@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net60;net70;netcoreapp3.1</TargetFrameworks>
-    <Version>0.4.2</Version>
+    <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+    <Version>0.5</Version>
 
     <Authors>Rick Strahl, West Wind Technologies</Authors>
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
@@ -20,7 +20,7 @@
     <Summary>
       ASP.NET Core Live Reload Middleware that monitors static file, Razor View or Pages and code changes in your project and automatically reloads the browser's active page.</Summary>
     <!--<AllowUnsafeBlocks>true</AllowUnsafeBlocks>-->
-    <Copyright>Rick Strahl, West Wind Technologies, 2019-2021</Copyright>
+    <Copyright>Rick Strahl, West Wind Technologies, 2019-2023</Copyright>
     <RepositoryType>Github</RepositoryType>
     <Company>West Wind Technologies</Company>
     
@@ -31,7 +31,7 @@
   <PropertyGroup>
     <PackageOutputPath>./nupkg</PackageOutputPath>    
 
-    <PackageCopyright>Rick Strahl, West Wind Technologies 2019-2022</PackageCopyright>
+    <PackageCopyright>Rick Strahl, West Wind Technologies 2019-2023</PackageCopyright>
     <PackageTags>Live-Reload AspNetCore Middleware Westwind</PackageTags>
     <PackageReleaseNotes></PackageReleaseNotes>
     <PackageIcon>icon.png</PackageIcon>
@@ -47,19 +47,16 @@
     <DebugType>embedded</DebugType>
   </PropertyGroup>
 
-
-  <ItemGroup>
-    <None Remove="LiveReloadClientScript.js" />
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <EmbeddedResource Include="LiveReloadClientScript.js" />
-  </ItemGroup>
-
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
+
+
+  <ItemGroup>
+    <None Remove="LiveReloadClientScript.js" />
+    <EmbeddedResource Include="LiveReloadClientScript.js" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <None Include="icon.png" Pack="true" PackagePath="" />

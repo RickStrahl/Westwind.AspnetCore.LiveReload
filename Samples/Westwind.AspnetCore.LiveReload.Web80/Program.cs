@@ -1,6 +1,8 @@
 ﻿// *** Minimal API Sample - for Startup.cs code see Web50 Sample
 using System;
+using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Westwind.AspNetCore.LiveReload;
@@ -101,13 +103,23 @@ lifetime.ApplicationStopped.Register(() =>
     Console.WriteLine("*** Application is shut down...");
 }, true);
 
-Console.WriteLine(
-@"
--------------------------------------
+
+
+
+Console.ForegroundColor = ConsoleColor.DarkYellow;
+Console.WriteLine($@"-------------------------------------
 Westwind.AspNetCore.LiveReload Sample
 -------------------------------------");
-Console.WriteLine("Runtime: " + System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription);
-Console.WriteLine("OS: " + System.Runtime.InteropServices.RuntimeInformation.OSDescription);
+Console.ResetColor();
+
+var urls = builder.WebHost.GetSetting(WebHostDefaults.ServerUrlsKey)?.Replace(";", " ");
+Console.Write($"    Urls: ");
+Console.ForegroundColor = ConsoleColor.DarkCyan;
+Console.WriteLine($"{urls}", ConsoleColor.DarkCyan);
+Console.ResetColor();
+
+Console.WriteLine($" Runtime: {RuntimeInformation.FrameworkDescription} - {app.Environment.EnvironmentName}");
+Console.WriteLine($"Platform: {RuntimeInformation.OSDescription}");
 Console.WriteLine();
 
 
