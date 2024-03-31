@@ -141,7 +141,7 @@ namespace Westwind.AspNetCore.LiveReload
             if (string.IsNullOrEmpty(config.LiveReloadScriptUrl))
                 cscript = $"<script>\n{_ClientScriptString.Replace("{0}", hostString)}\n</script>";
             else
-                cscript = $"<script src=\"{config.LiveReloadScriptUrl}\"></script>";
+                cscript = $"<script src=\"{config.LiveReloadScriptUrl}\" integrity=\"sha512-Bs8N/hvPRDuesBW4wst+X1FOsgUzmRiYr7DkT3U865iWDcsoTw01Cf4/tCyUYGdFDhXzvPYqN7ABq1ilxSnd2w==\"></script>";
 
             var script = $@"
 <!-- West Wind Live Reload -->
