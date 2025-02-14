@@ -125,7 +125,7 @@ namespace Westwind.AspNetCore.LiveReload
                                 throw new InvalidDataException("Unable to load LiveReloadClientScript.js Resource");
 
                             var buffer = new byte[scriptStream.Length];
-                            scriptStream.Read(buffer, 0, buffer.Length);
+                            _ = scriptStream.Read(buffer, 0, buffer.Length);
                             _ClientScriptString = System.Text.Encoding.UTF8.GetString(buffer);
                         }
                     }

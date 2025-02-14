@@ -6,12 +6,7 @@
 
 # Turn off .NET 5 auto refresh (which doesn't seem to work anyway)
 $env:DOTNET_WATCH_SUPPRESS_BROWSER_REFRESH=1
-
 dotnet watch run
-
-
-
-
 
 # 
 # if you want to test the 'native' behavior of .NET 5.0's browser refresh,

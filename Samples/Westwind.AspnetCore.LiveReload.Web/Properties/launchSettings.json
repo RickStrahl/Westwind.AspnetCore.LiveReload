@@ -1,21 +1,6 @@
 {
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:61535",
-      "sslPort": 44365
-    }
-  },
-  "profiles": {
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
-    "Westwind.AspNetCore.LiveReload.Web60": {
+  "profiles": {    
+    "Westwind.AspNetCore.LiveReload.Web": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

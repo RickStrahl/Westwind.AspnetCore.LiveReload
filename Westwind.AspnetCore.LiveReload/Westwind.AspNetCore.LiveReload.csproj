@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
-    <Version>0.5</Version>
+    <TargetFrameworks>net9.0;net8.0;net6.0</TargetFrameworks>
+    <Version>0.5.2</Version>
 
     <Authors>Rick Strahl, West Wind Technologies</Authors>
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
@@ -20,7 +20,7 @@
     <Summary>
       ASP.NET Core Live Reload Middleware that monitors static file, Razor View or Pages and code changes in your project and automatically reloads the browser's active page.</Summary>
     <!--<AllowUnsafeBlocks>true</AllowUnsafeBlocks>-->
-    <Copyright>Rick Strahl, West Wind Technologies, 2019-2023</Copyright>
+    <Copyright>Rick Strahl, West Wind Technologies, 2019-2025</Copyright>
     <RepositoryType>Github</RepositoryType>
     <Company>West Wind Technologies</Company>
     
@@ -31,11 +31,11 @@
   <PropertyGroup>
     <PackageOutputPath>./nupkg</PackageOutputPath>    
 
-    <PackageCopyright>Rick Strahl, West Wind Technologies 2019-2023</PackageCopyright>
+    <PackageCopyright>Rick Strahl, West Wind Technologies 2019-2024</PackageCopyright>
     <PackageTags>Live-Reload AspNetCore Middleware Westwind</PackageTags>
     <PackageReleaseNotes></PackageReleaseNotes>
-    <PackageIcon>icon.png</PackageIcon>
-    <PackageLicense>LICENSE.MD</PackageLicense>
+    <PackageIcon>icon.png</PackageIcon>    
+    <PackageLicenseFile>LICENSE.MD</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/RickStrahl/Westwind.AspnetCore.LiveReload</PackageProjectUrl>    
   </PropertyGroup>
 

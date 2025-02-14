@@ -1,7 +1,19 @@
 # Live Reload Middleware for ASP.NET Core
 
+**embeddable Live Reload Functionality for ASP.NET Core Applications** 
+
 [![NuGet](https://img.shields.io/nuget/v/Westwind.AspnetCore.LiveReload.svg)](https://www.nuget.org/packages/Westwind.AspnetCore.LiveReload/)
 [![](https://img.shields.io/nuget/dt/Westwind.AspnetCore.LiveReload.svg)](https://www.nuget.org/packages/Westwind.AspnetCore.LiveReload/)
+
+This library provides live reload functionality for static asset and code changes, and refreshing content as code is updated. This library is meant to be used:
+
+* **When Visual Studio and .NET Hot Reload fails (as it often does)**  
+Built-in Hot Reload is great when it works, but unfortunately often it doesn't, or works badly requiring many explicit project restarts during debugging sessions. This library is very simple in detecting changes and refreshing and if necessary recompiling and re-running your server quickly.
+
+* **Embeddable Live Reload for ASP.NET Applications**  
+This component is part of your ASP.NET application and can be configured via configuration (on/off, what files to monitor etc.). This means you can use Live Reload functionality **any time** including in deployed applications. Useful for building custom tools.
+
+**What's provided:**
 
 * **Live Reload Middleware Component**  
 Add the middleware to an existing Web UI Project to provide Live Reload functionality that causes the active page to reload if a file is changed.

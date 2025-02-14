@@ -16,11 +16,31 @@
         </p>
 
         <blockquote>
-            <svg class="bi bi-info-circle-fill" width="2em" height="2em" style="margin: 15px 10px 20px 0;" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <p>
+        <svg class="bi bi-info-circle-fill" width="2em" height="2em" style="margin: 15px 10px 20px 0;" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" d="M8 16A8 8 0 108 0a8 8 0 000 16zm.93-9.412l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM8 5.5a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
             </svg>
-            Note Razor related changes in .NET Core 3.x require that runtime Razor
-            compilation is enabled in your project.
+            Note Razor related changes in .NET Core 3.x+ require that <b>Runtime Razor
+        Compilation
+            </b> is enabled in your project.
+            
+        </p>
+        </blockquote>
+
+<blockquote>
+            
+        <p>
+            To see this library work properly without interference from Visual Studio
+        or dotnet watch Hot Reload, please run <code>.\Run.ps1</code> from the command line
+            or if running in Visual Studio completely disable Hot Reload.
+    </p>
+    <p>
+            <small><i><b>Note:</b> if Visual Studio Hot Reload works fine for you in Visual Studio use it. 
+                This library works in the many cases where VS Hot Reload simply does not work or works
+                inconsistently. It's also useful if you want to provide Hot Reload <b>at runtime</b> outside of 
+                a development environment.
+            </i></small>
+        </p>
         </blockquote>
 
         <div class="mt-4">
