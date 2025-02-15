@@ -36,10 +36,22 @@ namespace Westwind.AspNetCore.LiveReload
                 return html;
 
             string script = GetWebSocketClientJavaScript(context);
-            html = html.Replace(STR_BodyMarker, script);
-
+            //html = html.Replace(STR_BodyMarker, script);
+            ReplaceLastOccurrence(html, STR_BodyMarker, script);
             return html;
         }
+
+        static string ReplaceLastOccurrence(string source, string oldValue, string newValue)
+        {
+            int lastIndex = source.LastIndexOf(oldValue);
+            if (lastIndex == -1)
+            {
+                return source;
+            }
+            return source.Substring(0, lastIndex) + newValue + source.Substring(lastIndex + oldValue.Length);
+        }
+
+
 
         /// <summary>
         /// Adds Live Reload WebSocket script into the page before the body tag.
