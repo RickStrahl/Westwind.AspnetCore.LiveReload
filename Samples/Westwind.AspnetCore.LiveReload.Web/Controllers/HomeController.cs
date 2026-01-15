@@ -16,7 +16,7 @@ namespace Westwind.AspNetCore.LiveReload.Web30.Controllers
         }
 
         public IActionResult Privacy()
-        {
+        {          
             return View();
         }
 
