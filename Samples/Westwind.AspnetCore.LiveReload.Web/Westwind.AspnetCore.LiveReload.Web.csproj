@@ -9,7 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Westwind.AspNetCore.LiveReload\Westwind.AspNetCore.LiveReload.csproj" />
     
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="9.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="10.0.5" />
   </ItemGroup>
 
 

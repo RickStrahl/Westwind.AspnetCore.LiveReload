@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/Documents/">
+    <File Path=".editorconfig" />
+    <File Path="LICENSE.MD" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/Sample Web Sites/" />
+  <Project Path="Samples/Westwind.AspnetCore.LiveReload.Web/Westwind.AspnetCore.LiveReload.Web.csproj" />
+  <Project Path="Westwind.AspnetCore.LiveReload/Westwind.AspNetCore.LiveReload.csproj" />
+</Solution>

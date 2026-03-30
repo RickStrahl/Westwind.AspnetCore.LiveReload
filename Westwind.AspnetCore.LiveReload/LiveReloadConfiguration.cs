@@ -115,14 +115,20 @@ namespace Westwind.AspNetCore.LiveReload
     /// </summary>
     public enum FileInclusionModes
     {
-        // (default) changed file continues down the list of configuration rules to determine on whether the browser refreshes
+        /// <summary>
+        /// (default) changed file continues down the list of configuration rules to determine on whether the browser refreshes
+        /// </summary>
         ContinueProcessing,
 
-        // Explicitly lets you specify that the browser should be refreshed when this file has changed.
+        /// <summary>
+        /// Explicitly lets you specify that the browser should be refreshed when this file has changed. 
+        /// </summary>
         ForceRefresh,
 
-        // Explicitly lets you specify to **not** refresh the browser on this changed file.
-        DontRefresh                
+        /// <summary>
+        /// Explicitly lets you specify to **not** refresh the browser on this changed file.
+        /// </summary>
+        DontRefresh
     }
 
     public enum RefreshInclusionModes
