@@ -35,6 +35,10 @@ namespace Westwind.AspNetCore.LiveReload
 
         public override Task FlushAsync(CancellationToken cancellationToken)
         {
+
+            if (_baseStream == null)
+                return Task.CompletedTask;
+
             // this is called at the beginning of a request in 3.x and so
             // we have to set the ContentLength here as the flush/write locks headers
             if (!_isContentLengthSet && IsHtmlResponse())
@@ -42,6 +46,7 @@ namespace Westwind.AspNetCore.LiveReload
                 _context.Response.Headers.ContentLength = null;
                 _isContentLengthSet = true;
             }
+
 
             return _baseStream.FlushAsync(cancellationToken);
         }

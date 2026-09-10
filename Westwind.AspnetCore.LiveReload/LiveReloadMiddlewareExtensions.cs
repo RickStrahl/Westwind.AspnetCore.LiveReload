@@ -12,8 +12,15 @@ namespace Westwind.AspNetCore.LiveReload
     /// </summary>
     public static class LiveReloadMiddlewareExtensions
     {
+
+
+
+
+
+
+
         /// <summary>
-        /// Configure the MarkdownPageProcessor in Startup.ConfigureServices.
+        /// Configure the LiveReload middleware in Startup.ConfigureServices.
         /// </summary>
         /// <param name="services"></param>
         /// <param name="configAction"></param>
